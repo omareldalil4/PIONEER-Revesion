@@ -1,11 +1,10 @@
-// src/contents/grade3/LiveGrade3.js
 import React, { useState, useEffect } from 'react';
-import { Container } from 'react-bootstrap';
 
 function LiveGrade3() {
   const [isLiveStreamActive, setIsLiveStreamActive] = useState(false);
   const [liveStreamUrl, setLiveStreamUrl] = useState('');
   const [loading, setLoading] = useState(true);
+  const [embedError, setEmbedError] = useState(false);
 
   // دالة لتحويل رابط يوتيوب إلى رابط embed
   const convertYouTubeURL = (url) => {
@@ -41,6 +40,36 @@ function LiveGrade3() {
     return url;
   };
 
+  // دالة للحصول على الرابط الأصلي لليوتيوب
+  const getOriginalYouTubeURL = (url) => {
+    if (!url) return '';
+    
+    let videoId = '';
+    
+    if (url.includes('youtube.com/live/')) {
+      const match = url.match(/youtube\.com\/live\/([a-zA-Z0-9_-]+)/);
+      if (match) videoId = match[1];
+    }
+    else if (url.includes('youtube.com/watch?v=')) {
+      const match = url.match(/watch\?v=([a-zA-Z0-9_-]+)/);
+      if (match) videoId = match[1];
+    }
+    else if (url.includes('youtu.be/')) {
+      const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      if (match) videoId = match[1];
+    }
+    else if (url.includes('youtube.com/embed/')) {
+      const match = url.match(/embed\/([a-zA-Z0-9_-]+)/);
+      if (match) videoId = match[1];
+    }
+    
+    if (videoId) {
+      return `https://www.youtube.com/watch?v=${videoId}`;
+    }
+    
+    return url;
+  };
+
   useEffect(() => {
     const fetchLiveStream = async () => {
       try {
@@ -56,6 +85,7 @@ function LiveGrade3() {
           // تحويل الرابط إذا كان يوتيوب
           const convertedUrl = convertYouTubeURL(data.streamUrl || '');
           setLiveStreamUrl(convertedUrl);
+          setEmbedError(false);
           
           console.log('🔗 الرابط الأصلي:', data.streamUrl);
           console.log('🔗 الرابط المحول:', convertedUrl);
@@ -169,7 +199,7 @@ function LiveGrade3() {
         {/* Content Container - متوسط للشاشات العادية */}
         <div style={{
           width: '100%',
-          maxWidth: '900px', // عرض محدود للشاشات العادية
+          maxWidth: '900px',
           padding: '0 20px 50px 20px',
           display: 'flex',
           justifyContent: 'center'
@@ -221,7 +251,7 @@ function LiveGrade3() {
                 🔴 LIVE
               </div>
 
-              {/* الفيديو */}
+              {/* الفيديو أو رسالة البديل */}
               <div style={{
                 position: 'relative',
                 paddingBottom: '56.25%', // نسبة 16:9
@@ -231,20 +261,88 @@ function LiveGrade3() {
                 border: '3px solid rgba(255, 255, 255, 0.2)',
                 boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)'
               }}>
-                <iframe
-                  src={liveStreamUrl}
-                  title="البث المباشر - يوتيوب"
-                  frameBorder="0"
-                  allowFullScreen
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  style={{
+                {!embedError ? (
+                  <iframe
+                    src={liveStreamUrl}
+                    title="البث المباشر - يوتيوب"
+                    frameBorder="0"
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%'
+                    }}
+                    onError={() => setEmbedError(true)}
+                  />
+                ) : (
+                  // رسالة البديل عند فشل التضمين
+                  <div style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
                     width: '100%',
-                    height: '100%'
-                  }}
-                />
+                    height: '100%',
+                    background: 'linear-gradient(135deg, #2c3e50, #34495e)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    textAlign: 'center',
+                    padding: '30px'
+                  }}>
+                    <div style={{ fontSize: '4rem', marginBottom: '20px' }}>📺</div>
+                    <h3 style={{ 
+                      fontSize: '1.5rem', 
+                      fontWeight: '700',
+                      marginBottom: '15px',
+                      color: '#e74c3c'
+                    }}>
+                      ⚠️ البث غير متاح للتضمين
+                    </h3>
+                    <p style={{ 
+                      fontSize: '1.1rem',
+                      marginBottom: '25px',
+                      opacity: 0.9,
+                      lineHeight: '1.5'
+                    }}>
+                      صاحب القناة منع تشغيل البث على المواقع الأخرى
+                    </p>
+                    <a
+                      href={getOriginalYouTubeURL(liveStreamUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+                        color: 'white',
+                        padding: '15px 30px',
+                        borderRadius: '25px',
+                        textDecoration: 'none',
+                        fontSize: '1.1rem',
+                        fontWeight: '600',
+                        boxShadow: '0 8px 25px rgba(231, 76, 60, 0.3)',
+                        transition: 'all 0.3s ease',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '10px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = '0 12px 30px rgba(231, 76, 60, 0.4)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.3)';
+                      }}
+                    >
+                      <span style={{ fontSize: '1.2rem' }}>🔴</span>
+                      مشاهدة على يوتيوب
+                    </a>
+                  </div>
+                )}
               </div>
 
               {/* معلومات إضافية */}
@@ -259,7 +357,7 @@ function LiveGrade3() {
                   margin: 0,
                   textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
                 }}>
-                  📺 يمكنك تكبير الشاشة للحصول على تجربة أفضل
+                  📺 {embedError ? 'انقر الرابط أعلاه لمشاهدة البث على يوتيوب' : 'يمكنك تكبير الشاشة للحصول على تجربة أفضل'}
                 </p>
               </div>
             </div>
@@ -444,83 +542,6 @@ function LiveGrade3() {
               height: 14px !important;
               top: 15px !important;
               right: 15px !important;
-            }
-          }
-          
-          @media (max-width: 360px) {
-            .live-content {
-              padding: 12px 8px !important;
-            }
-            
-            .empty-state {
-              padding: 20px 12px !important;
-            }
-            
-            .empty-state h3 {
-              font-size: 1.2rem !important;
-            }
-            
-            .empty-state p {
-              font-size: 0.9rem !important;
-            }
-            
-            .header-content {
-              padding: 0 10px !important;
-            }
-            
-            .header-content h1 {
-              font-size: 1.4rem !important;
-            }
-            
-            .header-content p {
-              font-size: 0.9rem !important;
-            }
-            
-            .pulse-dot {
-              width: 12px !important;
-              height: 12px !important;
-              top: 12px !important;
-              right: 12px !important;
-            }
-          }
-          
-          iframe:focus {
-            outline: 3px solid rgba(255, 255, 255, 0.5);
-            outline-offset: 2px;
-          }
-          
-          @media (prefers-reduced-motion: reduce) {
-            * {
-              animation-duration: 0.01ms !important;
-              animation-iteration-count: 1 !important;
-              transition-duration: 0.01ms !important;
-            }
-          }
-          
-          /* تحسين التباين للرؤية */
-          @media (prefers-contrast: high) {
-            .live-content {
-              border: 3px solid #fff !important;
-            }
-            
-            .empty-state {
-              border: 3px solid #fff !important;
-            }
-          }
-          
-          /* تحسين للطباعة */
-          @media print {
-            .live-content iframe {
-              display: none !important;
-            }
-            
-            .live-content::after {
-              content: "البث المباشر متاح على الموقع الإلكتروني" !important;
-              display: block !important;
-              text-align: center !important;
-              padding: 50px !important;
-              color: #000 !important;
-              background: #fff !important;
             }
           }
         `}
