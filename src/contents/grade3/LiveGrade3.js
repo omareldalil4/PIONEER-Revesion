@@ -44,19 +44,54 @@ function LiveGrade3() {
     return () => clearInterval(interval);
   }, []);
 
-  // فتح البث في نافذة جديدة مع خصائص محددة
+  // فتح البث في نافذة جديدة مع إخفاء معلومات القناة
   const openLiveStream = () => {
     if (liveStreamUrl) {
+      // فتح في نافذة جديدة عادية
       const newWindow = window.open(
         liveStreamUrl, 
         'liveBroadcast',
-        'width=1200,height=800,scrollbars=yes,resizable=yes,status=yes,location=yes,toolbar=yes'
+        'width=1200,height=800,scrollbars=yes,resizable=yes,status=no,location=no,toolbar=no,menubar=no'
       );
       
       if (newWindow) {
         newWindow.focus();
-        // تتبع فتح النافذة
         console.log('✅ تم فتح البث في نافذة جديدة');
+        
+        // محاولة إخفاء معلومات يوتيوب (قد لا تعمل بسبب Same-Origin Policy)
+        setTimeout(() => {
+          try {
+            const doc = newWindow.document;
+            if (doc) {
+              // إخفاء عناصر يوتيوب
+              const style = doc.createElement('style');
+              style.textContent = `
+                .ytp-chrome-top, 
+                .ytp-title,
+                .ytp-chrome-top-buttons,
+                .ytp-watermark,
+                .ytp-youtube-button,
+                .ytp-show-cards-title,
+                .ytp-cards-button,
+                .ytp-videowall-still,
+                .ytp-ce-element,
+                #movie_player .ytp-chrome-top,
+                #movie_player .ytp-title,
+                ytd-watch-next-secondary-results-renderer,
+                ytd-compact-video-renderer,
+                .ytd-watch-next-secondary-results-renderer,
+                #secondary,
+                #related {
+                  display: none !important;
+                  visibility: hidden !important;
+                }
+              `;
+              doc.head.appendChild(style);
+            }
+          } catch (e) {
+            console.log('لا يمكن تعديل محتوى النافذة الجديدة لأسباب أمنية');
+          }
+        }, 2000);
       } else {
         // إذا فشل فتح النافذة الجديدة، جرب الطريقة العادية
         window.open(liveStreamUrl, '_blank', 'noopener,noreferrer');
@@ -68,20 +103,6 @@ function LiveGrade3() {
   const watchInCurrentWindow = () => {
     if (liveStreamUrl) {
       window.location.href = liveStreamUrl;
-    }
-  };
-
-  // فتح في تطبيق يوتيوب (للموبايل)
-  const openInYouTubeApp = () => {
-    if (liveStreamUrl) {
-      // محاولة فتح تطبيق يوتيوب
-      const youtubeAppUrl = liveStreamUrl.replace('https://www.youtube.com/', 'youtube://');
-      window.location.href = youtubeAppUrl;
-      
-      // بعد 2 ثانية، إذا لم يفتح التطبيق، افتح في المتصفح
-      setTimeout(() => {
-        window.open(liveStreamUrl, '_blank');
-      }, 2000);
     }
   };
 
@@ -327,10 +348,10 @@ function LiveGrade3() {
                 marginBottom: '30px',
                 lineHeight: '1.6'
               }}>
-                <strong>جميع الطرق متاحة!</strong> اختر الأنسب لك 👇
+                <strong>طرق المشاهدة المتاحة!</strong> اختر الأنسب لك 👇
               </p>
 
-              {/* أزار المشاهدة المحسنة */}
+              {/* أزار المشاهدة المحسنة - بدون تطبيق يوتيوب */}
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -381,7 +402,7 @@ function LiveGrade3() {
                     fontWeight: '600'
                   }}>الأفضل</div>
                   <span style={{ fontSize: '2rem' }}>🚀</span>
-                  <div>فتح في نافذة جديدة</div>
+                  <div>مشاهدة في نافذة جديدة</div>
                   <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>يحافظ على الموقع مفتوح</small>
                 </button>
 
@@ -415,41 +436,8 @@ function LiveGrade3() {
                   }}
                 >
                   <span style={{ fontSize: '2rem' }}>📺</span>
-                  <div>الانتقال إلى يوتيوب</div>
+                  <div>الانتقال للمشاهدة</div>
                   <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>انتقال مباشر</small>
-                </button>
-              </div>
-
-              {/* زر تطبيق يوتيوب للموبايل */}
-              <div style={{ marginBottom: '25px' }}>
-                <button
-                  onClick={openInYouTubeApp}
-                  style={{
-                    background: 'linear-gradient(135deg, #9b59b6, #8e44ad)',
-                    color: 'white',
-                    border: '2px solid #ffffff',
-                    borderRadius: '15px',
-                    padding: '15px 30px',
-                    fontSize: '1.1rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    boxShadow: '0 8px 25px rgba(155, 89, 182, 0.3)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '10px'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 12px 30px rgba(155, 89, 182, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 8px 25px rgba(155, 89, 182, 0.3)';
-                  }}
-                >
-                  <span style={{ fontSize: '1.3rem' }}>📱</span>
-                  فتح في تطبيق يوتيوب
                 </button>
               </div>
 
@@ -471,7 +459,7 @@ function LiveGrade3() {
                   justifyContent: 'center',
                   gap: '10px'
                 }}>
-                  🔗 شارك رابط البث مع الآخرين
+                  🔗 شارك رابط البث مع زملائك
                 </h4>
                 <div style={{
                   display: 'flex',
@@ -524,7 +512,7 @@ function LiveGrade3() {
                   marginTop: '10px',
                   textAlign: 'center'
                 }}>
-                  💡 انسخ الرابط وشاركه في الواتساب أو أي مكان آخر
+                  💡 انسخ الرابط وشاركه في الواتساب أو مع أصدقائك
                 </small>
               </div>
 
@@ -557,9 +545,37 @@ function LiveGrade3() {
                     🚀 النافذة الجديدة هي الأفضل
                   </div>
                   <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    📡 البث مباشر من يوتيوب
+                    📡 بث مباشر للمراجعة
                   </div>
                 </div>
+              </div>
+
+              {/* تنبيه خاص للطلاب */}
+              <div style={{
+                marginTop: '20px',
+                background: 'rgba(52, 152, 219, 0.1)',
+                border: '2px solid rgba(52, 152, 219, 0.3)',
+                borderRadius: '15px',
+                padding: '20px'
+              }}>
+                <div style={{
+                  color: '#3498db',
+                  fontSize: '1.1rem',
+                  fontWeight: '600',
+                  textAlign: 'center',
+                  marginBottom: '10px'
+                }}>
+                  📚 تذكير مهم
+                </div>
+                <p style={{
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  fontSize: '1rem',
+                  margin: 0,
+                  textAlign: 'center',
+                  lineHeight: '1.5'
+                }}>
+                  احضر دفترك وقلمك للمتابعة والتدوين أثناء البث المباشر
+                </p>
               </div>
             </div>
           ) : (
@@ -848,12 +864,13 @@ function LiveGrade3() {
             }
             
             .live-content::after {
-              content: "رابط البث: " attr(data-url) !important;
+              content: "للمشاهدة، يرجى زيارة الموقع الإلكتروني" !important;
               display: block !important;
               color: #000 !important;
               background: #fff !important;
               padding: 20px !important;
               margin-top: 20px !important;
+              text-align: center !important;
             }
           }
           
@@ -895,6 +912,20 @@ function LiveGrade3() {
           
           .tips-grid > div:hover {
             transform: translateY(-2px) !important;
+          }
+          
+          /* إخفاء عناصر يوتيوب عند الإمكان */
+          .ytp-chrome-top, 
+          .ytp-title,
+          .ytp-chrome-top-buttons,
+          .ytp-watermark,
+          .ytp-youtube-button,
+          .ytp-show-cards-title,
+          .ytp-cards-button,
+          .ytp-videowall-still,
+          .ytp-ce-element {
+            display: none !important;
+            visibility: hidden !important;
           }
           
           /* انتهاء CSS */
