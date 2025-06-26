@@ -44,7 +44,7 @@ function LiveGrade3() {
     return () => clearInterval(interval);
   }, []);
 
-  // فتح البث في نافذة جديدة مع طبقة الحماية والتشويش المحسنة
+  // فتح البث في نافذة جديدة مع طبقة الحماية والتشويش الأقوى والأكثر فعالية
   const openLiveStream = () => {
     if (liveStreamUrl) {
       // فتح في نافذة جديدة عادية
@@ -58,182 +58,269 @@ function LiveGrade3() {
         newWindow.focus();
         console.log('✅ تم فتح البث في نافذة جديدة');
         
-        // إضافة طبقة الحماية والتشويش المحسنة الكاملة
+        // إضافة طبقة الحماية والتشويش الأقوى والأكثر فعالية
         setTimeout(() => {
           try {
             const doc = newWindow.document;
             if (doc) {
-              // إنشاء طبقة الحماية الشاملة المحسنة
+              // إنشاء طبقة الحماية الشاملة الأقوى
               const protectionOverlay = doc.createElement('div');
-              protectionOverlay.id = 'ultimate-video-protection';
+              protectionOverlay.id = 'ultimate-video-protection-enhanced';
               protectionOverlay.innerHTML = `
-                <!-- تشويش شامل لكامل شاشة الفيديو -->
-                <div id="full-screen-blur" style="
+                <!-- تشويش شامل لكامل شاشة الفيديو - أقوى -->
+                <div id="full-screen-blur-enhanced" style="
                   position: fixed;
                   top: 0;
                   left: 0;
                   width: 100vw;
                   height: 100vh;
-                  background: rgba(0, 0, 0, 0.02);
-                  backdrop-filter: blur(3px) saturate(0.9);
+                  background: rgba(0, 0, 0, 0.05);
+                  backdrop-filter: blur(5px) saturate(0.8) contrast(0.95);
                   z-index: 999999;
                   pointer-events: none;
                   mix-blend-mode: multiply;
+                  opacity: 0.8;
                 "></div>
 
-                <!-- طبقة حماية أيقونة Share في اليمين العلوي -->
-                <div class="protection-zone share-zone" style="
+                <!-- طبقة حماية أيقونة Share في اليمين العلوي - مكبرة ومقواة -->
+                <div class="protection-zone-enhanced share-zone" style="
                   position: fixed;
-                  top: 8px;
-                  right: 8px;
-                  width: 80px;
-                  height: 80px;
-                  background: rgba(255, 0, 0, 0.1);
-                  backdrop-filter: blur(15px) saturate(0.5);
-                  z-index: 9999999;
-                  pointer-events: all;
-                  cursor: not-allowed;
-                  border-radius: 50%;
-                  border: 3px solid rgba(255, 255, 255, 0.3);
-                  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-                " title="🚫 منطقة محظورة - Share"></div>
-                
-                <!-- طبقة حماية أيقونة القناة في اليسار العلوي -->
-                <div class="protection-zone channel-zone" style="
-                  position: fixed;
-                  top: 8px;
-                  left: 8px;
+                  top: 0px;
+                  right: 0px;
                   width: 150px;
-                  height: 60px;
-                  background: rgba(255, 0, 0, 0.1);
-                  backdrop-filter: blur(15px) saturate(0.5);
-                  z-index: 9999999;
+                  height: 120px;
+                  background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(220, 53, 69, 0.15));
+                  backdrop-filter: blur(25px) saturate(0.3) contrast(0.8);
+                  z-index: 99999999;
                   pointer-events: all;
                   cursor: not-allowed;
-                  border-radius: 30px;
-                  border: 3px solid rgba(255, 255, 255, 0.3);
-                  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-                " title="🚫 منطقة محظورة - اسم القناة"></div>
+                  border-radius: 0 0 0 30px;
+                  border: 5px solid rgba(255, 255, 255, 0.4);
+                  box-shadow: 
+                    0 0 30px rgba(255, 0, 0, 0.5),
+                    inset 0 0 20px rgba(255, 0, 0, 0.3);
+                  opacity: 0.95;
+                " title="🚫 منطقة محظورة - Share محمية بتشويش قوي" 
+                   data-zone="share"></div>
                 
-                <!-- طبقة حماية أيقونة Watch on YouTube في اليمين السفلي -->
-                <div class="protection-zone youtube-zone" style="
+                <!-- طبقة حماية أيقونة القناة في اليسار العلوي - مكبرة ومقواة -->
+                <div class="protection-zone-enhanced channel-zone" style="
                   position: fixed;
-                  bottom: 12px;
-                  right: 12px;
-                  width: 120px;
-                  height: 50px;
-                  background: rgba(255, 0, 0, 0.1);
-                  backdrop-filter: blur(15px) saturate(0.5);
-                  z-index: 9999999;
+                  top: 0px;
+                  left: 0px;
+                  width: 220px;
+                  height: 100px;
+                  background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(220, 53, 69, 0.15));
+                  backdrop-filter: blur(25px) saturate(0.3) contrast(0.8);
+                  z-index: 99999999;
                   pointer-events: all;
                   cursor: not-allowed;
-                  border-radius: 25px;
-                  border: 3px solid rgba(255, 255, 255, 0.3);
-                  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-                " title="🚫 منطقة محظورة - Watch on YouTube"></div>
+                  border-radius: 0 0 30px 0;
+                  border: 5px solid rgba(255, 255, 255, 0.4);
+                  box-shadow: 
+                    0 0 30px rgba(255, 0, 0, 0.5),
+                    inset 0 0 20px rgba(255, 0, 0, 0.3);
+                  opacity: 0.95;
+                " title="🚫 منطقة محظورة - اسم القناة محمي بتشويش قوي"
+                   data-zone="channel"></div>
                 
-                <!-- طبقة حماية شريط التحكم السفلي الكامل -->
-                <div class="protection-zone controls-zone" style="
+                <!-- طبقة حماية أيقونة Watch on YouTube في اليمين السفلي - مكبرة ومقواة -->
+                <div class="protection-zone-enhanced youtube-zone" style="
+                  position: fixed;
+                  bottom: 0px;
+                  right: 0px;
+                  width: 180px;
+                  height: 80px;
+                  background: linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(220, 53, 69, 0.2));
+                  backdrop-filter: blur(30px) saturate(0.2) contrast(0.7);
+                  z-index: 99999999;
+                  pointer-events: all;
+                  cursor: not-allowed;
+                  border-radius: 30px 0 0 0;
+                  border: 5px solid rgba(255, 255, 255, 0.4);
+                  box-shadow: 
+                    0 0 35px rgba(255, 0, 0, 0.6),
+                    inset 0 0 25px rgba(255, 0, 0, 0.4);
+                  opacity: 0.95;
+                " title="🚫 منطقة محظورة - Watch on YouTube محمي بتشويش قوي"
+                   data-zone="youtube"></div>
+                
+                <!-- طبقة حماية شريط التحكم السفلي الكامل - مقواة -->
+                <div class="protection-zone-enhanced controls-zone" style="
                   position: fixed;
                   bottom: 0;
                   left: 0;
                   right: 0;
-                  height: 100px;
-                  background: rgba(255, 0, 0, 0.05);
-                  backdrop-filter: blur(12px) saturate(0.6);
-                  z-index: 9999998;
+                  height: 150px;
+                  background: linear-gradient(to top, 
+                    rgba(255, 0, 0, 0.15) 0%, 
+                    rgba(255, 0, 0, 0.08) 50%, 
+                    rgba(255, 0, 0, 0.03) 100%);
+                  backdrop-filter: blur(20px) saturate(0.4) contrast(0.9);
+                  z-index: 99999998;
                   pointer-events: all;
                   cursor: not-allowed;
-                  border-top: 3px solid rgba(255, 255, 255, 0.2);
-                  box-shadow: 0 -5px 15px rgba(255, 0, 0, 0.2);
-                " title="🚫 شريط التحكم محظور"></div>
+                  border-top: 5px solid rgba(255, 255, 255, 0.3);
+                  box-shadow: 0 -8px 25px rgba(255, 0, 0, 0.4);
+                  opacity: 0.9;
+                " title="🚫 شريط التحكم محظور - محمي بتشويش قوي"
+                   data-zone="controls"></div>
                 
-                <!-- طبقة حماية العنوان والمعلومات في الأعلى -->
-                <div class="protection-zone title-zone" style="
-                  position: fixed;
-                  top: 0;
-                  left: 50%;
-                  transform: translateX(-50%);
-                  width: 60%;
-                  height: 100px;
-                  background: rgba(255, 0, 0, 0.05);
-                  backdrop-filter: blur(12px) saturate(0.6);
-                  z-index: 9999998;
-                  pointer-events: all;
-                  cursor: not-allowed;
-                  border-radius: 0 0 20px 20px;
-                  border: 3px solid rgba(255, 255, 255, 0.2);
-                  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
-                " title="🚫 معلومات الفيديو محظورة"></div>
-
-                <!-- طبقة حماية الجوانب اليمين واليسار -->
-                <div class="protection-zone left-sidebar" style="
+                <!-- طبقة حماية العنوان والمعلومات في الأعلى - مقواة -->
+                <div class="protection-zone-enhanced title-zone" style="
                   position: fixed;
                   top: 0;
                   left: 0;
-                  width: 80px;
-                  height: 100vh;
-                  background: rgba(255, 0, 0, 0.03);
-                  backdrop-filter: blur(8px);
-                  z-index: 9999997;
+                  right: 0;
+                  height: 140px;
+                  background: linear-gradient(to bottom, 
+                    rgba(255, 0, 0, 0.12) 0%, 
+                    rgba(255, 0, 0, 0.06) 70%, 
+                    rgba(255, 0, 0, 0.02) 100%);
+                  backdrop-filter: blur(18px) saturate(0.5) contrast(0.9);
+                  z-index: 99999997;
                   pointer-events: all;
                   cursor: not-allowed;
-                "></div>
+                  border-bottom: 4px solid rgba(255, 255, 255, 0.2);
+                  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3);
+                  opacity: 0.9;
+                " title="🚫 معلومات الفيديو محظورة - محمية بتشويش قوي"
+                   data-zone="title"></div>
+
+                <!-- طبقات حماية الجوانب - مقواة -->
+                <div class="protection-zone-enhanced left-sidebar" style="
+                  position: fixed;
+                  top: 0;
+                  left: 0;
+                  width: 120px;
+                  height: 100vh;
+                  background: linear-gradient(to right, 
+                    rgba(255, 0, 0, 0.08) 0%, 
+                    rgba(255, 0, 0, 0.04) 70%, 
+                    rgba(255, 0, 0, 0.01) 100%);
+                  backdrop-filter: blur(15px);
+                  z-index: 99999996;
+                  pointer-events: all;
+                  cursor: not-allowed;
+                  border-right: 3px solid rgba(255, 255, 255, 0.2);
+                  opacity: 0.8;
+                " data-zone="left-sidebar"></div>
                 
-                <div class="protection-zone right-sidebar" style="
+                <div class="protection-zone-enhanced right-sidebar" style="
                   position: fixed;
                   top: 0;
                   right: 0;
-                  width: 80px;
+                  width: 120px;
                   height: 100vh;
-                  background: rgba(255, 0, 0, 0.03);
-                  backdrop-filter: blur(8px);
-                  z-index: 9999997;
+                  background: linear-gradient(to left, 
+                    rgba(255, 0, 0, 0.08) 0%, 
+                    rgba(255, 0, 0, 0.04) 70%, 
+                    rgba(255, 0, 0, 0.01) 100%);
+                  backdrop-filter: blur(15px);
+                  z-index: 99999996;
                   pointer-events: all;
                   cursor: not-allowed;
-                "></div>
+                  border-left: 3px solid rgba(255, 255, 255, 0.2);
+                  opacity: 0.8;
+                " data-zone="right-sidebar"></div>
 
-                <!-- طبقة تشويش متحركة إضافية -->
-                <div class="moving-blur" style="
+                <!-- شبكة تشويش متحركة أقوى -->
+                <div class="moving-blur-enhanced" style="
                   position: fixed;
                   top: 0;
                   left: 0;
                   width: 100%;
                   height: 100%;
-                  background: linear-gradient(45deg, 
-                    rgba(255, 255, 255, 0.01) 0%, 
-                    rgba(255, 255, 255, 0.03) 25%, 
-                    rgba(255, 255, 255, 0.01) 50%, 
-                    rgba(255, 255, 255, 0.03) 75%, 
-                    rgba(255, 255, 255, 0.01) 100%);
-                  backdrop-filter: blur(2px);
-                  z-index: 999996;
-                  pointer-events: none;
-                  animation: movingBlur 10s infinite linear;
-                "></div>
-
-                <!-- شبكة حماية غير مرئية لتغطية أي منطقة مفقودة -->
-                <div class="invisible-grid" style="
-                  position: fixed;
-                  top: 0;
-                  left: 0;
-                  width: 100%;
-                  height: 100%;
-                  background: repeating-linear-gradient(
-                    0deg,
-                    transparent 0px,
-                    rgba(255, 0, 0, 0.005) 50px,
-                    transparent 100px
-                  );
+                  background: 
+                    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
+                    radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
+                    linear-gradient(45deg, 
+                      rgba(255, 255, 255, 0.01) 0%, 
+                      rgba(255, 255, 255, 0.04) 25%, 
+                      rgba(255, 255, 255, 0.01) 50%, 
+                      rgba(255, 255, 255, 0.04) 75%, 
+                      rgba(255, 255, 255, 0.01) 100%);
+                  backdrop-filter: blur(3px) contrast(0.98);
                   z-index: 999995;
                   pointer-events: none;
+                  animation: movingBlurEnhanced 8s infinite linear;
+                  opacity: 0.7;
                 "></div>
+
+                <!-- شبكة حماية متعددة الطبقات -->
+                <div class="protection-grid" style="
+                  position: fixed;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  background: 
+                    repeating-linear-gradient(
+                      0deg,
+                      transparent 0px,
+                      rgba(255, 0, 0, 0.01) 30px,
+                      transparent 60px
+                    ),
+                    repeating-linear-gradient(
+                      90deg,
+                      transparent 0px,
+                      rgba(255, 0, 0, 0.008) 40px,
+                      transparent 80px
+                    );
+                  z-index: 999994;
+                  pointer-events: none;
+                  opacity: 0.6;
+                "></div>
+
+                <!-- طبقة تشويش إضافية للأيقونات المحددة -->
+                <div class="icon-blur-overlay" style="
+                  position: fixed;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  background: transparent;
+                  z-index: 999993;
+                  pointer-events: none;
+                  opacity: 0.9;
+                "></div>
+
+                <!-- مؤشرات التحذير المتحركة -->
+                <div class="warning-indicators" style="
+                  position: fixed;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  width: 200px;
+                  height: 200px;
+                  border: 3px dashed rgba(255, 0, 0, 0.3);
+                  border-radius: 50%;
+                  z-index: 999992;
+                  pointer-events: none;
+                  animation: warningPulse 4s infinite ease-in-out;
+                  opacity: 0.5;
+                ">
+                  <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 16px;
+                    font-weight: 600;
+                    text-align: center;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+                    animation: textFloat 3s infinite ease-in-out;
+                  ">🛡️<br>محمي<br>بتشويش</div>
+                </div>
               `;
               
-              // إضافة CSS الحماية المحسن والتشويش الشامل
+              // إضافة CSS الحماية الأقوى والأكثر فعالية
               const protectionStyle = doc.createElement('style');
               protectionStyle.textContent = `
-                /* تشويش شامل لجميع عناصر يوتيوب */
+                /* تشويش شامل وقوي لجميع عناصر يوتيوب */
                 * {
                   -webkit-user-select: none !important;
                   -moz-user-select: none !important;
@@ -243,7 +330,7 @@ function LiveGrade3() {
                   -webkit-tap-highlight-color: transparent !important;
                 }
 
-                /* إخفاء وتشويش عناصر يوتيوب المحددة */
+                /* إخفاء وتشويش قوي لعناصر يوتيوب المحددة */
                 .ytp-chrome-top, 
                 .ytp-title,
                 .ytp-chrome-top-buttons,
@@ -275,15 +362,30 @@ function LiveGrade3() {
                 .ytp-fullscreen-button,
                 .ytp-volume-area,
                 .ytp-mute-button,
-                .ytp-volume-slider {
+                .ytp-volume-slider,
+                .ytp-chrome-top-buttons > *,
+                button[data-title-no-tooltip*="Share"],
+                button[aria-label*="Share"],
+                button[title*="Share"],
+                a[href*="youtube.com/channel"],
+                a[href*="youtube.com/@"],
+                button[data-title-no-tooltip*="Watch on YouTube"],
+                .ytp-watch-on-youtube-button {
                   display: none !important;
                   visibility: hidden !important;
                   opacity: 0 !important;
-                  filter: blur(20px) !important;
+                  filter: blur(50px) saturate(0) contrast(0) !important;
                   pointer-events: none !important;
+                  transform: scale(0) !important;
+                  position: absolute !important;
+                  left: -9999px !important;
+                  top: -9999px !important;
+                  width: 0 !important;
+                  height: 0 !important;
+                  z-index: -1 !important;
                 }
                 
-                /* تشويش خاص للأيقونات المحددة */
+                /* تشويش قوي ومتقدم للأيقونات المحددة بدقة */
                 button[data-title-no-tooltip="Share"],
                 button[aria-label*="Share"],
                 button[title*="Share"],
@@ -293,22 +395,55 @@ function LiveGrade3() {
                 .ytp-youtube-button,
                 button[data-title-no-tooltip="Watch on YouTube"],
                 .ytp-watch-on-youtube-button,
-                .ytp-chrome-controls button,
-                .ytp-chrome-controls a {
+                .ytp-chrome-controls button:not(.ytp-play-button),
+                .ytp-chrome-controls a:not(video),
+                .ytp-chrome-top-buttons *,
+                .ytp-chrome-top *,
+                [class*="ytp-share"],
+                [class*="ytp-youtube"],
+                [aria-label*="YouTube"],
+                [title*="YouTube"],
+                [data-title*="Share"],
+                .html5-endscreen,
+                .ytp-ce-element,
+                .ytp-endscreen-content {
                   pointer-events: none !important;
-                  opacity: 0.1 !important;
-                  filter: blur(10px) saturate(0.3) !important;
-                  transform: scale(0.8) !important;
+                  opacity: 0 !important;
+                  filter: 
+                    blur(100px) 
+                    saturate(0) 
+                    contrast(0) 
+                    brightness(0) 
+                    sepia(1) 
+                    hue-rotate(180deg) 
+                    invert(1) !important;
+                  transform: scale(0) rotate(360deg) !important;
                   visibility: hidden !important;
+                  display: none !important;
+                  position: absolute !important;
+                  left: -99999px !important;
+                  top: -99999px !important;
+                  width: 0 !important;
+                  height: 0 !important;
+                  z-index: -99999 !important;
+                  background: transparent !important;
+                  border: none !important;
+                  outline: none !important;
+                  box-shadow: none !important;
+                  text-shadow: none !important;
+                  -webkit-appearance: none !important;
+                  -moz-appearance: none !important;
+                  appearance: none !important;
                 }
                 
-                /* تشويش شامل لمنطقة الفيديو */
+                /* تشويش شامل لمنطقة الفيديو مع تحسينات */
                 #movie_player {
                   position: relative !important;
-                  filter: contrast(1.1) saturate(0.95) !important;
+                  filter: contrast(1.05) saturate(0.98) brightness(0.99) !important;
+                  isolation: isolate !important;
                 }
 
-                /* طبقة تشويش على كامل منطقة المشغل */
+                /* طبقة تشويش قوية على كامل منطقة المشغل */
                 #movie_player::before {
                   content: '';
                   position: absolute;
@@ -316,41 +451,50 @@ function LiveGrade3() {
                   left: 0;
                   right: 0;
                   bottom: 0;
-                  background: rgba(255, 255, 255, 0.01);
-                  backdrop-filter: blur(1px);
+                  background: 
+                    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.015) 0%, transparent 40%),
+                    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
+                    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.015) 0%, transparent 40%);
+                  backdrop-filter: blur(2px) contrast(0.99);
                   z-index: 999990;
                   pointer-events: none;
                 }
                 
-                /* طبقة حماية شاملة للفيديو */
+                /* طبقة حماية إضافية للفيديو */
                 #movie_player::after {
                   content: '';
                   position: absolute;
                   top: 0;
                   left: 0;
                   right: 0;
-                  bottom: 80px;
+                  bottom: 120px;
                   background: transparent;
                   z-index: 999991;
                   pointer-events: none;
                 }
                 
-                /* حماية خاصة للمناطق الحساسة */
+                /* حماية وتشويش خاص للمناطق الحساسة */
                 .ytp-chrome-controls {
                   pointer-events: none !important;
-                  filter: blur(8px) !important;
-                  opacity: 0.3 !important;
+                  filter: blur(20px) saturate(0.2) contrast(0.5) !important;
+                  opacity: 0.1 !important;
+                  transform: scale(0.8) !important;
+                  visibility: hidden !important;
                 }
                 
                 .ytp-progress-bar {
                   pointer-events: none !important;
-                  filter: blur(5px) !important;
+                  filter: blur(15px) saturate(0) !important;
+                  opacity: 0.2 !important;
                 }
 
-                /* تشويش إضافي لشريط التقدم */
+                /* تشويش أقوى لشريط التقدم */
                 .ytp-progress-bar-container {
-                  backdrop-filter: blur(10px) !important;
-                  opacity: 0.2 !important;
+                  backdrop-filter: blur(25px) saturate(0.3) !important;
+                  opacity: 0.1 !important;
+                  filter: blur(20px) !important;
+                  transform: scaleY(0.5) !important;
                 }
                 
                 /* السماح فقط بتشغيل/إيقاف الفيديو في المنتصف */
@@ -358,6 +502,7 @@ function LiveGrade3() {
                   pointer-events: auto !important;
                   filter: none !important;
                   opacity: 1 !important;
+                  z-index: 1000000 !important;
                 }
                 
                 .html5-video-container {
@@ -371,86 +516,176 @@ function LiveGrade3() {
                 /* منع عرض الروابط في شريط الحالة */
                 a:not(video):not(.ytp-play-button) {
                   pointer-events: none !important;
-                  filter: blur(5px) !important;
+                  filter: blur(30px) saturate(0) !important;
+                  opacity: 0 !important;
+                  display: none !important;
                 }
                 
-                /* تشويش محسن للأيقونات المحمية */
-                .protection-zone {
-                  transition: all 0.3s ease !important;
-                  backdrop-filter: blur(12px) saturate(0.7) !important;
+                /* تشويش محسن ومقوى للأيقونات المحمية */
+                .protection-zone-enhanced {
+                  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+                  backdrop-filter: blur(25px) saturate(0.2) contrast(0.8) brightness(0.9) !important;
                   background: linear-gradient(45deg, 
-                    rgba(255, 0, 0, 0.05), 
-                    rgba(255, 0, 0, 0.08), 
-                    rgba(255, 0, 0, 0.05)
+                    rgba(255, 0, 0, 0.1), 
+                    rgba(255, 0, 0, 0.15), 
+                    rgba(220, 53, 69, 0.12),
+                    rgba(255, 0, 0, 0.08)
                   ) !important;
-                  animation: protectionPulse 4s infinite ease-in-out !important;
+                  animation: protectionPulseEnhanced 3s infinite ease-in-out !important;
+                  border: 5px solid rgba(255, 255, 255, 0.4) !important;
+                  box-shadow: 
+                    0 0 30px rgba(255, 0, 0, 0.5),
+                    inset 0 0 20px rgba(255, 0, 0, 0.3),
+                    0 0 60px rgba(255, 0, 0, 0.3) !important;
+                  opacity: 0.95 !important;
+                  mix-blend-mode: multiply !important;
                 }
                 
-                @keyframes protectionPulse {
+                /* تأثيرات محسنة عند التحويم */
+                .protection-zone-enhanced:hover {
+                  backdrop-filter: blur(35px) saturate(0.1) contrast(0.7) !important;
+                  background: linear-gradient(45deg, 
+                    rgba(255, 0, 0, 0.2), 
+                    rgba(220, 53, 69, 0.18),
+                    rgba(255, 0, 0, 0.15)
+                  ) !important;
+                  box-shadow: 
+                    0 0 40px rgba(255, 0, 0, 0.7),
+                    inset 0 0 30px rgba(255, 0, 0, 0.4),
+                    0 0 80px rgba(255, 0, 0, 0.5) !important;
+                  transform: scale(1.02) !important;
+                  opacity: 0.98 !important;
+                }
+                
+                @keyframes protectionPulseEnhanced {
                   0%, 100% { 
-                    backdrop-filter: blur(10px) saturate(0.8);
-                    background: rgba(255, 0, 0, 0.05);
-                    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
-                  }
-                  50% { 
-                    backdrop-filter: blur(15px) saturate(0.6);
+                    backdrop-filter: blur(20px) saturate(0.3) contrast(0.85);
                     background: rgba(255, 0, 0, 0.08);
-                    box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+                    box-shadow: 
+                      0 0 25px rgba(255, 0, 0, 0.4),
+                      inset 0 0 15px rgba(255, 0, 0, 0.2);
+                    transform: scale(1);
+                  }
+                  33% { 
+                    backdrop-filter: blur(30px) saturate(0.2) contrast(0.8);
+                    background: rgba(255, 0, 0, 0.12);
+                    box-shadow: 
+                      0 0 35px rgba(255, 0, 0, 0.6),
+                      inset 0 0 25px rgba(255, 0, 0, 0.4);
+                    transform: scale(1.01);
+                  }
+                  66% { 
+                    backdrop-filter: blur(25px) saturate(0.25) contrast(0.82);
+                    background: rgba(255, 0, 0, 0.1);
+                    box-shadow: 
+                      0 0 30px rgba(255, 0, 0, 0.5),
+                      inset 0 0 20px rgba(255, 0, 0, 0.3);
+                    transform: scale(1.005);
                   }
                 }
 
-                @keyframes movingBlur {
+                @keyframes movingBlurEnhanced {
                   0% { 
-                    background-position: 0% 0%;
-                    backdrop-filter: blur(1px);
+                    background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 0%;
+                    backdrop-filter: blur(2px) contrast(0.99);
+                    transform: rotate(0deg);
                   }
                   25% { 
-                    background-position: 100% 0%;
-                    backdrop-filter: blur(2px);
+                    background-position: 100% 0%, 100% 100%, 0% 0%, 0% 100%, 100% 0%;
+                    backdrop-filter: blur(4px) contrast(0.98);
+                    transform: rotate(2deg);
                   }
                   50% { 
-                    background-position: 100% 100%;
-                    backdrop-filter: blur(1px);
+                    background-position: 100% 100%, 0% 100%, 100% 0%, 0% 0%, 100% 100%;
+                    backdrop-filter: blur(3px) contrast(0.985);
+                    transform: rotate(4deg);
                   }
                   75% { 
-                    background-position: 0% 100%;
-                    backdrop-filter: blur(2px);
+                    background-position: 0% 100%, 0% 0%, 100% 100%, 100% 0%, 0% 100%;
+                    backdrop-filter: blur(4px) contrast(0.98);
+                    transform: rotate(2deg);
                   }
                   100% { 
-                    background-position: 0% 0%;
-                    backdrop-filter: blur(1px);
+                    background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 0%;
+                    backdrop-filter: blur(2px) contrast(0.99);
+                    transform: rotate(0deg);
+                  }
+                }
+
+                @keyframes warningPulse {
+                  0%, 100% { 
+                    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                    opacity: 0.3;
+                    border-color: rgba(255, 0, 0, 0.2);
+                  }
+                  25% { 
+                    transform: translate(-50%, -50%) scale(1.05) rotate(5deg);
+                    opacity: 0.6;
+                    border-color: rgba(255, 0, 0, 0.4);
+                  }
+                  50% { 
+                    transform: translate(-50%, -50%) scale(1.1) rotate(0deg);
+                    opacity: 0.5;
+                    border-color: rgba(255, 0, 0, 0.5);
+                  }
+                  75% { 
+                    transform: translate(-50%, -50%) scale(1.05) rotate(-5deg);
+                    opacity: 0.6;
+                    border-color: rgba(255, 0, 0, 0.4);
+                  }
+                }
+
+                @keyframes textFloat {
+                  0%, 100% { 
+                    transform: translate(-50%, -50%) translateY(0px);
+                    opacity: 0.6;
+                  }
+                  33% { 
+                    transform: translate(-50%, -50%) translateY(-5px);
+                    opacity: 0.8;
+                  }
+                  66% { 
+                    transform: translate(-50%, -50%) translateY(5px);
+                    opacity: 0.7;
                   }
                 }
                 
-                /* رسالة تحذيرية محسنة */
-                .protection-zone:hover::after {
-                  content: '🚫 منطقة محظورة - محمي للطلاب';
+                /* رسالة تحذيرية محسنة ومقواة */
+                .protection-zone-enhanced:hover::after {
+                  content: '🚫 منطقة محظورة - محمي للطلاب بتشويش قوي';
                   position: absolute;
-                  bottom: -45px;
+                  bottom: -60px;
                   left: 50%;
                   transform: translateX(-50%);
-                  background: rgba(220, 53, 69, 0.95);
+                  background: linear-gradient(135deg, #dc3545, #c82333);
                   color: white;
-                  padding: 8px 16px;
-                  border-radius: 10px;
-                  font-size: 12px;
-                  font-weight: 600;
+                  padding: 12px 20px;
+                  border-radius: 15px;
+                  font-size: 14px;
+                  font-weight: 700;
                   white-space: nowrap;
-                  z-index: 10000000;
-                  animation: warningFade 3s ease-in-out;
-                  border: 2px solid rgba(255, 255, 255, 0.5);
-                  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-                  backdrop-filter: blur(10px);
+                  z-index: 100000000;
+                  animation: warningFadeEnhanced 4s ease-in-out;
+                  border: 3px solid rgba(255, 255, 255, 0.6);
+                  box-shadow: 
+                    0 8px 25px rgba(0, 0, 0, 0.5),
+                    0 0 20px rgba(220, 53, 69, 0.6);
+                  backdrop-filter: blur(15px);
+                  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
                 }
                 
-                @keyframes warningFade {
+                @keyframes warningFadeEnhanced {
                   0%, 100% { 
                     opacity: 0; 
-                    transform: translateX(-50%) translateY(15px) scale(0.8);
+                    transform: translateX(-50%) translateY(20px) scale(0.7);
                   }
-                  20%, 80% { 
+                  15%, 85% { 
                     opacity: 1; 
                     transform: translateX(-50%) translateY(0) scale(1);
+                  }
+                  50% {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(-5px) scale(1.05);
                   }
                 }
                 
@@ -458,22 +693,40 @@ function LiveGrade3() {
                 .ytp-chrome-top-buttons *,
                 .ytp-share-button-container *,
                 .ytp-overflow-button *,
-                .ytp-settings-menu * {
+                .ytp-settings-menu *,
+                [class*="share"] *,
+                [class*="youtube"] *,
+                [data-title*="Share"] *,
+                [aria-label*="Share"] * {
                   visibility: hidden !important;
                   opacity: 0 !important;
                   pointer-events: none !important;
-                  filter: blur(20px) !important;
+                  filter: blur(50px) saturate(0) contrast(0) !important;
+                  display: none !important;
+                  position: absolute !important;
+                  left: -99999px !important;
+                  top: -99999px !important;
+                  width: 0 !important;
+                  height: 0 !important;
+                  z-index: -99999 !important;
                 }
 
                 /* حماية من القوائم المنبثقة */
                 .ytp-popup,
                 .ytp-settings-menu,
                 .ytp-menuitem,
-                .ytp-panel {
+                .ytp-panel,
+                .ytp-tooltip,
+                .ytp-contextmenu {
                   display: none !important;
                   visibility: hidden !important;
                   opacity: 0 !important;
                   pointer-events: none !important;
+                  filter: blur(100px) !important;
+                  transform: scale(0) !important;
+                  position: absolute !important;
+                  left: -99999px !important;
+                  top: -99999px !important;
                 }
 
                 /* تشويش شامل للمحتوى الجانبي */
@@ -481,9 +734,10 @@ function LiveGrade3() {
                 ytd-watch-next-secondary-results-renderer,
                 #related,
                 .ytd-watch-flexy #secondary {
-                  filter: blur(20px) !important;
-                  opacity: 0.1 !important;
+                  filter: blur(50px) saturate(0) contrast(0) !important;
+                  opacity: 0 !important;
                   pointer-events: none !important;
+                  display: none !important;
                 }
 
                 /* تشويش لمعلومات الفيديو */
@@ -491,8 +745,8 @@ function LiveGrade3() {
                 #below-the-fold,
                 ytd-video-primary-info-renderer,
                 ytd-video-secondary-info-renderer {
-                  filter: blur(15px) !important;
-                  opacity: 0.3 !important;
+                  filter: blur(30px) saturate(0.3) contrast(0.7) !important;
+                  opacity: 0.2 !important;
                   pointer-events: none !important;
                 }
 
@@ -504,20 +758,24 @@ function LiveGrade3() {
                   left: 0;
                   width: 100%;
                   height: 100%;
-                  background: rgba(255, 255, 255, 0.001);
-                  z-index: 999994;
+                  background: rgba(255, 255, 255, 0.002);
+                  z-index: 999993;
                   pointer-events: none;
                 }
                 
                 /* تحسين الحماية للشاشات المختلفة */
                 @media (max-width: 768px) {
-                  .protection-zone {
-                    backdrop-filter: blur(8px) !important;
+                  .protection-zone-enhanced {
+                    backdrop-filter: blur(20px) saturate(0.2) !important;
                   }
                   
-                  #full-screen-blur {
-                    backdrop-filter: blur(2px) !important;
+                  #full-screen-blur-enhanced {
+                    backdrop-filter: blur(3px) saturate(0.9) !important;
                   }
+
+                  .share-zone { width: 120px !important; height: 100px !important; }
+                  .channel-zone { width: 180px !important; height: 80px !important; }
+                  .youtube-zone { width: 150px !important; height: 70px !important; }
                 }
 
                 /* تحسين أداء التشويش */
@@ -537,18 +795,166 @@ function LiveGrade3() {
                 }
 
                 /* تشويش نهائي لأي عنصر مفقود */
-                [class*="ytp-"]:not(.ytp-play-button):not(video) {
-                  filter: blur(10px) saturate(0.5) !important;
-                  opacity: 0.2 !important;
+                [class*="ytp-"]:not(.ytp-play-button):not(video),
+                [class*="share"]:not(video),
+                [class*="youtube"]:not(video),
+                [data-title*="Share"]:not(video),
+                [aria-label*="Share"]:not(video),
+                [title*="YouTube"]:not(video) {
+                  filter: blur(50px) saturate(0) contrast(0) brightness(0) !important;
+                  opacity: 0 !important;
                   pointer-events: none !important;
+                  display: none !important;
+                  visibility: hidden !important;
+                  transform: scale(0) !important;
+                  position: absolute !important;
+                  left: -99999px !important;
+                  top: -99999px !important;
+                  width: 0 !important;
+                  height: 0 !important;
+                  z-index: -99999 !important;
                 }
 
                 /* حماية الروابط الخارجية */
-                a[href*="youtube.com"]:not([href*="/watch"]) {
+                a[href*="youtube.com"]:not([href*="/watch"]),
+                a[href*="youtu.be"]:not([href*="/watch"]) {
                   display: none !important;
                   visibility: hidden !important;
                   opacity: 0 !important;
                   pointer-events: none !important;
+                  filter: blur(100px) !important;
+                  transform: scale(0) !important;
+                  position: absolute !important;
+                  left: -99999px !important;
+                  top: -99999px !important;
+                }
+
+                /* تشويش متقدم للعناصر التفاعلية */
+                button:not(.ytp-play-button):not([data-zone]),
+                a:not([href*="/watch"]):not([data-zone]),
+                [role="button"]:not(.ytp-play-button):not([data-zone]) {
+                  pointer-events: none !important;
+                  filter: blur(25px) saturate(0) !important;
+                  opacity: 0.1 !important;
+                  transform: scale(0.8) !important;
+                }
+
+                /* حماية من الـ tooltips والـ overlays */
+                [role="tooltip"],
+                [class*="tooltip"],
+                [class*="overlay"]:not([id*="protection"]) {
+                  display: none !important;
+                  visibility: hidden !important;
+                  opacity: 0 !important;
+                  pointer-events: none !important;
+                }
+
+                /* تشويش خاص للعناصر المتحركة */
+                @keyframes protectionShield {
+                  0% { 
+                    backdrop-filter: blur(20px) saturate(0.3);
+                    background: rgba(255, 0, 0, 0.08);
+                  }
+                  50% { 
+                    backdrop-filter: blur(30px) saturate(0.2);
+                    background: rgba(255, 0, 0, 0.12);
+                  }
+                  100% { 
+                    backdrop-filter: blur(20px) saturate(0.3);
+                    background: rgba(255, 0, 0, 0.08);
+                  }
+                }
+
+                /* تطبيق التشويش على العناصر الجديدة */
+                .protection-zone-enhanced {
+                  animation: protectionShield 4s infinite ease-in-out !important;
+                }
+
+                /* حماية إضافية من العناصر المخفية */
+                [style*="display: none"] button,
+                [style*="visibility: hidden"] button,
+                [hidden] button {
+                  display: none !important;
+                  visibility: hidden !important;
+                  opacity: 0 !important;
+                  pointer-events: none !important;
+                }
+
+                /* تأكيد نهائي للحماية */
+                .share-zone,
+                .channel-zone,
+                .youtube-zone,
+                .controls-zone,
+                .title-zone {
+                  pointer-events: all !important;
+                  cursor: not-allowed !important;
+                  z-index: 99999999 !important;
+                }
+
+                /* حماية من أي محاولة للتلاعب */
+                [data-zone] {
+                  position: fixed !important;
+                  backdrop-filter: blur(25px) saturate(0.2) !important;
+                  background: linear-gradient(135deg, rgba(255, 0, 0, 0.15), rgba(220, 53, 69, 0.1)) !important;
+                  border: 5px solid rgba(255, 255, 255, 0.4) !important;
+                  opacity: 0.95 !important;
+                  pointer-events: all !important;
+                  cursor: not-allowed !important;
+                }
+
+                /* منع أي تعديل على خصائص الحماية */
+                .protection-zone-enhanced[style] {
+                  background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(220, 53, 69, 0.15)) !important;
+                  backdrop-filter: blur(25px) saturate(0.3) contrast(0.8) !important;
+                  opacity: 0.95 !important;
+                  pointer-events: all !important;
+                  cursor: not-allowed !important;
+                }
+
+                /* تشويش نهائي وشامل */
+                #full-screen-blur-enhanced {
+                  background: rgba(0, 0, 0, 0.05) !important;
+                  backdrop-filter: blur(5px) saturate(0.8) contrast(0.95) !important;
+                  opacity: 0.8 !important;
+                  pointer-events: none !important;
+                  z-index: 999999 !important;
+                }
+
+                /* حماية متقدمة من التحايل */
+                * {
+                  -webkit-touch-callout: none !important;
+                  -webkit-user-select: none !important;
+                  -khtml-user-select: none !important;
+                  -moz-user-select: none !important;
+                  -ms-user-select: none !important;
+                  user-select: none !important;
+                  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+                }
+
+                /* منع السحب والإفلات */
+                * {
+                  -webkit-user-drag: none !important;
+                  -khtml-user-drag: none !important;
+                  -moz-user-drag: none !important;
+                  -o-user-drag: none !important;
+                  user-drag: none !important;
+                  draggable: false !important;
+                }
+
+                /* تشويش إضافي للعناصر التي قد تظهر لاحقاً */
+                [class*="share"]:not([data-zone]),
+                [class*="youtube"]:not([data-zone]),
+                [id*="share"]:not([data-zone]),
+                [id*="youtube"]:not([data-zone]) {
+                  filter: blur(100px) saturate(0) contrast(0) !important;
+                  opacity: 0 !important;
+                  display: none !important;
+                  visibility: hidden !important;
+                  pointer-events: none !important;
+                  transform: scale(0) !important;
+                  position: absolute !important;
+                  left: -99999px !important;
+                  top: -99999px !important;
                 }
               `;
               
@@ -585,7 +991,7 @@ function LiveGrade3() {
                 });
               }
               
-              // مراقبة التغييرات في DOM وإعادة تطبيق الحماية والتشويش
+              // مراقبة التغييرات في DOM وإعادة تطبيق الحماية والتشويش القوي
               const observer = new MutationObserver(() => {
                 // إعادة إخفاء وتشويش العناصر المحظورة إذا ظهرت
                 const hiddenElements = doc.querySelectorAll(`
@@ -594,24 +1000,91 @@ function LiveGrade3() {
                   .ytp-chrome-top-buttons,
                   .ytp-overflow-button,
                   .ytp-settings-button,
-                  .ytp-fullscreen-button
+                  .ytp-fullscreen-button,
+                  button[data-title-no-tooltip*="Share"],
+                  button[aria-label*="Share"],
+                  button[title*="Share"],
+                  a[href*="youtube.com/channel"],
+                  a[href*="youtube.com/@"],
+                  button[data-title-no-tooltip*="Watch on YouTube"],
+                  .ytp-watch-on-youtube-button,
+                  [class*="share"]:not([data-zone]),
+                  [class*="youtube"]:not([data-zone])
                 `);
                 hiddenElements.forEach(el => {
                   el.style.display = 'none';
                   el.style.visibility = 'hidden';
                   el.style.pointerEvents = 'none';
-                  el.style.filter = 'blur(20px)';
+                  el.style.filter = 'blur(100px) saturate(0) contrast(0)';
                   el.style.opacity = '0';
+                  el.style.transform = 'scale(0)';
+                  el.style.position = 'absolute';
+                  el.style.left = '-99999px';
+                  el.style.top = '-99999px';
+                  el.style.width = '0';
+                  el.style.height = '0';
+                  el.style.zIndex = '-99999';
+                });
+
+                // تطبيق تشويش إضافي على العناصر الجديدة
+                const newElements = doc.querySelectorAll('button, a');
+                newElements.forEach(el => {
+                  if (el.textContent.includes('Share') || 
+                      el.getAttribute('aria-label')?.includes('Share') ||
+                      el.getAttribute('title')?.includes('Share') ||
+                      el.getAttribute('data-title-no-tooltip')?.includes('Share') ||
+                      el.href?.includes('youtube.com/channel') ||
+                      el.href?.includes('youtube.com/@') ||
+                      el.textContent.includes('YouTube') ||
+                      el.getAttribute('aria-label')?.includes('YouTube') ||
+                      el.getAttribute('title')?.includes('YouTube')) {
+                    el.style.display = 'none';
+                    el.style.visibility = 'hidden';
+                    el.style.pointerEvents = 'none';
+                    el.style.filter = 'blur(100px) saturate(0) contrast(0)';
+                    el.style.opacity = '0';
+                    el.style.transform = 'scale(0)';
+                    el.style.position = 'absolute';
+                    el.style.left = '-99999px';
+                    el.style.top = '-99999px';
+                  }
                 });
               });
               
               observer.observe(doc.body, {
                 childList: true,
                 subtree: true,
-                attributes: true
+                attributes: true,
+                attributeOldValue: true,
+                characterData: true
               });
               
-              console.log('✅ تم تطبيق طبقة الحماية والتشويش الشامل بنجاح');
+              // فحص دوري إضافي للعناصر المحظورة
+              setInterval(() => {
+                const forbiddenElements = doc.querySelectorAll(`
+                  [class*="share"]:not([data-zone]),
+                  [class*="youtube"]:not([data-zone]),
+                  [aria-label*="Share"]:not([data-zone]),
+                  [title*="YouTube"]:not([data-zone]),
+                  button[data-title-no-tooltip*="Share"],
+                  a[href*="youtube.com/channel"],
+                  a[href*="youtube.com/@"]
+                `);
+                
+                forbiddenElements.forEach(el => {
+                  el.style.display = 'none';
+                  el.style.visibility = 'hidden';
+                  el.style.pointerEvents = 'none';
+                  el.style.filter = 'blur(100px)';
+                  el.style.opacity = '0';
+                  el.style.transform = 'scale(0)';
+                  el.style.position = 'absolute';
+                  el.style.left = '-99999px';
+                  el.style.top = '-99999px';
+                });
+              }, 1000);
+              
+              console.log('✅ تم تطبيق طبقة الحماية والتشويش الشامل والقوي بنجاح');
             }
           } catch (e) {
             console.log('⚠️ لا يمكن تطبيق الحماية الكاملة لأسباب أمنية، لكن الإعدادات الأساسية مطبقة');
@@ -624,7 +1097,7 @@ function LiveGrade3() {
     }
   };
 
-  // فتح البث في نفس النافذة مع الحماية والتشويش
+  // فتح البث في نفس النافذة مع الحماية والتشويش القوي
   const watchInCurrentWindow = () => {
     if (liveStreamUrl) {
       // إنشاء iframe محمي بدلاً من الانتقال المباشر
@@ -646,10 +1119,10 @@ function LiveGrade3() {
         height: 100%;
         border: none;
         position: relative;
-        filter: contrast(1.05) saturate(0.95);
+        filter: contrast(1.02) saturate(0.98);
       `;
       
-      // إضافة طبقات الحماية والتشويش المحسنة للـ iframe
+      // إضافة طبقات الحماية والتشويش الأقوى للـ iframe
       const protectionOverlay = document.createElement('div');
       protectionOverlay.innerHTML = `
         <!-- تشويش شامل لكامل الـ iframe -->
@@ -659,138 +1132,194 @@ function LiveGrade3() {
           left: 0;
           width: 100%;
           height: 100%;
-          background: rgba(0, 0, 0, 0.02);
-          backdrop-filter: blur(2px) saturate(0.95);
+          background: rgba(0, 0, 0, 0.03);
+          backdrop-filter: blur(4px) saturate(0.9) contrast(0.98);
           z-index: 999999;
           pointer-events: none;
         "></div>
 
-        <!-- طبقة حماية أيقونة Share -->
+        <!-- طبقة حماية أيقونة Share - مكبرة ومقواة -->
         <div class="iframe-protection share-protection" style="
           position: absolute;
-          top: 8px;
-          right: 8px;
-          width: 80px;
-          height: 80px;
-          background: rgba(255, 0, 0, 0.1);
-          backdrop-filter: blur(15px) saturate(0.5);
-          z-index: 9999999;
+          top: 0px;
+          right: 0px;
+          width: 150px;
+          height: 120px;
+          background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(220, 53, 69, 0.15));
+          backdrop-filter: blur(30px) saturate(0.2) contrast(0.7);
+          z-index: 99999999;
           pointer-events: all;
           cursor: not-allowed;
-          border-radius: 50%;
-          border: 3px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+          border-radius: 0 0 0 30px;
+          border: 6px solid rgba(255, 255, 255, 0.5);
+          box-shadow: 
+            0 0 40px rgba(255, 0, 0, 0.6),
+            inset 0 0 25px rgba(255, 0, 0, 0.4);
+          opacity: 0.95;
         "></div>
         
-        <!-- طبقة حماية أيقونة القناة -->
+        <!-- طبقة حماية أيقونة القناة - مكبرة ومقواة -->
         <div class="iframe-protection channel-protection" style="
           position: absolute;
-          top: 8px;
-          left: 8px;
-          width: 150px;
-          height: 60px;
-          background: rgba(255, 0, 0, 0.1);
-          backdrop-filter: blur(15px) saturate(0.5);
-          z-index: 9999999;
+          top: 0px;
+          left: 0px;
+          width: 220px;
+          height: 100px;
+          background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(220, 53, 69, 0.15));
+          backdrop-filter: blur(30px) saturate(0.2) contrast(0.7);
+          z-index: 99999999;
           pointer-events: all;
           cursor: not-allowed;
-          border-radius: 30px;
-          border: 3px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+          border-radius: 0 0 30px 0;
+          border: 6px solid rgba(255, 255, 255, 0.5);
+          box-shadow: 
+            0 0 40px rgba(255, 0, 0, 0.6),
+            inset 0 0 25px rgba(255, 0, 0, 0.4);
+          opacity: 0.95;
         "></div>
         
-        <!-- طبقة حماية Watch on YouTube -->
+        <!-- طبقة حماية Watch on YouTube - مكبرة ومقواة -->
         <div class="iframe-protection youtube-protection" style="
           position: absolute;
-          bottom: 12px;
-          right: 12px;
-          width: 120px;
-          height: 50px;
-          background: rgba(255, 0, 0, 0.1);
-          backdrop-filter: blur(15px) saturate(0.5);
-          z-index: 9999999;
+          bottom: 0px;
+          right: 0px;
+          width: 180px;
+          height: 80px;
+          background: linear-gradient(135deg, rgba(255, 0, 0, 0.25), rgba(220, 53, 69, 0.2));
+          backdrop-filter: blur(35px) saturate(0.15) contrast(0.6);
+          z-index: 99999999;
           pointer-events: all;
           cursor: not-allowed;
-          border-radius: 25px;
-          border: 3px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+          border-radius: 30px 0 0 0;
+          border: 6px solid rgba(255, 255, 255, 0.5);
+          box-shadow: 
+            0 0 45px rgba(255, 0, 0, 0.7),
+            inset 0 0 30px rgba(255, 0, 0, 0.5);
+          opacity: 0.95;
         "></div>
         
-        <!-- طبقة حماية شريط التحكم -->
+        <!-- طبقة حماية شريط التحكم - مقواة -->
         <div class="iframe-protection controls-protection" style="
           position: absolute;
           bottom: 0;
           left: 0;
           right: 0;
-          height: 100px;
-          background: rgba(255, 0, 0, 0.08);
-          backdrop-filter: blur(12px) saturate(0.6);
-          z-index: 9999998;
+          height: 150px;
+          background: linear-gradient(to top, 
+            rgba(255, 0, 0, 0.18) 0%, 
+            rgba(255, 0, 0, 0.10) 50%, 
+            rgba(255, 0, 0, 0.04) 100%);
+          backdrop-filter: blur(25px) saturate(0.3) contrast(0.8);
+          z-index: 99999998;
           pointer-events: all;
           cursor: not-allowed;
-          border-top: 3px solid rgba(255, 255, 255, 0.2);
+          border-top: 6px solid rgba(255, 255, 255, 0.4);
+          box-shadow: 0 -10px 30px rgba(255, 0, 0, 0.5);
+          opacity: 0.9;
         "></div>
         
-        <!-- طبقة حماية العنوان في الأعلى -->
+        <!-- طبقة حماية العنوان في الأعلى - مقواة -->
         <div class="iframe-protection title-protection" style="
           position: absolute;
           top: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 60%;
-          height: 100px;
-          background: rgba(255, 0, 0, 0.08);
-          backdrop-filter: blur(12px) saturate(0.6);
-          z-index: 9999998;
+          left: 0;
+          right: 0;
+          height: 140px;
+          background: linear-gradient(to bottom, 
+            rgba(255, 0, 0, 0.15) 0%, 
+            rgba(255, 0, 0, 0.08) 70%, 
+            rgba(255, 0, 0, 0.03) 100%);
+          backdrop-filter: blur(22px) saturate(0.4) contrast(0.85);
+          z-index: 99999997;
           pointer-events: all;
           cursor: not-allowed;
-          border-radius: 0 0 20px 20px;
+          border-bottom: 5px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 10px 25px rgba(255, 0, 0, 0.4);
+          opacity: 0.9;
         "></div>
 
-        <!-- طبقات حماية الجوانب -->
+        <!-- طبقات حماية الجوانب - مقواة -->
         <div class="iframe-protection left-protection" style="
           position: absolute;
           top: 0;
           left: 0;
-          width: 100px;
+          width: 120px;
           height: 100%;
-          background: rgba(255, 0, 0, 0.05);
-          backdrop-filter: blur(8px);
-          z-index: 9999997;
+          background: linear-gradient(to right, 
+            rgba(255, 0, 0, 0.1) 0%, 
+            rgba(255, 0, 0, 0.05) 70%, 
+            rgba(255, 0, 0, 0.02) 100%);
+          backdrop-filter: blur(18px);
+          z-index: 99999996;
           pointer-events: all;
           cursor: not-allowed;
+          border-right: 4px solid rgba(255, 255, 255, 0.3);
+          opacity: 0.85;
         "></div>
         
         <div class="iframe-protection right-protection" style="
           position: absolute;
           top: 0;
           right: 0;
-          width: 100px;
+          width: 120px;
           height: 100%;
-          background: rgba(255, 0, 0, 0.05);
-          backdrop-filter: blur(8px);
-          z-index: 9999997;
+          background: linear-gradient(to left, 
+            rgba(255, 0, 0, 0.1) 0%, 
+            rgba(255, 0, 0, 0.05) 70%, 
+            rgba(255, 0, 0, 0.02) 100%);
+          backdrop-filter: blur(18px);
+          z-index: 99999996;
           pointer-events: all;
           cursor: not-allowed;
+          border-left: 4px solid rgba(255, 255, 255, 0.3);
+          opacity: 0.85;
         "></div>
 
-        <!-- شبكة تشويش متحركة -->
+        <!-- شبكة تشويش متحركة أقوى للـ iframe -->
         <div style="
           position: absolute;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
-          background: repeating-conic-gradient(
-            from 0deg at 50% 50%,
-            transparent 0deg,
-            rgba(255, 255, 255, 0.01) 90deg,
-            transparent 180deg,
-            rgba(255, 255, 255, 0.01) 270deg
-          );
+          background: 
+            radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+            radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 60%),
+            radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+            radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 60%),
+            repeating-conic-gradient(
+              from 0deg at 50% 50%,
+              transparent 0deg,
+              rgba(255, 255, 255, 0.015) 45deg,
+              transparent 90deg,
+              rgba(255, 255, 255, 0.01) 135deg,
+              transparent 180deg
+            );
           z-index: 999996;
           pointer-events: none;
-          animation: rotateBlur 20s infinite linear;
+          animation: rotateBlurIframe 15s infinite linear;
+          opacity: 0.8;
+        "></div>
+
+        <!-- طبقة تشويش إضافية متحركة -->
+        <div style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: 
+            linear-gradient(45deg, 
+              rgba(255, 255, 255, 0.02) 0%, 
+              rgba(255, 255, 255, 0.05) 25%, 
+              rgba(255, 255, 255, 0.02) 50%, 
+              rgba(255, 255, 255, 0.05) 75%, 
+              rgba(255, 255, 255, 0.02) 100%);
+          backdrop-filter: blur(2px) contrast(0.99);
+          z-index: 999995;
+          pointer-events: none;
+          animation: movingBlurIframe 12s infinite ease-in-out;
+          opacity: 0.7;
         "></div>
       `;
       protectionOverlay.style.cssText = `
@@ -803,71 +1332,172 @@ function LiveGrade3() {
         z-index: 1000000;
       `;
       
-      // إضافة CSS للحماية في الـ iframe
+      // إضافة CSS للحماية المقواة في الـ iframe
       const iframeStyle = document.createElement('style');
       iframeStyle.textContent = `
         .iframe-protection {
-          animation: protectionPulse 4s infinite ease-in-out !important;
-          transition: all 0.3s ease !important;
+          animation: protectionPulseIframe 3.5s infinite ease-in-out !important;
+          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        }
+        
+        .iframe-protection:hover {
+          backdrop-filter: blur(40px) saturate(0.1) contrast(0.6) !important;
+          background: linear-gradient(135deg, 
+            rgba(255, 0, 0, 0.25), 
+            rgba(220, 53, 69, 0.2),
+            rgba(255, 0, 0, 0.18)
+          ) !important;
+          box-shadow: 
+            0 0 50px rgba(255, 0, 0, 0.8),
+            inset 0 0 35px rgba(255, 0, 0, 0.5),
+            0 0 100px rgba(255, 0, 0, 0.6) !important;
+          transform: scale(1.03) !important;
+          opacity: 0.98 !important;
         }
         
         .iframe-protection:hover::after {
-          content: '🚫 منطقة محظورة';
+          content: '🚫 منطقة محظورة - محمية بتشويش قوي';
           position: absolute;
-          bottom: -35px;
+          bottom: -45px;
           left: 50%;
           transform: translateX(-50%);
-          background: rgba(220, 53, 69, 0.95);
+          background: linear-gradient(135deg, #dc3545, #c82333);
           color: white;
-          padding: 6px 12px;
-          border-radius: 8px;
-          font-size: 11px;
+          padding: 8px 16px;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 700;
           white-space: nowrap;
-          z-index: 10000000;
-          animation: fadeInOut 2.5s ease-in-out;
+          z-index: 100000000;
+          animation: fadeInOutIframe 3s ease-in-out;
+          border: 3px solid rgba(255, 255, 255, 0.6);
+          box-shadow: 
+            0 6px 20px rgba(0, 0, 0, 0.4),
+            0 0 15px rgba(220, 53, 69, 0.5);
+          backdrop-filter: blur(10px);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         
-        @keyframes protectionPulse {
+        @keyframes protectionPulseIframe {
           0%, 100% { 
-            backdrop-filter: blur(12px) saturate(0.7);
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            backdrop-filter: blur(25px) saturate(0.25) contrast(0.8);
+            box-shadow: 
+              0 0 30px rgba(255, 0, 0, 0.5),
+              inset 0 0 20px rgba(255, 0, 0, 0.3);
+            transform: scale(1);
           }
-          50% { 
-            backdrop-filter: blur(18px) saturate(0.5);
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+          33% { 
+            backdrop-filter: blur(35px) saturate(0.15) contrast(0.75);
+            box-shadow: 
+              0 0 40px rgba(255, 0, 0, 0.7),
+              inset 0 0 30px rgba(255, 0, 0, 0.5);
+            transform: scale(1.01);
+          }
+          66% { 
+            backdrop-filter: blur(30px) saturate(0.2) contrast(0.78);
+            box-shadow: 
+              0 0 35px rgba(255, 0, 0, 0.6),
+              inset 0 0 25px rgba(255, 0, 0, 0.4);
+            transform: scale(1.005);
           }
         }
 
-        @keyframes rotateBlur {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        @keyframes rotateBlurIframe {
+          0% { transform: rotate(0deg) scale(1); }
+          25% { transform: rotate(90deg) scale(1.02); }
+          50% { transform: rotate(180deg) scale(1); }
+          75% { transform: rotate(270deg) scale(1.02); }
+          100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes movingBlurIframe {
+          0% { 
+            background-position: 0% 0%;
+            backdrop-filter: blur(2px) contrast(0.99);
+          }
+          25% { 
+            background-position: 100% 0%;
+            backdrop-filter: blur(3px) contrast(0.985);
+          }
+          50% { 
+            background-position: 100% 100%;
+            backdrop-filter: blur(2px) contrast(0.99);
+          }
+          75% { 
+            background-position: 0% 100%;
+            backdrop-filter: blur(3px) contrast(0.985);
+          }
+          100% { 
+            background-position: 0% 0%;
+            backdrop-filter: blur(2px) contrast(0.99);
+          }
         }
         
-        @keyframes fadeInOut {
-          0%, 100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
-          20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        @keyframes fadeInOutIframe {
+          0%, 100% { opacity: 0; transform: translateX(-50%) translateY(15px) scale(0.8); }
+          20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+          50% { opacity: 1; transform: translateX(-50%) translateY(-3px) scale(1.05); }
+        }
+
+        /* حماية إضافية للـ iframe */
+        iframe {
+          -webkit-user-select: none !important;
+          -moz-user-select: none !important;
+          -ms-user-select: none !important;
+          user-select: none !important;
+          -webkit-touch-callout: none !important;
+          -webkit-tap-highlight-color: transparent !important;
+        }
+
+        /* تحسين أداء الـ iframe */
+        .iframe-protection {
+          will-change: transform, backdrop-filter !important;
+          transform: translateZ(0) !important;
+          backface-visibility: hidden !important;
+        }
+
+        /* حماية من التحايل على الـ iframe */
+        .iframe-protection {
+          pointer-events: all !important;
+          cursor: not-allowed !important;
+          z-index: 99999999 !important;
+        }
+
+        /* تأكيد الحماية */
+        .share-protection,
+        .channel-protection,
+        .youtube-protection,
+        .controls-protection,
+        .title-protection {
+          background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(220, 53, 69, 0.15)) !important;
+          opacity: 0.95 !important;
+          pointer-events: all !important;
+          cursor: not-allowed !important;
         }
       `;
       
-      // زر الإغلاق المحسن
+      // زر الإغلاق المحسن والمقوى
       const closeButton = document.createElement('button');
-      closeButton.innerHTML = '✕ إغلاق البث المحمي';
+      closeButton.innerHTML = '✕ إغلاق البث المحمي بالتشويش القوي';
       closeButton.style.cssText = `
         position: absolute;
-        top: 20px;
-        left: 20px;
+        top: 25px;
+        left: 25px;
         background: linear-gradient(135deg, #dc3545, #c82333);
         color: white;
-        border: 3px solid #ffffff;
-        padding: 15px 30px;
-        border-radius: 15px;
+        border: 4px solid #ffffff;
+        padding: 18px 35px;
+        border-radius: 18px;
         cursor: pointer;
         z-index: 1000001;
         font-weight: 700;
         font-size: 16px;
-        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        box-shadow: 
+          0 8px 25px rgba(220, 53, 69, 0.5),
+          0 0 20px rgba(220, 53, 69, 0.3);
         transition: all 0.3s ease;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
       `;
       closeButton.onclick = () => {
         document.body.removeChild(iframeContainer);
@@ -875,14 +1505,14 @@ function LiveGrade3() {
       
       closeButton.onmouseenter = () => {
         closeButton.style.background = 'linear-gradient(135deg, #e74c3c, #dc3545)';
-        closeButton.style.transform = 'scale(1.05) translateY(-2px)';
-        closeButton.style.boxShadow = '0 8px 25px rgba(220, 53, 69, 0.5)';
+        closeButton.style.transform = 'scale(1.08) translateY(-3px)';
+        closeButton.style.boxShadow = '0 12px 35px rgba(220, 53, 69, 0.6), 0 0 30px rgba(220, 53, 69, 0.4)';
       };
       
       closeButton.onmouseleave = () => {
         closeButton.style.background = 'linear-gradient(135deg, #dc3545, #c82333)';
         closeButton.style.transform = 'scale(1) translateY(0)';
-        closeButton.style.boxShadow = '0 6px 20px rgba(220, 53, 69, 0.4)';
+        closeButton.style.boxShadow = '0 8px 25px rgba(220, 53, 69, 0.5), 0 0 20px rgba(220, 53, 69, 0.3)';
       };
       
       document.head.appendChild(iframeStyle);
@@ -893,13 +1523,13 @@ function LiveGrade3() {
     }
   };
 
-  // نسخ الرابط مع تأثير بصري
+  // نسخ الرابط مع تأثير بصري محسن
   const [copied, setCopied] = useState(false);
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(liveStreamUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), 2500);
     } catch (err) {
       // fallback للمتصفحات القديمة
       const textArea = document.createElement('textarea');
@@ -909,7 +1539,7 @@ function LiveGrade3() {
       document.execCommand('copy');
       document.body.removeChild(textArea);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), 2500);
     }
   };
 
@@ -937,7 +1567,7 @@ function LiveGrade3() {
             fontWeight: '700', 
             fontSize: '1.8rem',
             textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-          }}>🔴 جاري تحميل البث المباشر المحمي...</h3>
+          }}>🔴🛡️ جاري تحميل البث المباشر المحمي بتشويش قوي...</h3>
         </div>
       </div>
     );
@@ -958,7 +1588,7 @@ function LiveGrade3() {
           alignItems: 'center'
         }}
       >
-        {/* Header Section */}
+        {/* Header Section محسن */}
         <div style={{
           background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
@@ -976,24 +1606,24 @@ function LiveGrade3() {
             fontSize: '3.5rem', 
             marginBottom: '15px',
             ...(isLiveStreamActive ? {animation: 'pulse 2s infinite'} : {})
-          }}>🛡️🔴</div>
+          }}>🛡️🔴🌀</div>
           <h1 style={{ 
             fontSize: '2rem',
             fontWeight: '700',
             marginBottom: '15px',
             color: '#2c3e50'
           }}>
-            البث المباشر المحمي مع تشويش شامل
+            البث المباشر المحمي بتشويش قوي وشامل
           </h1>
           <div style={{
             background: isLiveStreamActive ? 
               'linear-gradient(135deg, #28a745, #20c997)' : 
               'linear-gradient(135deg, #6c757d, #5a6268)',
             color: 'white',
-            padding: '10px 20px',
+            padding: '12px 24px',
             borderRadius: '20px',
             display: 'inline-block',
-            fontSize: '0.9rem',
+            fontSize: '0.95rem',
             fontWeight: '600',
             boxShadow: `0 4px 12px ${isLiveStreamActive ? 'rgba(40, 167, 69, 0.3)' : 'rgba(108, 117, 125, 0.3)'}`,
             position: 'relative'
@@ -1001,17 +1631,17 @@ function LiveGrade3() {
             {isLiveStreamActive && (
               <div style={{
                 position: 'absolute',
-                top: '-5px',
-                right: '-5px',
-                width: '12px',
-                height: '12px',
+                top: '-8px',
+                right: '-8px',
+                width: '16px',
+                height: '16px',
                 backgroundColor: '#ffffff',
                 borderRadius: '50%',
-                animation: 'pulse 1s infinite',
-                boxShadow: '0 0 0 3px rgba(255, 255, 255, 0.3)'
+                animation: 'pulse 1.2s infinite',
+                boxShadow: '0 0 0 4px rgba(255, 255, 255, 0.4)'
               }}></div>
             )}
-            {isLiveStreamActive ? '🟢 البث نشط الآن - محمي بتشويش متقدم' : '⏸️ لا يوجد بث حالياً'}
+            {isLiveStreamActive ? '🟢 البث نشط الآن - محمي بتشويش قوي ومتقدم' : '⏸️ لا يوجد بث حالياً'}
           </div>
         </div>
 
@@ -1038,58 +1668,58 @@ function LiveGrade3() {
               width: '100%',
               textAlign: 'center'
             }}>
-              {/* علامة الحماية المحسنة */}
+              {/* علامة الحماية المحسنة والمقواة */}
               <div style={{
                 position: 'absolute',
                 top: '20px',
                 left: '25px',
                 background: 'linear-gradient(135deg, #28a745, #20c997)',
                 color: 'white',
-                padding: '8px 16px',
+                padding: '10px 18px',
                 borderRadius: '20px',
                 fontSize: '0.9rem',
                 fontWeight: '700',
                 zIndex: 10,
-                boxShadow: '0 4px 12px rgba(40, 167, 69, 0.4)',
-                border: '2px solid #ffffff',
+                boxShadow: '0 6px 15px rgba(40, 167, 69, 0.5)',
+                border: '3px solid #ffffff',
                 textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
               }}>
-                🛡️ تشويش متقدم
+                🛡️🌀 تشويش قوي ومتقدم
               </div>
 
-              {/* علامة LIVE محسنة */}
+              {/* علامة LIVE محسنة ومقواة */}
               <div style={{
                 position: 'absolute',
                 top: '20px',
                 right: '25px',
                 background: 'linear-gradient(135deg, #ff0000, #cc0000)',
                 color: 'white',
-                padding: '8px 16px',
+                padding: '10px 18px',
                 borderRadius: '20px',
                 fontSize: '0.9rem',
                 fontWeight: '700',
                 zIndex: 10,
-                boxShadow: '0 4px 12px rgba(255, 0, 0, 0.4)',
+                boxShadow: '0 6px 15px rgba(255, 0, 0, 0.5)',
                 animation: 'pulse 2s infinite',
-                border: '2px solid #ffffff',
+                border: '3px solid #ffffff',
                 textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
               }}>
                 🔴 LIVE NOW
               </div>
 
-              {/* رمز البث الكبير مع تأثير */}
+              {/* رمز البث الكبير مع تأثير محسن */}
               <div style={{
                 fontSize: '6rem',
                 marginBottom: '30px',
                 color: 'white',
                 textShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
                 animation: 'pulse 3s infinite',
-                filter: 'drop-shadow(0 0 20px rgba(255, 255, 255, 0.3))'
+                filter: 'drop-shadow(0 0 25px rgba(255, 255, 255, 0.4))'
               }}>
-                🛡️📺🌀
+                🛡️📺🌀✨
               </div>
 
-              {/* عنوان البث */}
+              {/* عنوان البث محسن */}
               <h2 style={{
                 color: 'white',
                 fontSize: '2.5rem',
@@ -1101,7 +1731,7 @@ function LiveGrade3() {
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
               }}>
-                البث المباشر المحمي بتشويش شامل! 🚀
+                البث المباشر المحمي بتشويش قوي وشامل! 🚀
               </h2>
 
               <p style={{
@@ -1111,122 +1741,122 @@ function LiveGrade3() {
                 marginBottom: '30px',
                 lineHeight: '1.6'
               }}>
-                <strong>مشاهدة آمنة مع تشويش متقدم لجميع العناصر!</strong> اختر طريقة المشاهدة 👇
+                <strong>مشاهدة آمنة مع تشويش قوي ومتقدم لجميع العناصر والأيقونات!</strong> اختر طريقة المشاهدة 👇
               </p>
 
-              {/* أزار المشاهدة المحسنة */}
+              {/* أزرار المشاهدة المحسنة والمقواة */}
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: '20px',
+                gap: '25px',
                 maxWidth: '700px',
                 margin: '0 auto 30px auto'
               }}>
-                {/* زر فتح في نافذة جديدة محمية */}
+                {/* زر فتح في نافذة جديدة محمية ومقواة */}
                 <button
                   onClick={openLiveStream}
                   style={{
                     background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
                     color: 'white',
-                    border: '3px solid #ffffff',
+                    border: '4px solid #ffffff',
                     borderRadius: '20px',
-                    padding: '20px 25px',
+                    padding: '22px 28px',
                     fontSize: '1.2rem',
                     fontWeight: '700',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
-                    boxShadow: '0 10px 30px rgba(231, 76, 60, 0.4)',
+                    boxShadow: '0 12px 35px rgba(231, 76, 60, 0.5)',
                     textShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '8px',
+                    gap: '10px',
                     position: 'relative',
                     overflow: 'hidden'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-5px) scale(1.02)';
-                    e.target.style.boxShadow = '0 15px 40px rgba(231, 76, 60, 0.5)';
+                    e.target.style.transform = 'translateY(-6px) scale(1.03)';
+                    e.target.style.boxShadow = '0 18px 45px rgba(231, 76, 60, 0.6)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 10px 30px rgba(231, 76, 60, 0.4)';
+                    e.target.style.boxShadow = '0 12px 35px rgba(231, 76, 60, 0.5)';
                   }}
                 >
                   <div style={{
                     position: 'absolute',
-                    top: '10px',
-                    right: '10px',
+                    top: '12px',
+                    right: '12px',
                     background: '#28a745',
                     color: 'white',
-                    padding: '2px 8px',
-                    borderRadius: '10px',
+                    padding: '4px 10px',
+                    borderRadius: '12px',
                     fontSize: '0.7rem',
                     fontWeight: '600'
-                  }}>تشويش متقدم</div>
-                  <span style={{ fontSize: '2rem' }}>🛡️🚀🌀</span>
-                  <div>نافذة جديدة مع تشويش شامل</div>
-                  <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>تشويش كامل لجميع العناصر والأيقونات</small>
+                  }}>تشويش قوي ومتقدم</div>
+                  <span style={{ fontSize: '2.2rem' }}>🛡️🚀🌀✨</span>
+                  <div>نافذة جديدة مع تشويش قوي وشامل</div>
+                  <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>تشويش قوي ومتقدم لجميع العناصر والأيقونات</small>
                 </button>
 
-                {/* زر المشاهدة المحمية */}
+                {/* زر المشاهدة المحمية ومقواة */}
                 <button
                   onClick={watchInCurrentWindow}
                   style={{
                     background: 'linear-gradient(135deg, #00b894, #00a085)',
                     color: 'white',
-                    border: '3px solid #ffffff',
+                    border: '4px solid #ffffff',
                     borderRadius: '20px',
-                    padding: '20px 25px',
+                    padding: '22px 28px',
                     fontSize: '1.2rem',
                     fontWeight: '700',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
-                    boxShadow: '0 10px 30px rgba(0, 184, 148, 0.4)',
+                    boxShadow: '0 12px 35px rgba(0, 184, 148, 0.5)',
                     textShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '8px'
+                    gap: '10px'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-5px) scale(1.02)';
-                    e.target.style.boxShadow = '0 15px 40px rgba(0, 184, 148, 0.5)';
+                    e.target.style.transform = 'translateY(-6px) scale(1.03)';
+                    e.target.style.boxShadow = '0 18px 45px rgba(0, 184, 148, 0.6)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 10px 30px rgba(0, 184, 148, 0.4)';
+                    e.target.style.boxShadow = '0 12px 35px rgba(0, 184, 148, 0.5)';
                   }}
                 >
-                  <span style={{ fontSize: '2rem' }}>🛡️📺🌀</span>
-                  <div>مشاهدة محمية بتشويش</div>
-                  <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>حماية شاملة مع تشويش متحرك</small>
+                  <span style={{ fontSize: '2.2rem' }}>🛡️📺🌀✨</span>
+                  <div>مشاهدة محمية بتشويش قوي</div>
+                  <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>حماية شاملة مع تشويش قوي ومتحرك</small>
                 </button>
               </div>
 
-              {/* نسخ الرابط محسن */}
+              {/* نسخ الرابط محسن ومقوى */}
               <div style={{
                 background: 'rgba(255, 255, 255, 0.15)',
                 borderRadius: '20px',
-                padding: '25px',
-                marginTop: '20px',
-                border: '2px solid rgba(255, 255, 255, 0.2)'
+                padding: '30px',
+                marginTop: '25px',
+                border: '3px solid rgba(255, 255, 255, 0.25)'
               }}>
                 <h4 style={{
                   color: 'white',
                   fontSize: '1.2rem',
                   fontWeight: '600',
-                  marginBottom: '15px',
+                  marginBottom: '18px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '10px'
+                  gap: '12px'
                 }}>
-                  🔗 شارك رابط البث المحمي بالتشويش
+                  🔗🛡️ شارك رابط البث المحمي بالتشويش القوي
                 </h4>
                 <div style={{
                   display: 'flex',
-                  gap: '12px',
+                  gap: '15px',
                   alignItems: 'center',
                   flexWrap: 'wrap'
                 }}>
@@ -1236,9 +1866,9 @@ function LiveGrade3() {
                     readOnly
                     style={{
                       flex: 1,
-                      padding: '15px 20px',
+                      padding: '18px 22px',
                       borderRadius: '15px',
-                      border: '2px solid rgba(255, 255, 255, 0.3)',
+                      border: '3px solid rgba(255, 255, 255, 0.4)',
                       background: 'rgba(255, 255, 255, 0.95)',
                       fontSize: '14px',
                       fontFamily: 'monospace',
@@ -1254,15 +1884,16 @@ function LiveGrade3() {
                         'linear-gradient(135deg, #28a745, #20c997)' : 
                         'linear-gradient(135deg, #f39c12, #e67e22)',
                       color: 'white',
-                      border: '2px solid #ffffff',
+                      border: '3px solid #ffffff',
                       borderRadius: '15px',
-                      padding: '15px 25px',
+                      padding: '18px 28px',
                       fontSize: '14px',
                       fontWeight: '600',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       whiteSpace: 'nowrap',
-                      minWidth: '120px'
+                      minWidth: '130px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
                     }}
                   >
                     {copied ? '✅ تم النسخ!' : '📋 نسخ الرابط'}
@@ -1272,91 +1903,97 @@ function LiveGrade3() {
                   color: 'rgba(255, 255, 255, 0.8)',
                   fontSize: '13px',
                   display: 'block',
-                  marginTop: '10px',
+                  marginTop: '12px',
                   textAlign: 'center'
                 }}>
-                  💡 انسخ الرابط وشاركه (سيحتوي على نفس التشويش والحماية المتقدمة)
+                  💡🛡️ انسخ الرابط وشاركه (سيحتوي على نفس التشويش القوي والحماية المتقدمة)
                 </small>
               </div>
 
-              {/* معلومات التشويش المتقدم */}
+              {/* معلومات التشويش القوي والمتقدم */}
               <div style={{
-                marginTop: '25px',
-                background: 'rgba(40, 167, 69, 0.1)',
-                borderRadius: '15px',
-                padding: '20px',
-                border: '2px solid rgba(40, 167, 69, 0.3)'
+                marginTop: '30px',
+                background: 'rgba(40, 167, 69, 0.12)',
+                borderRadius: '18px',
+                padding: '25px',
+                border: '3px solid rgba(40, 167, 69, 0.35)'
               }}>
                 <h4 style={{
                   color: '#28a745',
-                  fontSize: '1.1rem',
+                  fontSize: '1.15rem',
                   fontWeight: '600',
-                  marginBottom: '15px',
+                  marginBottom: '18px',
                   textAlign: 'center'
-                }}>🛡️🌀 ميزات التشويش والحماية المتقدمة النشطة:</h4>
+                }}>🛡️🌀✨ ميزات التشويش القوي والحماية المتقدمة النشطة:</h4>
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                  gap: '10px',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  gap: '12px',
                   textAlign: 'right'
                 }}>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    🌀 تشويش شامل للشاشة
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    🌀✨ تشويش شامل وقوي للشاشة
                   </div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    🚫 حماية من أيقونة Share
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    🚫🛡️ حماية قوية من أيقونة Share
                   </div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    🔒 حماية من اسم القناة
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    🔒🌀 حماية متقدمة من اسم القناة
                   </div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    ⛔ حماية من Watch on YouTube
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    ⛔✨ حماية قوية من Watch on YouTube
                   </div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    ⏯️ تشويش شريط التحكم والوقت
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    ⏯️🛡️ تشويش قوي لشريط التحكم والوقت
                   </div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    🎯 تشويش شفاف متحرك
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    🎯🌀 تشويش شفاف متحرك ومتقدم
                   </div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    🌊 طبقات حماية متعددة
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    🌊✨ طبقات حماية متعددة وقوية
                   </div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    📱 تشويش على جميع الأجهزة
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    📱🛡️ تشويش قوي على جميع الأجهزة
+                  </div>
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    🔄🌀 مراقبة مستمرة وإعادة تطبيق الحماية
+                  </div>
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem', padding: '8px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+                    🚀✨ تشويش متقدم للعناصر الجديدة
                   </div>
                 </div>
               </div>
 
-              {/* تنبيه خاص للطلاب */}
+              {/* تنبيه خاص للطلاب محسن */}
               <div style={{
-                marginTop: '20px',
-                background: 'rgba(52, 152, 219, 0.1)',
-                border: '2px solid rgba(52, 152, 219, 0.3)',
-                borderRadius: '15px',
-                padding: '20px'
+                marginTop: '25px',
+                background: 'rgba(52, 152, 219, 0.12)',
+                border: '3px solid rgba(52, 152, 219, 0.35)',
+                borderRadius: '18px',
+                padding: '25px'
               }}>
                 <div style={{
                   color: '#3498db',
-                  fontSize: '1.1rem',
+                  fontSize: '1.15rem',
                   fontWeight: '600',
                   textAlign: 'center',
-                  marginBottom: '10px'
+                  marginBottom: '12px'
                 }}>
-                  📚 تذكير مهم
+                  📚✨ تذكير مهم
                 </div>
                 <p style={{
                   color: 'rgba(255, 255, 255, 0.9)',
-                  fontSize: '1rem',
+                  fontSize: '1.05rem',
                   margin: 0,
                   textAlign: 'center',
-                  lineHeight: '1.5'
+                  lineHeight: '1.6'
                 }}>
-                  احضر دفترك وقلمك للمتابعة والتدوين أثناء البث المباشر المحمي بالتشويش المتقدم
+                  احضر دفترك وقلمك للمتابعة والتدوين أثناء البث المباشر المحمي بالتشويش القوي والمتقدم
                 </p>
               </div>
             </div>
           ) : (
-            /* حالة عدم وجود بث مباشر */}
+            /* حالة عدم وجود بث مباشر محسنة */
             <div className="empty-state" style={{
               background: 'rgba(255, 255, 255, 0.1)',
               backdropFilter: 'blur(20px)',
@@ -1374,7 +2011,7 @@ function LiveGrade3() {
                 marginBottom: '25px', 
                 opacity: 0.7,
                 animation: 'pulse 4s infinite'
-              }}>🛡️📺🌀</div>
+              }}>🛡️📺🌀✨</div>
               <h3 style={{ 
                 color: 'white', 
                 marginBottom: '20px',
@@ -1391,81 +2028,87 @@ function LiveGrade3() {
                 marginBottom: '30px',
                 lineHeight: '1.6'
               }}>
-                ترقب الإعلان عن مواعيد البث المباشر المحمي بالتشويش المتقدم للمراجعة النهائية
+                ترقب الإعلان عن مواعيد البث المباشر المحمي بالتشويش القوي والمتقدم للمراجعة النهائية
               </p>
               
-              {/* معلومات التشويش */}
+              {/* معلومات التشويش القوي */}
               <div style={{
                 background: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: '15px',
-                padding: '25px',
+                borderRadius: '18px',
+                padding: '30px',
                 marginTop: '25px'
               }}>
                 <h4 style={{
                   color: 'white',
-                  fontSize: '1.2rem',
+                  fontSize: '1.25rem',
                   fontWeight: '600',
-                  marginBottom: '20px'
-                }}>🛡️🌀 ميزات التشويش والحماية المتقدمة المتوفرة:</h4>
+                  marginBottom: '22px'
+                }}>🛡️🌀✨ ميزات التشويش القوي والحماية المتقدمة المتوفرة:</h4>
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                  gap: '15px',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                  gap: '18px',
                   textAlign: 'right'
                 }}>
                   <div style={{
                     color: 'rgba(255, 255, 255, 0.9)',
                     fontSize: '1rem',
-                    padding: '10px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: '10px'
+                    padding: '15px',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(255, 255, 255, 0.1)'
                   }}>
-                    🔄 تحديث تلقائي كل 10 ثوانِ
+                    🔄✨ تحديث تلقائي كل 10 ثوانِ
                   </div>
                   <div style={{
                     color: 'rgba(255, 255, 255, 0.9)',
                     fontSize: '1rem',
-                    padding: '10px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: '10px'
+                    padding: '15px',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(255, 255, 255, 0.1)'
                   }}>
-                    🌀 تشويش شامل لجميع العناصر
+                    🌀🛡️ تشويش قوي وشامل لجميع العناصر
                   </div>
                   <div style={{
                     color: 'rgba(255, 255, 255, 0.9)',
                     fontSize: '1rem',
-                    padding: '10px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: '10px'
+                    padding: '15px',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(255, 255, 255, 0.1)'
                   }}>
-                    🚫 حماية من أيقونات Share و YouTube
+                    🚫✨ حماية قوية من أيقونات Share و YouTube
                   </div>
                   <div style={{
                     color: 'rgba(255, 255, 255, 0.9)',
                     fontSize: '1rem',
-                    padding: '10px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: '10px'
+                    padding: '15px',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(255, 255, 255, 0.1)'
                   }}>
-                    🔒 تشويش شفاف متحرك
+                    🔒🌀 تشويش شفاف متحرك ومتقدم
                   </div>
                   <div style={{
                     color: 'rgba(255, 255, 255, 0.9)',
                     fontSize: '1rem',
-                    padding: '10px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: '10px'
+                    padding: '15px',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(255, 255, 255, 0.1)'
                   }}>
-                    🎯 طبقات حماية متعددة
+                    🎯🛡️ طبقات حماية متعددة وقوية
                   </div>
                   <div style={{
                     color: 'rgba(255, 255, 255, 0.9)',
                     fontSize: '1rem',
-                    padding: '10px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: '10px'
+                    padding: '15px',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(255, 255, 255, 0.1)'
                   }}>
-                    📱 تشويش على جميع الأجهزة
+                    📱✨ تشويش قوي على جميع الأجهزة
                   </div>
                 </div>
               </div>
@@ -1590,7 +2233,7 @@ function LiveGrade3() {
             
             .live-content button {
               font-size: 1.1rem !important;
-              padding: 16px 20px !important;
+              padding: 18px 22px !important;
             }
             
             .empty-state {
@@ -1600,7 +2243,7 @@ function LiveGrade3() {
             
             .copy-link-container {
               flex-direction: column !important;
-              gap: 10px !important;
+              gap: 12px !important;
             }
             
             .copy-link-container input {
@@ -1610,7 +2253,7 @@ function LiveGrade3() {
             
             .grid-buttons {
               grid-template-columns: 1fr !important;
-              gap: 15px !important;
+              gap: 18px !important;
             }
           }
           
@@ -1625,7 +2268,7 @@ function LiveGrade3() {
             
             .live-content button {
               font-size: 1rem !important;
-              padding: 14px 18px !important;
+              padding: 16px 20px !important;
             }
             
             .empty-state {
@@ -1646,12 +2289,12 @@ function LiveGrade3() {
             
             .tips-grid {
               grid-template-columns: 1fr !important;
-              gap: 8px !important;
+              gap: 10px !important;
             }
             
             .copy-button {
-              min-width: 100px !important;
-              padding: 12px 15px !important;
+              min-width: 110px !important;
+              padding: 14px 18px !important;
             }
           }
           
@@ -1674,7 +2317,7 @@ function LiveGrade3() {
             
             .copy-input {
               font-size: 12px !important;
-              padding: 10px 12px !important;
+              padding: 12px 15px !important;
             }
           }
           
@@ -1682,7 +2325,7 @@ function LiveGrade3() {
           @media (min-width: 768px) and (max-width: 1024px) {
             .grid-buttons {
               grid-template-columns: repeat(2, 1fr) !important;
-              gap: 18px !important;
+              gap: 20px !important;
             }
           }
           
@@ -1729,7 +2372,7 @@ function LiveGrade3() {
             }
             
             .live-content::after {
-              content: "للمشاهدة المحمية مع التشويش، يرجى زيارة الموقع الإلكتروني" !important;
+              content: "للمشاهدة المحمية مع التشويش القوي، يرجى زيارة الموقع الإلكتروني" !important;
               display: block !important;
               color: #000 !important;
               background: #fff !important;
@@ -1759,7 +2402,7 @@ function LiveGrade3() {
             
             .protection-zone,
             .iframe-protection {
-              backdrop-filter: blur(8px) !important;
+              backdrop-filter: blur(12px) !important;
             }
           }
           
@@ -1768,12 +2411,12 @@ function LiveGrade3() {
             button {
               min-height: 48px !important;
               min-width: 48px !important;
-              padding: 16px 24px !important;
+              padding: 18px 26px !important;
             }
             
             input {
               min-height: 48px !important;
-              padding: 16px 20px !important;
+              padding: 18px 22px !important;
             }
             
             .protection-zone,
@@ -1792,7 +2435,7 @@ function LiveGrade3() {
             transform: translateY(-2px) !important;
           }
 
-          /* تحسينات خاصة بالتشويش */
+          /* تحسينات خاصة بالتشويش القوي */
           .moving-blur {
             animation: movingBlur 10s infinite linear !important;
           }
@@ -1802,7 +2445,7 @@ function LiveGrade3() {
             mix-blend-mode: overlay !important;
           }
 
-          /* تحسين أداء طبقات التشويش */
+          /* تحسين أداء طبقات التشويش القوي */
           #full-screen-blur,
           .moving-blur,
           .invisible-grid {
@@ -1815,8 +2458,8 @@ function LiveGrade3() {
             .protection-zone,
             .iframe-protection,
             #full-screen-blur {
-              background: rgba(255, 0, 0, 0.1) !important;
-              opacity: 0.8 !important;
+              background: rgba(255, 0, 0, 0.15) !important;
+              opacity: 0.9 !important;
             }
           }
 
@@ -1864,7 +2507,7 @@ if (typeof document !== 'undefined') {
 
   const emitEvent = (state, orientation) => {
     console.clear();
-    console.log('%c🛡️ هذا الموقع محمي للطلاب', 'color: red; font-size: 50px; font-weight: bold;');
+    console.log('%c🛡️ هذا الموقع محمي للطلاب بتشويش قوي', 'color: red; font-size: 50px; font-weight: bold;');
     console.log('%c🚫 استخدام أدوات المطور ممنوع', 'color: red; font-size: 20px;');
   };
 
@@ -1891,7 +2534,7 @@ if (typeof document !== 'undefined') {
     if (args.some(arg => typeof arg === 'string' && arg.includes('✅'))) {
       return originalLog.apply(console, args);
     }
-    originalLog.apply(console, ['🛡️ محمي للطلاب']);
+    originalLog.apply(console, ['🛡️ محمي للطلاب بتشويش قوي']);
   };
 }
 
