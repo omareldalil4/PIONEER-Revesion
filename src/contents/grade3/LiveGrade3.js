@@ -58,73 +58,98 @@ function LiveGrade3() {
         newWindow.focus();
         console.log('✅ تم فتح البث في نافذة جديدة');
         
-        // إضافة طبقة الحماية والتشويش
+        // إضافة طبقة الحماية والتشويش المحسنة
         setTimeout(() => {
           try {
             const doc = newWindow.document;
             if (doc) {
-              // إنشاء طبقة الحماية
+              // إنشاء طبقة الحماية المحسنة
               const protectionOverlay = doc.createElement('div');
               protectionOverlay.id = 'video-protection-overlay';
               protectionOverlay.innerHTML = `
-                <!-- طبقة حماية المناطق الحساسة -->
+                <!-- طبقة حماية أيقونة Share في اليمين العلوي -->
                 <div style="
                   position: fixed;
-                  top: 0;
-                  right: 0;
-                  width: 200px;
-                  height: 100px;
-                  background: transparent;
+                  top: 8px;
+                  right: 8px;
+                  width: 60px;
+                  height: 60px;
+                  background: rgba(255, 255, 255, 0.01);
+                  backdrop-filter: blur(8px);
                   z-index: 999999;
                   pointer-events: all;
                   cursor: not-allowed;
-                " title="منطقة محمية"></div>
+                  border-radius: 50%;
+                  border: 2px solid rgba(255, 255, 255, 0.1);
+                " title="محمي للطلاب - منطقة Share"></div>
                 
-                <!-- طبقة حماية المناطق اليسار العلوي -->
+                <!-- طبقة حماية أيقونة القناة في اليسار العلوي -->
                 <div style="
                   position: fixed;
-                  top: 0;
-                  left: 0;
-                  width: 200px;
-                  height: 100px;
-                  background: transparent;
+                  top: 8px;
+                  left: 8px;
+                  width: 120px;
+                  height: 40px;
+                  background: rgba(255, 255, 255, 0.01);
+                  backdrop-filter: blur(8px);
                   z-index: 999999;
                   pointer-events: all;
                   cursor: not-allowed;
-                " title="منطقة محمية"></div>
+                  border-radius: 20px;
+                  border: 2px solid rgba(255, 255, 255, 0.1);
+                " title="محمي للطلاب - اسم القناة"></div>
                 
-                <!-- طبقة حماية شريط التحكم السفلي -->
+                <!-- طبقة حماية أيقونة Watch on YouTube في اليمين السفلي -->
+                <div style="
+                  position: fixed;
+                  bottom: 12px;
+                  right: 45px;
+                  width: 35px;
+                  height: 35px;
+                  background: rgba(255, 255, 255, 0.01);
+                  backdrop-filter: blur(8px);
+                  z-index: 999999;
+                  pointer-events: all;
+                  cursor: not-allowed;
+                  border-radius: 6px;
+                  border: 2px solid rgba(255, 255, 255, 0.1);
+                " title="محمي للطلاب - Watch on YouTube"></div>
+                
+                <!-- طبقة حماية شريط التحكم السفلي الكامل -->
                 <div style="
                   position: fixed;
                   bottom: 0;
                   left: 0;
                   right: 0;
                   height: 80px;
-                  background: transparent;
-                  z-index: 999999;
+                  background: rgba(0, 0, 0, 0.01);
+                  backdrop-filter: blur(4px);
+                  z-index: 999998;
                   pointer-events: all;
                   cursor: not-allowed;
-                " title="شريط التحكم محمي"></div>
+                " title="شريط التحكم محمي للطلاب"></div>
                 
-                <!-- طبقة حماية إضافية للزوايا -->
+                <!-- طبقة حماية العنوان والمعلومات في الأعلى -->
                 <div style="
                   position: fixed;
                   top: 0;
                   left: 50%;
                   transform: translateX(-50%);
-                  width: 400px;
-                  height: 60px;
-                  background: transparent;
-                  z-index: 999999;
+                  width: 500px;
+                  height: 80px;
+                  background: rgba(0, 0, 0, 0.01);
+                  backdrop-filter: blur(4px);
+                  z-index: 999998;
                   pointer-events: all;
                   cursor: not-allowed;
-                " title="منطقة العنوان محمية"></div>
+                  border-radius: 0 0 15px 15px;
+                " title="معلومات الفيديو محمية للطلاب"></div>
               `;
               
-              // إضافة CSS الحماية
+              // إضافة CSS الحماية المحسن
               const protectionStyle = doc.createElement('style');
               protectionStyle.textContent = `
-                /* إخفاء عناصر يوتيوب */
+                /* إخفاء عناصر يوتيوب المحددة */
                 .ytp-chrome-top, 
                 .ytp-title,
                 .ytp-chrome-top-buttons,
@@ -147,10 +172,28 @@ function LiveGrade3() {
                 .ytp-time-duration,
                 .ytp-chapter-title,
                 .ytp-progress-bar-container,
-                .ytp-scrubber-container {
+                .ytp-scrubber-container,
+                .ytp-share-button,
+                .ytp-watch-later-button,
+                .ytp-miniplayer-button {
                   display: none !important;
                   visibility: hidden !important;
                   opacity: 0 !important;
+                }
+                
+                /* حماية خاصة للأيقونات المحددة */
+                button[data-title-no-tooltip="Share"],
+                button[aria-label*="Share"],
+                button[title*="Share"],
+                .ytp-share-button,
+                a[href*="youtube.com/channel"],
+                a[href*="youtube.com/@"],
+                .ytp-youtube-button,
+                button[data-title-no-tooltip="Watch on YouTube"],
+                .ytp-watch-on-youtube-button {
+                  pointer-events: none !important;
+                  opacity: 0.3 !important;
+                  filter: blur(2px) !important;
                 }
                 
                 /* حماية إضافية للفيديو */
@@ -158,7 +201,7 @@ function LiveGrade3() {
                   position: relative !important;
                 }
                 
-                /* منع النقر الأيمن */
+                /* منع النقر الأيمن والتحديد */
                 * {
                   -webkit-user-select: none !important;
                   -moz-user-select: none !important;
@@ -182,7 +225,7 @@ function LiveGrade3() {
                   right: 0;
                   bottom: 60px;
                   background: transparent;
-                  z-index: 999998;
+                  z-index: 999997;
                   pointer-events: none;
                 }
                 
@@ -217,30 +260,55 @@ function LiveGrade3() {
                 }
                 
                 /* منع عرض الروابط في شريط الحالة */
-                a {
+                a:not(video):not(.ytp-play-button) {
                   pointer-events: none !important;
+                }
+                
+                /* تشويش إضافي للأيقونات المحمية */
+                #video-protection-overlay div {
+                  transition: all 0.3s ease;
+                  backdrop-filter: blur(8px) saturate(0.8);
+                  background: linear-gradient(45deg, 
+                    rgba(255, 255, 255, 0.02), 
+                    rgba(255, 255, 255, 0.05), 
+                    rgba(255, 255, 255, 0.02)
+                  );
+                  animation: protectionPulse 3s infinite ease-in-out;
+                }
+                
+                @keyframes protectionPulse {
+                  0%, 100% { 
+                    backdrop-filter: blur(6px) saturate(0.9);
+                    background: rgba(255, 255, 255, 0.02);
+                  }
+                  50% { 
+                    backdrop-filter: blur(10px) saturate(0.7);
+                    background: rgba(255, 255, 255, 0.05);
+                  }
                 }
                 
                 /* رسالة تحذيرية عند محاولة النقر على المناطق المحمية */
                 #video-protection-overlay div:hover::after {
-                  content: '🚫 منطقة محمية للطلاب';
+                  content: '🚫 محمي للطلاب';
                   position: absolute;
-                  bottom: -30px;
+                  bottom: -35px;
                   left: 50%;
                   transform: translateX(-50%);
-                  background: rgba(220, 53, 69, 0.9);
+                  background: rgba(220, 53, 69, 0.95);
                   color: white;
-                  padding: 5px 10px;
-                  border-radius: 5px;
-                  font-size: 12px;
+                  padding: 6px 12px;
+                  border-radius: 8px;
+                  font-size: 11px;
                   white-space: nowrap;
                   z-index: 1000000;
-                  animation: fadeInOut 2s ease-in-out;
+                  animation: fadeInOut 2.5s ease-in-out;
+                  border: 1px solid rgba(255, 255, 255, 0.3);
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
                 }
                 
                 @keyframes fadeInOut {
                   0%, 100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
-                  50% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                  20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0); }
                 }
                 
                 /* حماية إضافية ضد التفتيش */
@@ -250,6 +318,22 @@ function LiveGrade3() {
                   -moz-user-select: none;
                   -ms-user-select: none;
                   user-select: none;
+                }
+                
+                /* حماية خاصة للمناطق العلوية */
+                .ytp-chrome-top-buttons,
+                .ytp-share-button-container,
+                .ytp-overflow-button {
+                  visibility: hidden !important;
+                  opacity: 0 !important;
+                  pointer-events: none !important;
+                }
+                
+                /* تحسين الحماية للشاشات المختلفة */
+                @media (max-width: 768px) {
+                  #video-protection-overlay div {
+                    backdrop-filter: blur(6px);
+                  }
                 }
               `;
               
@@ -284,7 +368,24 @@ function LiveGrade3() {
                 });
               }
               
-              console.log('✅ تم تطبيق طبقة الحماية بنجاح');
+              // مراقبة التغييرات في DOM وإعادة تطبيق الحماية
+              const observer = new MutationObserver(() => {
+                // إعادة إخفاء العناصر المحظورة إذا ظهرت
+                const hiddenElements = doc.querySelectorAll('.ytp-share-button, .ytp-youtube-button, .ytp-chrome-top-buttons');
+                hiddenElements.forEach(el => {
+                  el.style.display = 'none';
+                  el.style.visibility = 'hidden';
+                  el.style.pointerEvents = 'none';
+                });
+              });
+              
+              observer.observe(doc.body, {
+                childList: true,
+                subtree: true,
+                attributes: true
+              });
+              
+              console.log('✅ تم تطبيق طبقة الحماية المحسنة بنجاح');
             }
           } catch (e) {
             console.log('⚠️ لا يمكن تطبيق الحماية الكاملة لأسباب أمنية، لكن الإعدادات الأساسية مطبقة');
@@ -321,33 +422,55 @@ function LiveGrade3() {
         position: relative;
       `;
       
-      // إضافة طبقات الحماية للـ iframe
+      // إضافة طبقات الحماية المحسنة للـ iframe
       const protectionOverlay = document.createElement('div');
       protectionOverlay.innerHTML = `
-        <!-- طبقة حماية اليمين العلوي -->
+        <!-- طبقة حماية أيقونة Share -->
         <div style="
           position: absolute;
-          top: 0;
-          right: 0;
-          width: 200px;
-          height: 100px;
-          background: transparent;
+          top: 8px;
+          right: 8px;
+          width: 60px;
+          height: 60px;
+          background: rgba(255, 255, 255, 0.02);
+          backdrop-filter: blur(8px);
           z-index: 999999;
           pointer-events: all;
           cursor: not-allowed;
+          border-radius: 50%;
+          border: 2px solid rgba(255, 255, 255, 0.1);
         "></div>
         
-        <!-- طبقة حماية اليسار العلوي -->
+        <!-- طبقة حماية أيقونة القناة -->
         <div style="
           position: absolute;
-          top: 0;
-          left: 0;
-          width: 200px;
-          height: 100px;
-          background: transparent;
+          top: 8px;
+          left: 8px;
+          width: 120px;
+          height: 40px;
+          background: rgba(255, 255, 255, 0.02);
+          backdrop-filter: blur(8px);
           z-index: 999999;
           pointer-events: all;
           cursor: not-allowed;
+          border-radius: 20px;
+          border: 2px solid rgba(255, 255, 255, 0.1);
+        "></div>
+        
+        <!-- طبقة حماية Watch on YouTube -->
+        <div style="
+          position: absolute;
+          bottom: 12px;
+          right: 45px;
+          width: 35px;
+          height: 35px;
+          background: rgba(255, 255, 255, 0.02);
+          backdrop-filter: blur(8px);
+          z-index: 999999;
+          pointer-events: all;
+          cursor: not-allowed;
+          border-radius: 6px;
+          border: 2px solid rgba(255, 255, 255, 0.1);
         "></div>
         
         <!-- طبقة حماية شريط التحكم -->
@@ -357,8 +480,9 @@ function LiveGrade3() {
           left: 0;
           right: 0;
           height: 80px;
-          background: transparent;
-          z-index: 999999;
+          background: rgba(0, 0, 0, 0.01);
+          backdrop-filter: blur(4px);
+          z-index: 999998;
           pointer-events: all;
           cursor: not-allowed;
         "></div>
@@ -380,18 +504,30 @@ function LiveGrade3() {
         position: absolute;
         top: 20px;
         left: 20px;
-        background: rgba(220, 53, 69, 0.9);
+        background: rgba(220, 53, 69, 0.95);
         color: white;
         border: none;
-        padding: 10px 20px;
-        border-radius: 10px;
+        padding: 12px 24px;
+        border-radius: 12px;
         cursor: pointer;
         z-index: 1000001;
         font-weight: bold;
         font-size: 14px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
       `;
       closeButton.onclick = () => {
         document.body.removeChild(iframeContainer);
+      };
+      
+      closeButton.onmouseenter = () => {
+        closeButton.style.background = 'rgba(220, 53, 69, 1)';
+        closeButton.style.transform = 'scale(1.05)';
+      };
+      
+      closeButton.onmouseleave = () => {
+        closeButton.style.background = 'rgba(220, 53, 69, 0.95)';
+        closeButton.style.transform = 'scale(1)';
       };
       
       iframeContainer.appendChild(iframe);
@@ -546,7 +682,7 @@ function LiveGrade3() {
               width: '100%',
               textAlign: 'center'
             }}>
-              {/* علامة الحماية */}
+              {/* علامة الحماية المحسنة */}
               <div style={{
                 position: 'absolute',
                 top: '20px',
@@ -562,7 +698,7 @@ function LiveGrade3() {
                 border: '2px solid #ffffff',
                 textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
               }}>
-                🛡️ محمي للطلاب
+                🛡️ محمي متقدم
               </div>
 
               {/* علامة LIVE محسنة */}
@@ -671,10 +807,10 @@ function LiveGrade3() {
                     borderRadius: '10px',
                     fontSize: '0.7rem',
                     fontWeight: '600'
-                  }}>محمي</div>
+                  }}>محمي متقدم</div>
                   <span style={{ fontSize: '2rem' }}>🛡️🚀</span>
                   <div>نافذة جديدة محمية</div>
-                  <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>حماية كاملة من التلاعب</small>
+                  <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>حماية كاملة من Share و YouTube</small>
                 </button>
 
                 {/* زر المشاهدة المحمية */}
@@ -708,7 +844,7 @@ function LiveGrade3() {
                 >
                   <span style={{ fontSize: '2rem' }}>🛡️📺</span>
                   <div>مشاهدة محمية</div>
-                  <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>حماية من أدوات التحكم</small>
+                  <small style={{ opacity: 0.9, fontSize: '0.9rem' }}>حماية شاملة من الأيقونات</small>
                 </button>
               </div>
 
@@ -783,11 +919,11 @@ function LiveGrade3() {
                   marginTop: '10px',
                   textAlign: 'center'
                 }}>
-                  💡 انسخ الرابط وشاركه (سيحتوي على نفس الحماية)
+                  💡 انسخ الرابط وشاركه (سيحتوي على نفس الحماية المتقدمة)
                 </small>
               </div>
 
-              {/* معلومات الحماية */}
+              {/* معلومات الحماية المتقدمة */}
               <div style={{
                 marginTop: '25px',
                 background: 'rgba(40, 167, 69, 0.1)',
@@ -801,7 +937,7 @@ function LiveGrade3() {
                   fontWeight: '600',
                   marginBottom: '15px',
                   textAlign: 'center'
-                }}>🛡️ ميزات الحماية النشطة:</h4>
+                }}>🛡️ ميزات الحماية المتقدمة النشطة:</h4>
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -809,13 +945,19 @@ function LiveGrade3() {
                   textAlign: 'right'
                 }}>
                   <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    🚫 حماية من النقر على المعلومات
+                    🚫 حماية من أيقونة Share
+                  </div>
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
+                    🔒 حماية من اسم القناة
+                  </div>
+                  <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
+                    ⛔ حماية من Watch on YouTube
                   </div>
                   <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
                     ⏯️ حماية شريط التحكم والوقت
                   </div>
                   <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
-                    🔒 منع الوصول لمعلومات القناة
+                    🎯 تشويش شفاف متقدم
                   </div>
                   <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '0.9rem' }}>
                     📱 حماية على جميع الأجهزة
@@ -902,7 +1044,7 @@ function LiveGrade3() {
                   fontSize: '1.2rem',
                   fontWeight: '600',
                   marginBottom: '20px'
-                }}>🛡️ ميزات الحماية المتوفرة:</h4>
+                }}>🛡️ ميزات الحماية المتقدمة المتوفرة:</h4>
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
@@ -925,7 +1067,7 @@ function LiveGrade3() {
                     background: 'rgba(255, 255, 255, 0.05)',
                     borderRadius: '10px'
                   }}>
-                    🚫 حماية من التلاعب والنقر
+                    🚫 حماية من أيقونات Share و YouTube
                   </div>
                   <div style={{
                     color: 'rgba(255, 255, 255, 0.9)',
@@ -934,7 +1076,7 @@ function LiveGrade3() {
                     background: 'rgba(255, 255, 255, 0.05)',
                     borderRadius: '10px'
                   }}>
-                    🔒 منع الوصول لأدوات التحكم
+                    🔒 تشويش شفاف متقدم
                   </div>
                   <div style={{
                     color: 'rgba(255, 255, 255, 0.9)',
