@@ -1425,5 +1425,4 @@ function NavbarCustom({ currentUser, setCurrentUser }) {
   );
 }
 
->>>>>>> ed2528a9ce995e567ed2d9215c64d590e2982728
 export default NavbarCustom;
