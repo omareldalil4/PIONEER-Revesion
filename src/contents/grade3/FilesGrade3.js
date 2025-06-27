@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // src/contents/grade3/FilesGrade3.js
 import React, { useState, useEffect } from 'react';
 import { Container, Modal } from 'react-bootstrap';
