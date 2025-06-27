@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // src/contents/grade3/LiveGrade3.js
 import React, { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
