@@ -43,6 +43,24 @@ function VideosGrade3() {
     return video.isLive === true;
   };
 
+  // استخراج ID من رابط Vimeo
+  const extractVimeoId = (url) => {
+    if (!url) return null;
+    
+    // إذا كان الرابط يحتوي على vimeo.com
+    if (url.includes('vimeo.com')) {
+      const match = url.match(/vimeo\.com\/(\d+)/);
+      return match ? match[1] : null;
+    }
+    
+    // إذا كان مجرد ID
+    if (/^\d+$/.test(url.trim())) {
+      return url.trim();
+    }
+    
+    return null;
+  };
+
   if (loading) {
     return (
       <div style={{
@@ -324,230 +342,196 @@ function VideosGrade3() {
           )}
         </div>
 
-        {/* مودال الفيديو المحسن - يتكيف حسب النوع */}
+        {/* مودال الفيديو المحسن - تصميم أنيق بدون الشريط الأحمر */}
         <Modal 
           show={showModal} 
           onHide={handleCloseModal} 
           centered 
           size="lg"
           style={{ direction: 'rtl' }}
+          className="custom-video-modal"
         >
-          <Modal.Header 
-            style={{
-              background: selectedVideo && isLiveVideo(selectedVideo) ? 
-                'linear-gradient(135deg, #e74c3c, #c0392b)' : 
-                'linear-gradient(135deg, #c31432, #8e0000)',
-              backdropFilter: 'blur(20px)',
-              borderBottom: 'none',
-              borderRadius: '15px 15px 0 0',
-              padding: '20px 25px',
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 250, 0.95))',
+            backdropFilter: 'blur(25px)',
+            borderRadius: '30px',
+            overflow: 'hidden',
+            border: 'none',
+            boxShadow: '0 30px 80px rgba(0, 0, 0, 0.15)',
+            position: 'relative'
+          }}>
+            {/* Header المحسن */}
+            <div style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              padding: '25px 35px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
               direction: 'rtl',
-              color: 'white'
-            }}
-          >
-            <Modal.Title style={{
-              fontSize: '1.3rem',
-              fontWeight: '700',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              margin: 0
+              borderRadius: '30px 30px 0 0',
+              position: 'relative',
+              overflow: 'hidden'
             }}>
-              {selectedVideo && isLiveVideo(selectedVideo) ? (
-                <>
-                  {/* نقطة البث المباشر في العنوان */}
-                  <div style={{
-                    width: '12px',
-                    height: '12px',
-                    backgroundColor: '#ffffff',
-                    borderRadius: '50%',
-                    animation: 'pulse 1.5s infinite',
-                    marginLeft: '8px'
-                  }}></div>
-                  🔴 LIVE • {selectedVideo?.notes || 'بث مباشر'}
-                </>
-              ) : (
-                <>
-                  🎬 {selectedVideo?.notes || 'فيديو المراجعة'}
-                </>
-              )}
-            </Modal.Title>
-            <button
-              onClick={handleCloseModal}
-              style={{
-                background: 'rgba(255, 255, 255, 0.2)',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
+              {/* خلفية زخرفية */}
+              <div style={{
+                position: 'absolute',
+                top: '-50%',
+                right: '-20%',
+                width: '200px',
+                height: '200px',
+                background: 'rgba(255, 255, 255, 0.1)',
                 borderRadius: '50%',
-                width: '40px',
-                height: '40px',
+                zIndex: 0
+              }}></div>
+              <div style={{
+                position: 'absolute',
+                bottom: '-30%',
+                left: '-15%',
+                width: '150px',
+                height: '150px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                borderRadius: '50%',
+                zIndex: 0
+              }}></div>
+
+              <div style={{
+                fontSize: '1.4rem',
+                fontWeight: '700',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
+                gap: '12px',
+                margin: 0,
                 color: 'white',
-                fontSize: '18px',
-                fontWeight: '700'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-                e.target.style.transform = 'scale(1.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                e.target.style.transform = 'scale(1)';
-              }}
-            >
-              ✕
-            </button>
-          </Modal.Header>
-          <Modal.Body 
-            style={{ 
-              padding: '0',
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '0 0 15px 15px',
-              position: 'relative'
-            }}
-          >
-            {selectedVideo && (
-              <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                {/* تشويش كامل على أيقونة Drive - لجميع الفيديوهات */}
-                <div style={{
-                  position: 'absolute',
-                  top: '0px',
-                  right: '0px',
-                  width: '80px',
-                  height: '80px',
-                  background: selectedVideo && isLiveVideo(selectedVideo) ? 
-                    'linear-gradient(135deg, #e74c3c, #c0392b)' : 
-                    'linear-gradient(135deg, #c31432, #8e0000)',
-                  zIndex: 25,
-                  borderRadius: '0 0 0 15px',
+                textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+                position: 'relative',
+                zIndex: 1
+              }}>
+                {selectedVideo && isLiveVideo(selectedVideo) ? (
+                  <>
+                    {/* نقطة البث المباشر */}
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      backgroundColor: '#ff4757',
+                      borderRadius: '50%',
+                      animation: 'pulse 1.5s infinite',
+                      marginLeft: '8px',
+                      boxShadow: '0 0 10px rgba(255, 71, 87, 0.6)'
+                    }}></div>
+                    🎬 {selectedVideo?.notes || 'بث مباشر'}
+                  </>
+                ) : (
+                  <>
+                    🎬 {selectedVideo?.notes || 'فيديو المراجعة'}
+                  </>
+                )}
+              </div>
+              
+              <button
+                onClick={handleCloseModal}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '50%',
+                  width: '45px',
+                  height: '45px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
                   color: 'white',
-                  fontSize: '14px',
+                  fontSize: '20px',
                   fontWeight: '700',
-                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4)',
-                  backdropFilter: 'blur(10px)',
-                  pointerEvents: 'auto',
-                  cursor: 'default'
+                  position: 'relative',
+                  zIndex: 1,
+                  backdropFilter: 'blur(10px)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.25)';
+                  e.target.style.transform = 'scale(1.1) rotate(90deg)';
+                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.target.style.transform = 'scale(1) rotate(0deg)';
+                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Video Container */}
+            <div style={{ 
+              padding: '0',
+              background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
+              position: 'relative'
+            }}>
+              {selectedVideo && (
+                <div style={{ 
+                  position: 'relative', 
+                  paddingBottom: '56.25%', 
+                  height: 0, 
+                  overflow: 'hidden',
+                  borderRadius: '0 0 30px 30px'
                 }}>
-                  {selectedVideo && isLiveVideo(selectedVideo) ? '🔴 LIVE' : '🎬 VIDEO'}
-                </div>
-
-                {/* طبقة إضافية لمنع النقر على منطقة Drive - لجميع الفيديوهات */}
-                <div style={{
-                  position: 'absolute',
-                  top: '0px',
-                  right: '0px',
-                  width: '100px',
-                  height: '100px',
-                  zIndex: 24,
-                  pointerEvents: 'auto',
-                  cursor: 'default'
-                }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  return false;
-                }}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  return false;
-                }}
-                />
-
-                {/* عناصر Live فقط إذا كان الفيديو isLive = true */}
-                {selectedVideo && isLiveVideo(selectedVideo) && (
-                  <>
-                    {/* إشعار البث المباشر */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '15px',
-                      left: '15px',
-                      background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
-                      color: 'white',
-                      padding: '8px 15px',
-                      borderRadius: '20px',
-                      fontSize: '14px',
-                      fontWeight: '700',
-                      zIndex: 15,
-                      boxShadow: '0 4px 15px rgba(231, 76, 60, 0.4)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}>
-                      <div style={{
-                        width: '8px',
-                        height: '8px',
-                        backgroundColor: '#ffffff',
-                        borderRadius: '50%',
-                        animation: 'pulse 1.5s infinite'
-                      }}></div>
-                      LIVE NOW
-                    </div>
-
-                    {/* شريط إخفاء أدوات التحكم فقط */}
-                    <div 
-                      className="live-controls-overlay"
-                      style={{
-                        position: 'absolute',
-                        bottom: '0px',
-                        left: '0px',
-                        right: '0px',
-                        height: '60px',
-                        background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
-                        zIndex: 15,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '14px',
-                        fontWeight: '700',
-                        pointerEvents: 'none',
-                        userSelect: 'none'
-                      }}
-                    >
-                      🔴 LIVE STREAM • البث المباشر
-                    </div>
-                  </>
-                )}
-
-                {/* الفيديو العادي بدون تعديل */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '0 0 15px 15px'
-                }}>
+                  {/* Vimeo Player */}
                   <iframe
-                    className={selectedVideo && isLiveVideo(selectedVideo) ? "live-video-iframe" : "normal-video-iframe"}
-                    title={selectedVideo && isLiveVideo(selectedVideo) ? "Live Stream" : "Video Preview"}
-                    src={`https://drive.google.com/file/d/${selectedVideo.id}/preview`}
+                    src={`https://player.vimeo.com/video/${extractVimeoId(selectedVideo.id)}?badge=0&autopause=0&player_id=0&app_id=58479&title=0&byline=0&portrait=0&controls=1&autoplay=0`}
                     frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
                     allowFullScreen
+                    title="مشغل الفيديو"
                     style={{
                       position: 'absolute',
                       top: 0,
                       left: 0,
                       width: '100%',
                       height: '100%',
-                      border: 'none'
+                      border: 'none',
+                      borderRadius: '0 0 30px 30px'
                     }}
                   />
+
+                  {/* شاشة تحميل أنيقة */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    color: 'white',
+                    zIndex: -1,
+                    borderRadius: '0 0 30px 30px'
+                  }}>
+                    <div style={{
+                      width: '50px',
+                      height: '50px',
+                      border: '4px solid rgba(255, 255, 255, 0.3)',
+                      borderTop: '4px solid #ffffff',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite',
+                      marginBottom: '20px'
+                    }}></div>
+                    <p style={{
+                      fontSize: '1.1rem',
+                      fontWeight: '600',
+                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                      margin: 0
+                    }}>
+                      جاري تحميل الفيديو...
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
-          </Modal.Body>
+              )}
+            </div>
+          </div>
         </Modal>
       </div>
 
@@ -590,83 +574,27 @@ function VideosGrade3() {
               transform: translateX(0); 
             }
           }
-          
-          /* منع التفاعل مع أيقونة Drive وشريط التحكم للـ Live */
-          .video-iframe {
+
+          /* تخصيص المودال */
+          .custom-video-modal .modal-dialog {
+            max-width: 900px !important;
+            margin: 20px auto !important;
+          }
+
+          .custom-video-modal .modal-content {
             border: none !important;
-            pointer-events: auto !important;
-          }
-          
-          /* إخفاء شريط التحكم في Live فقط - بدون منع التشغيل */
-          .live-video-iframe::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            z-index: 10;
-            pointer-events: none;
+            border-radius: 30px !important;
+            overflow: hidden !important;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15) !important;
+            background: transparent !important;
           }
 
-          /* إخفاء شريط التحكم في CSS مع السماح بالتشغيل */
-          .live-video-iframe {
-            position: relative;
+          .custom-video-modal .modal-header {
+            display: none !important;
           }
 
-          .live-controls-overlay {
-            pointer-events: none !important;
-            user-select: none !important;
-          }
-
-          /* إخفاء عناصر محددة في Live بدون منع التشغيل */
-          iframe[src*="preview"] + .live-controls-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            pointer-events: none;
-          }
-
-          /* تحسين fullscreen للـ Live */
-          .live-video-iframe:-webkit-full-screen,
-          .live-video-iframe:-moz-full-screen,
-          .live-video-iframe:fullscreen {
-            position: relative;
-          }
-
-          .live-video-iframe:-webkit-full-screen + .live-controls-overlay,
-          .live-video-iframe:-moz-full-screen + .live-controls-overlay,
-          .live-video-iframe:fullscreen + .live-controls-overlay {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            height: 80px !important;
-            z-index: 999999 !important;
-            font-size: 18px !important;
-          }
-
-          /* إخفاء عناصر التحكم في Drive بـ CSS فقط */
-          .live-video-iframe {
-            position: relative !important;
-          }
-
-          /* شريط يغطي منطقة التحكم بدون تعطيل الفيديو */
-          .live-controls-overlay {
-            pointer-events: none !important;
-            user-select: none !important;
-            -webkit-user-select: none !important;
-            -moz-user-select: none !important;
+          .custom-video-modal .modal-body {
+            padding: 0 !important;
           }
 
           /* تحسين للشاشات الكبيرة - توسيط المحتوى */
@@ -707,23 +635,9 @@ function VideosGrade3() {
               width: 100% !important;
             }
             
-            .header-content h1 {
-              font-size: 2rem !important;
-            }
-            
-            .modal-dialog {
+            .custom-video-modal .modal-dialog {
               margin: 10px !important;
-            }
-            
-            .stats-badges {
-              flex-direction: column !important;
-              gap: 8px !important;
-            }
-            
-            /* تحسين للموبايل */
-            .live-controls-overlay {
-              height: 50px !important;
-              font-size: 12px !important;
+              max-width: calc(100% - 20px) !important;
             }
           }
 
@@ -744,496 +658,445 @@ function VideosGrade3() {
               max-width: 100% !important;
               width: 100% !important;
             }
-            
+
+            .custom-video-modal .modal-dialog {
+              margin: 5px !important;
+              max-width: calc(100% - 10px) !important;
+            }
+          }
+
+          /* تحسين للتابلت - أيضاً فيديو واحد في السطر */
+          @media (min-width: 768px) and (max-width: 991px) {
+            .videos-grid {
+              grid-template-columns: 1fr !important;
+              gap: 40px !important;
+              justify-items: center !important;
+            }
+
+            .video-item {
+              width: 100% !important;
+              max-width: 450px !important;
+              margin: 0 auto !important;
+            }
+
+            .video-item img {
+              max-width: 100% !important;
+              width: 100% !important;
+            }
+          }
+
+          /* تحسين التركيز للوصولية */
+          .video-item:focus {
+            outline: 3px solid rgba(231, 76, 60, 0.5);
+            outline-offset: 2px;
+          }
+
+          /* تحسين للحركة المنخفضة */
+          @media (prefers-reduced-motion: reduce) {
+            * {
+              animation-duration: 0.01ms !important;
+              animation-iteration-count: 1 !important;
+              transition-duration: 0.01ms !important;
+            }
+          }
+
+          /* تحسين للشاشات العريضة جداً */
+          @media (min-width: 1600px) {
+            .videos-grid {
+              max-width: 1500px !important;
+              grid-template-columns: repeat(4, 1fr) !important;
+              gap: 50px !important;
+            }
+
+            .video-item img {
+              max-width: 350px !important;
+            }
+          }
+
+          @media (min-width: 1800px) {
+            .videos-grid {
+              max-width: 1600px !important;
+              grid-template-columns: repeat(4, 1fr) !important;
+              gap: 60px !important;
+            }
+
+            .video-item img {
+              max-width: 380px !important;
+            }
+          }
+
+          /* تحسين الـ scrollbar للمودال */
+          .custom-video-modal::-webkit-scrollbar {
+            width: 6px;
+          }
+
+          .custom-video-modal::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+          }
+
+          .custom-video-modal::-webkit-scrollbar-thumb {
+            background: rgba(195, 20, 50, 0.5);
+            border-radius: 3px;
+          }
+
+          .custom-video-modal::-webkit-scrollbar-thumb:hover {
+            background: rgba(195, 20, 50, 0.7);
+          }
+
+          /* تحسين الفوكس للكيبورد */
+          .video-item:focus-visible {
+            outline: 3px solid rgba(231, 76, 60, 0.8);
+            outline-offset: 4px;
+          }
+
+          /* تحسين الـ hover effects */
+          .video-item:hover .live-badge {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
+          }
+
+          /* تحسين الـ z-index */
+          .modal {
+            z-index: 1055 !important;
+          }
+
+          .modal-backdrop {
+            z-index: 1050 !important;
+          }
+
+          /* تحسين للطباعة */
+          @media print {
+            .no-print {
+              display: none !important;
+            }
+
+            .video-item {
+              break-inside: avoid;
+              margin-bottom: 20px;
+            }
+
+            .modal {
+              display: none !important;
+            }
+          }
+
+          /* تحسين التباين للرؤية */
+          @media (prefers-contrast: high) {
+            .video-item {
+              border: 4px solid #000 !important;
+            }
+
+            .custom-video-modal .modal-content {
+              border: 3px solid #000 !important;
+            }
+
+            .live-badge {
+              border: 2px solid #fff !important;
+            }
+          }
+
+          /* تحسين للموضع الداكن */
+          @media (prefers-color-scheme: dark) {
+            .custom-video-modal .modal-content {
+              background: rgba(25, 25, 25, 0.95) !important;
+            }
+          }
+
+          /* تحسين اللمس للأجهزة اللوحية */
+          @media (pointer: coarse) {
+            .video-item {
+              min-height: 44px;
+              padding: 10px;
+            }
+
+            .custom-video-modal .modal-header button {
+              min-width: 44px;
+              min-height: 44px;
+            }
+          }
+
+          /* تحسين نهائي للأداء */
+          .videos-grid,
+          .video-item {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+          }
+
+          /* تحسين للشاشات عالية الكثافة */
+          @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .video-item img {
+              image-rendering: -webkit-optimize-contrast;
+              image-rendering: crisp-edges;
+            }
+          }
+
+          /* تحسين البطارية المنخفضة */
+          @media (prefers-reduced-data: reduce) {
+            .video-item {
+              transition: none !important;
+              animation: none !important;
+            }
+
+            .live-indicator {
+              animation: none !important;
+            }
+
+            .pulse-dot {
+              animation: none !important;
+            }
+          }
+
+          /* تحسين نهائي للـ iframe */
+          iframe {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+          }
+
+          /* تحسين الأداء العام */
+          * {
+            box-sizing: border-box;
+          }
+
+          .video-container {
+            will-change: transform;
+            transform: translateZ(0);
+          }
+
+          /* تحسين لوضع fullscreen */
+          iframe:fullscreen,
+          iframe:-webkit-full-screen,
+          iframe:-moz-full-screen {
+            width: 100% !important;
+            height: 100% !important;
+          }
+
+          /* تحسين المودال للشاشات الصغيرة */
+          @media (max-width: 576px) {
+            .custom-video-modal .modal-dialog {
+              margin: 0 !important;
+              max-width: 100% !important;
+              height: 100vh !important;
+              display: flex !important;
+              align-items: center !important;
+            }
+
+            .custom-video-modal .modal-content {
+              border-radius: 0 !important;
+              max-height: 90vh !important;
+            }
+          }
+
+          /* تحسين التفاعل مع الفيديو */
+          .video-iframe-container {
+            transition: all 0.3s ease;
+          }
+
+          .video-iframe-container:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          }
+
+          /* تحسين عنصر التحميل */
+          .loading-overlay {
+            transition: opacity 0.5s ease;
+          }
+
+          /* تحسين الانيميشنات للمودال */
+          .custom-video-modal.show .modal-dialog {
+            animation: modalSlideIn 0.3s ease-out;
+          }
+
+          @keyframes modalSlideIn {
+            from {
+              opacity: 0;
+              transform: scale(0.8) translateY(-50px);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
+          }
+
+          /* تحسين responsive للعناصر الداخلية */
+          @media (max-width: 320px) {
+            .videos-grid {
+              gap: 20px !important;
+              padding: 0 5px !important;
+              grid-template-columns: 1fr !important;
+              justify-items: center !important;
+            }
+
+            .video-item {
+              width: 100% !important;
+              max-width: 310px !important;
+              margin: 0 auto !important;
+            }
+
+            .video-item img {
+              max-width: 100% !important;
+              width: 100% !important;
+            }
+
+            .header-content {
+              padding: 0 5px !important;
+            }
+
             .header-content h1 {
-              font-size: 1.8rem !important;
+              font-size: 1.2rem !important;
             }
-            
-            .header-content p {
-              font-size: 1rem !important;
+
+            .stats-badges > div {
+              font-size: 0.6rem !important;
+              padding: 4px 8px !important;
             }
-            
-            .empty-state {
-              padding: 30px 20px !important;
+
+            .live-badge {
+              padding: 4px 8px !important;
+              font-size: 10px !important;
             }
-            
-            .empty-state h3 {
-              font-size: 1.5rem !important;
+          }
+
+          /* تحسين للشاشات الطويلة */
+          @media (min-aspect-ratio: 1/2) and (max-width: 768px) {
+            .videos-grid {
+              grid-template-columns: 1fr !important;
+              gap: 30px !important;
+              justify-items: center !important;
             }
-            
-            .empty-state p {
-              font-size: 1rem !important;
+
+            .video-item {
+              width: 100% !important;
+              max-width: 350px !important;
+              margin: 0 auto !important;
             }
-            
-            .header-section {
- padding: 20px 0 !important;
-}
-
-.header-section h1 {
- font-size: 1.6rem !important;
-}
-
-.header-section .icon {
- font-size: 2.5rem !important;
-}
-
-.stats-badges {
- gap: 5px !important;
-}
-
-.stats-badges > div {
- font-size: 0.8rem !important;
- padding: 8px 15px !important;
-}
-
-.live-controls-overlay {
- height: 45px !important;
- font-size: 11px !important;
-}
-}
-
-@media (max-width: 360px) {
-.videos-grid {
- gap: 25px !important;
- grid-template-columns: 1fr !important;
- justify-items: center !important;
- padding: 0 10px !important;
-}
-
-.video-item {
- width: 100% !important;
- max-width: 350px !important;
- margin: 0 auto !important;
-}
-
-.video-item img {
- max-width: 100% !important;
- width: 100% !important;
-}
-
-.header-content {
- padding: 0 10px !important;
-}
-
-.header-content h1 {
- font-size: 1.4rem !important;
-}
-
-.header-content p {
- font-size: 0.9rem !important;
-}
-
-.stats-badges > div {
- font-size: 0.7rem !important;
- padding: 6px 12px !important;
-}
-
-.live-badge {
- padding: 4px 8px !important;
- font-size: 10px !important;
-}
-
-.live-controls-overlay {
- height: 40px !important;
- font-size: 10px !important;
-}
-}
-
-/* تحسين للتابلت - أيضاً فيديو واحد في السطر */
-@media (min-width: 768px) and (max-width: 991px) {
-.videos-grid {
- grid-template-columns: 1fr !important;
- gap: 40px !important;
- justify-items: center !important;
-}
-
-.video-item {
- width: 100% !important;
- max-width: 450px !important;
- margin: 0 auto !important;
-}
-
-.video-item img {
- max-width: 100% !important;
- width: 100% !important;
-}
-}
-
-/* تحسين التركيز للوصولية */
-.video-item:focus {
-outline: 3px solid rgba(231, 76, 60, 0.5);
-outline-offset: 2px;
-}
-
-/* تحسين للحركة المنخفضة */
-@media (prefers-reduced-motion: reduce) {
-* {
- animation-duration: 0.01ms !important;
- animation-iteration-count: 1 !important;
- transition-duration: 0.01ms !important;
-}
-}
-
-/* تحسين المودال للموبايل */
-@media (max-width: 768px) {
-.modal-content {
- margin: 5px !important;
- border-radius: 15px !important;
-}
-
-.modal-header {
- padding: 15px 20px !important;
-}
-
-.modal-title {
- font-size: 1.1rem !important;
-}
-}
-
-/* تحسين أداء الانيميشن */
-.video-item,
-.video-item img {
-will-change: transform;
-transform: translateZ(0);
-}
-
-/* إخفاء الـ scrollbar الأفقي */
-body {
-overflow-x: hidden;
-}
-
-/* تحسين الـ safe area للأجهزة الحديثة */
-@supports (padding: max(0px)) {
-.header-content {
- padding-left: max(20px, env(safe-area-inset-left));
- padding-right: max(20px, env(safe-area-inset-right));
-}
-}
-
-@media (max-width: 320px) {
-.videos-grid {
- gap: 20px !important;
- padding: 0 5px !important;
- grid-template-columns: 1fr !important;
- justify-items: center !important;
-}
-
-.video-item {
- width: 100% !important;
- max-width: 310px !important;
- margin: 0 auto !important;
-}
-
-.video-item img {
- max-width: 100% !important;
- width: 100% !important;
-}
-
-.header-content {
- padding: 0 5px !important;
-}
-
-.header-content h1 {
- font-size: 1.2rem !important;
-}
-
-.stats-badges > div {
- font-size: 0.6rem !important;
- padding: 4px 8px !important;
-}
-
-.live-badge {
- padding: 4px 8px !important;
- font-size: 10px !important;
-}
-}
-
-/* تحسين للشاشات الطويلة - فيديو واحد في السطر أيضاً */
-@media (min-aspect-ratio: 1/2) and (max-width: 768px) {
-.videos-grid {
- grid-template-columns: 1fr !important;
- gap: 30px !important;
- justify-items: center !important;
-}
-
-.video-item {
- width: 100% !important;
- max-width: 350px !important;
- margin: 0 auto !important;
-}
-
-.video-item img {
- max-width: 100% !important;
- width: 100% !important;
-}
-}
-
-/* تحسين للشاشات العريضة جداً */
-@media (min-width: 1600px) {
-.videos-grid {
- max-width: 1500px !important;
- grid-template-columns: repeat(4, 1fr) !important;
- gap: 50px !important;
-}
-
-.video-item img {
- max-width: 350px !important;
-}
-}
-
-@media (min-width: 1800px) {
-.videos-grid {
- max-width: 1600px !important;
- grid-template-columns: repeat(4, 1fr) !important;
- gap: 60px !important;
-}
-
-.video-item img {
- max-width: 380px !important;
-}
-}
-
-/* تحسين الـ loading */
-.loading-shimmer {
-background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.1) 75%);
-background-size: 200% 100%;
-animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-0% { background-position: 200% 0; }
-100% { background-position: -200% 0; }
-}
-
-/* تحسين الـ scrollbar للمودال */
-.modal-body::-webkit-scrollbar {
-width: 6px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-background: rgba(0,0,0,0.1);
-border-radius: 3px;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-background: rgba(195, 20, 50, 0.5);
-border-radius: 3px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-background: rgba(195, 20, 50, 0.7);
-}
-
-/* تحسين الفوكس للكيبورد */
-.video-item:focus-visible {
-outline: 3px solid rgba(231, 76, 60, 0.8);
-outline-offset: 4px;
-}
-
-/* تحسين الـ hover effects */
-.video-item:hover .live-badge {
-transform: scale(1.1);
-box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
-}
-
-/* تحسين الـ z-index */
-.modal {
-z-index: 1055 !important;
-}
-
-.modal-backdrop {
-z-index: 1050 !important;
-}
-
-/* حماية من التلاعب بالـ CSS والتحسينات النهائية */
-.live-controls-overlay {
-position: absolute !important;
-bottom: 0 !important;
-left: 0 !important;
-right: 0 !important;
-background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
-z-index: 15 !important;
-display: flex !important;
-align-items: center !important;
-justify-content: center !important;
-color: white !important;
-font-weight: 700 !important;
-pointer-events: none !important;
-user-select: none !important;
-}
-
-/* تأكيد أن الـ Live overlay يظهر دائماً */
-.live-controls-overlay {
-display: flex !important;
-visibility: visible !important;
-opacity: 1 !important;
-}
-
-/* حماية من إخفاء الـ overlay */
-.live-controls-overlay[style*="display: none"] {
-display: flex !important;
-}
-
-.live-controls-overlay[style*="visibility: hidden"] {
-visibility: visible !important;
-}
-
-.live-controls-overlay[style*="opacity: 0"] {
-opacity: 1 !important;
-}
-
-/* تحسين للطباعة */
-@media print {
-.no-print {
- display: none !important;
-}
-
-.video-item {
- break-inside: avoid;
- margin-bottom: 20px;
-}
-
-.modal {
- display: none !important;
-}
-}
-
-/* تحسين التباين للرؤية */
-@media (prefers-contrast: high) {
-.video-item {
- border: 4px solid #000 !important;
-}
-
-.modal-content {
- border: 3px solid #000 !important;
-}
-
-.live-badge {
- border: 2px solid #fff !important;
-}
-
-.live-controls-overlay {
- background: #000 !important;
- border: 3px solid #fff !important;
-}
-}
-
-/* تحسين للموضع الداكن */
-@media (prefers-color-scheme: dark) {
-.modal-body {
- background: rgba(25, 25, 25, 0.95) !important;
-}
-
-.live-controls-overlay {
- background: linear-gradient(135deg, #8B0000, #590000) !important;
-}
-}
-
-/* تحسين اللمس للأجهزة اللوحية */
-@media (pointer: coarse) {
-.video-item {
- min-height: 44px;
- padding: 10px;
-}
-
-.modal-header button {
- min-width: 44px;
- min-height: 44px;
-}
-}
-
-/* تحسين نهائي للأداء */
-.videos-grid,
-.video-item,
-.live-controls-overlay {
-transform: translateZ(0);
-backface-visibility: hidden;
-perspective: 1000px;
-}
-
-/* تحسين للشاشات عالية الكثافة */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-.video-item img {
- image-rendering: -webkit-optimize-contrast;
- image-rendering: crisp-edges;
-}
-}
-
-/* تحسين البطارية المنخفضة */
-@media (prefers-reduced-data: reduce) {
-.video-item {
- transition: none !important;
- animation: none !important;
-}
-
-.live-indicator {
- animation: none !important;
-}
-
-.pulse-dot {
- animation: none !important;
-}
-}
-
-/* تحسين نهائي للـ iframe */
-iframe {
--webkit-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
-}
-
-/* منع أي تداخل مع أدوات التحكم */
-.live-video-iframe {
-isolation: isolate;
-}
-
-/* تحسين الأداء العام */
-* {
-box-sizing: border-box;
-}
-
-.video-container {
-will-change: transform;
-transform: translateZ(0);
-}
-
-/* تحسين لوضع fullscreen */
-.live-video-iframe:fullscreen .live-controls-overlay,
-.live-video-iframe:-webkit-full-screen .live-controls-overlay,
-.live-video-iframe:-moz-full-screen .live-controls-overlay {
-position: fixed !important;
-bottom: 0 !important;
-left: 0 !important;
-right: 0 !important;
-height: 80px !important;
-z-index: 999999 !important;
-font-size: 18px !important;
-}
-
-/* تأكيد نهائي لكل الخصائص */
-.live-controls-overlay {
-background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
-z-index: 15 !important;
-height: 60px !important;
-display: flex !important;
-align-items: center !important;
-justify-content: center !important;
-color: white !important;
-font-size: 14px !important;
-font-weight: 700 !important;
-pointer-events: none !important;
-user-select: none !important;
--webkit-user-select: none !important;
--moz-user-select: none !important;
--ms-user-select: none !important;
-}
-
-/* إنهاء الـ CSS */
-       `}
-     </style>
-   </>
- );
+
+            .video-item img {
+              max-width: 100% !important;
+              width: 100% !important;
+            }
+          }
+
+          /* تحسين الـ loading state */
+          .loading-shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.1) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+          }
+
+          @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+
+          /* تحسين الـ scrollbar العام */
+          ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+          }
+
+          ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 4px;
+          }
+
+          ::-webkit-scrollbar-thumb {
+            background: rgba(195, 20, 50, 0.3);
+            border-radius: 4px;
+          }
+
+          ::-webkit-scrollbar-thumb:hover {
+            background: rgba(195, 20, 50, 0.5);
+          }
+
+          /* تحسين الفوكس للكيبورد العام */
+          button:focus-visible,
+          .video-item:focus-visible {
+            outline: 3px solid rgba(231, 76, 60, 0.8);
+            outline-offset: 4px;
+          }
+
+          /* تحسين الـ z-index العام */
+          .modal {
+            z-index: 1055 !important;
+          }
+
+          .modal-backdrop {
+            z-index: 1050 !important;
+          }
+
+          /* حماية من التلاعب والتحسينات النهائية */
+          .custom-video-modal {
+            pointer-events: auto !important;
+          }
+
+          .custom-video-modal iframe {
+            pointer-events: auto !important;
+          }
+
+          /* تحسين للطباعة النهائي */
+          @media print {
+            .no-print,
+            .modal,
+            .modal-backdrop {
+              display: none !important;
+            }
+
+            .video-item {
+              break-inside: avoid;
+              margin-bottom: 20px;
+            }
+
+            body {
+              background: white !important;
+            }
+          }
+
+          /* تحسين التباين النهائي */
+          @media (prefers-contrast: high) {
+            .video-item,
+            .custom-video-modal .modal-content {
+              border: 4px solid #000 !important;
+            }
+
+            .live-badge {
+              border: 3px solid #fff !important;
+            }
+          }
+
+          /* تحسين للموضع الداكن النهائي */
+          @media (prefers-color-scheme: dark) {
+            .custom-video-modal {
+              background: rgba(25, 25, 25, 0.95) !important;
+            }
+          }
+
+          /* تحسين اللمس النهائي */
+          @media (pointer: coarse) {
+            .video-item,
+            button {
+              min-height: 44px;
+              min-width: 44px;
+            }
+          }
+
+          /* تحسين نهائي للأداء والذاكرة */
+          .videos-grid,
+          .video-item,
+          .custom-video-modal {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+            will-change: transform;
+          }
+
+          /* إنهاء التحسينات */
+        `}
+      </style>
+    </>
+  );
 }
 
 export default VideosGrade3;
