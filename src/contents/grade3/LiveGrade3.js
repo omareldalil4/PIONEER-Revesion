@@ -14,7 +14,7 @@ function LiveGrade3() {
     // معالجة روابط يوتيوب المختلفة
     let videoId = '';
     
-    // رابط البث المباشر: https://www.youtube.com/live/qK52qqYaS3o?feature=shared
+    // رابط البث المباشر: https://www.youtube.com/live/mKiA5B0UqLk?si=9hGcjay1VY03VlTp
     if (url.includes('youtube.com/live/')) {
       const match = url.match(/youtube\.com\/live\/([a-zA-Z0-9_-]+)/);
       if (match) videoId = match[1];
@@ -103,25 +103,26 @@ function LiveGrade3() {
       *[class*="share" i]:not(.live-content):not(.empty-state),
       *[id*="share" i]:not(.live-content):not(.empty-state),
       *[data-tooltip*="share" i],
-      *[aria-label*="share" i] {
+      *[aria-label*="share" i],
+      .ytp-chrome-top .ytp-chrome-top-buttons,
+      .ytp-title-channel,
+      .ytp-title-channel-logo,
+      .ytp-chrome-top .ytp-title,
+      .ytp-chrome-top .ytp-title-text,
+      .ytp-watermark,
+      .ytp-videowall-still,
+      .ytp-suggestion-set,
+      .ytp-pause-overlay {
         /* تأثير blur وتشويش قوي */
-        filter: blur(20px) saturate(0) contrast(0.1) brightness(0.3) !important;
-        backdrop-filter: blur(25px) saturate(0.2) !important;
+        filter: blur(50px) saturate(0) contrast(0) brightness(0) !important;
+        backdrop-filter: blur(60px) saturate(0) !important;
         
         /* تأثير زجاجي شفاف */
-        background: rgba(0, 0, 0, 0.9) !important;
-        background-image: linear-gradient(45deg, 
-          rgba(255, 255, 255, 0.1) 25%, 
-          transparent 25%, 
-          transparent 75%, 
-          rgba(255, 255, 255, 0.1) 75%, 
-          rgba(255, 255, 255, 0.1)
-        ) !important;
-        background-size: 4px 4px !important;
+        background: rgba(0, 0, 0, 1) !important;
         
         /* تشويه إضافي */
-        transform: scale(0.1) rotate(45deg) skew(30deg, 15deg) !important;
-        opacity: 0.01 !important;
+        transform: scale(0) rotate(360deg) translate(-9999px, -9999px) !important;
+        opacity: 0 !important;
         visibility: hidden !important;
         
         /* منع التفاعل */
@@ -130,40 +131,34 @@ function LiveGrade3() {
         
         /* إخفاء قوي */
         position: absolute !important;
-        left: -99999px !important;
-        top: -99999px !important;
+        left: -999999px !important;
+        top: -999999px !important;
         width: 0 !important;
         height: 0 !important;
         overflow: hidden !important;
-        z-index: -99999 !important;
-        
-        /* تأثير انتقالي سلس */
-        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-        
-        /* تشويه النص */
-        color: transparent !important;
-        text-shadow: 0 0 20px rgba(0, 0, 0, 0.9) !important;
-        
-        /* حدود ضبابية */
-        border: 1px solid rgba(0, 0, 0, 0.1) !important;
-        border-radius: 50% !important;
-        box-shadow: 
-          inset 0 0 20px rgba(0, 0, 0, 0.9),
-          0 0 20px rgba(0, 0, 0, 0.8),
-          0 0 40px rgba(0, 0, 0, 0.6) !important;
+        z-index: -999999 !important;
         
         /* قطع المحتوى */
         clip: rect(0 0 0 0) !important;
         clip-path: polygon(0 0, 0 0, 0 0) !important;
         
-        /* تأثير matrix للتشويه */
-        transform-origin: center !important;
-        animation: shareBlurGlitch 2s infinite linear !important;
+        /* تشويه النص */
+        color: transparent !important;
+        text-shadow: none !important;
+        
+        /* حدود ضبابية */
+        border: none !important;
+        box-shadow: none !important;
+        
+        /* تدمير كامل */
+        display: none !important;
+        content: none !important;
       }
       
-      /* تأثير خاص للوضع العادي */
+      /* تأثير خاص للوضع العادي - تغطية المنطقة اليمنى بالكامل */
       .ytp-chrome-controls .ytp-right-controls {
         position: relative !important;
+        overflow: hidden !important;
       }
       
       .ytp-chrome-controls .ytp-right-controls::after {
@@ -171,61 +166,47 @@ function LiveGrade3() {
         position: absolute !important;
         top: 0 !important;
         right: 0 !important;
-        width: 150px !important;
+        width: 200px !important;
         height: 100% !important;
         background: linear-gradient(90deg, 
           transparent 0%, 
-          rgba(0, 0, 0, 0.3) 20%,
-          rgba(0, 0, 0, 0.7) 40%,
-          rgba(0, 0, 0, 0.9) 60%,
-          rgba(0, 0, 0, 0.95) 80%,
-          rgba(0, 0, 0, 1) 100%
-        ) !important;
-        backdrop-filter: blur(15px) saturate(0.3) !important;
-        z-index: 999999 !important;
-        pointer-events: auto !important;
-        border-radius: 0 5px 5px 0 !important;
-      }
-      
-      /* تأثير خاص للفل سكرين */
-      .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
-        width: 200px !important;
-        background: linear-gradient(90deg, 
-          transparent 0%, 
-          rgba(0, 0, 0, 0.4) 15%,
+          rgba(0, 0, 0, 0.4) 10%,
           rgba(0, 0, 0, 0.8) 30%,
           rgba(0, 0, 0, 0.95) 50%,
           rgba(0, 0, 0, 1) 70%,
-          rgba(0, 0, 0, 1) 100%
+          #000000 100%
         ) !important;
-        backdrop-filter: blur(25px) saturate(0.1) contrast(0.5) !important;
+        backdrop-filter: blur(25px) saturate(0) !important;
+        z-index: 999999 !important;
+        pointer-events: auto !important;
+        border-radius: 0 !important;
       }
       
-      /* حماية إضافية للشريط العلوي */
-      .ytp-chrome-top {
-        filter: blur(30px) saturate(0) !important;
-        backdrop-filter: blur(35px) !important;
-        background: rgba(0, 0, 0, 0.95) !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-        transform: scale(0) !important;
+      /* تأثير خاص للفل سكرين - تغطية أكبر */
+      .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
+        width: 300px !important;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(0, 0, 0, 0.5) 5%,
+          rgba(0, 0, 0, 0.9) 20%,
+          rgba(0, 0, 0, 1) 40%,
+          #000000 60%,
+          #000000 100%
+        ) !important;
+        backdrop-filter: blur(30px) saturate(0) !important;
       }
       
-      /* تأثير blur على العناصر المنبثقة */
-      .ytp-popup,
-      .ytp-panel,
-      .ytp-contextmenu,
-      .ytp-overflow-menu,
-      [role="dialog"]:not(.live-content):not(.empty-state),
-      [role="menu"]:not(.live-content):not(.empty-state),
-      [role="listbox"]:not(.live-content):not(.empty-state) {
-        filter: blur(50px) saturate(0) contrast(0) brightness(0) !important;
-        backdrop-filter: blur(60px) saturate(0) !important;
-        background: rgba(0, 0, 0, 1) !important;
-        transform: scale(0) rotate(180deg) !important;
-        opacity: 0 !important;
+      /* حماية إضافية للشريط العلوي - إخفاء كامل */
+      .ytp-chrome-top,
+      .ytp-chrome-top *,
+      .ytp-title,
+      .ytp-title-text,
+      .ytp-title-link,
+      .ytp-chrome-top-buttons,
+      .ytp-chrome-top-buttons * {
+        display: none !important;
         visibility: hidden !important;
+        opacity: 0 !important;
         pointer-events: none !important;
         position: absolute !important;
         left: -999999px !important;
@@ -234,102 +215,45 @@ function LiveGrade3() {
         height: 0 !important;
         overflow: hidden !important;
         z-index: -999999 !important;
-        animation: glitchDestroy 0.1s infinite !important;
+        transform: scale(0) !important;
+        filter: blur(100px) !important;
       }
       
-      /* تأثيرات الحركة المضطربة */
-      @keyframes shareBlurGlitch {
-        0% { 
-          transform: scale(0.01) rotate(0deg) skew(0deg, 0deg) translate(-999px, -999px);
-          filter: blur(20px) saturate(0) contrast(0.1) brightness(0.1);
-        }
-        25% { 
-          transform: scale(0.005) rotate(90deg) skew(15deg, 30deg) translate(-1999px, -1999px);
-          filter: blur(35px) saturate(0) contrast(0.05) brightness(0.05);
-        }
-        50% { 
-          transform: scale(0.002) rotate(180deg) skew(45deg, 60deg) translate(-2999px, -2999px);
-          filter: blur(50px) saturate(0) contrast(0.02) brightness(0.02);
-        }
-        75% { 
-          transform: scale(0.001) rotate(270deg) skew(75deg, 90deg) translate(-3999px, -3999px);
-          filter: blur(65px) saturate(0) contrast(0.01) brightness(0.01);
-        }
-        100% { 
-          transform: scale(0.0001) rotate(360deg) skew(90deg, 120deg) translate(-4999px, -4999px);
-          filter: blur(80px) saturate(0) contrast(0) brightness(0);
-        }
-      }
-      
-      @keyframes glitchDestroy {
-        0% { opacity: 0; transform: scale(0) rotate(0deg); }
-        50% { opacity: 0.001; transform: scale(0.001) rotate(180deg); }
-        100% { opacity: 0; transform: scale(0) rotate(360deg); }
-      }
-      
-      /* حماية خاصة للوضع المظلم */
-      @media (prefers-color-scheme: dark) {
-        .ytp-share-button,
-        .ytp-overflow-button,
-        button[aria-label*="Share"],
-        button[aria-label*="شارك"] {
-          filter: blur(25px) saturate(0) contrast(0) brightness(0) invert(1) !important;
-          backdrop-filter: blur(30px) saturate(0) contrast(0.1) !important;
-        }
-      }
-      
-      /* حماية للشاشات عالية الدقة */
-      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-        .ytp-share-button,
-        .ytp-overflow-button,
-        *[class*="share" i]:not(.live-content):not(.empty-state) {
-          filter: blur(30px) saturate(0) contrast(0) brightness(0) !important;
-          backdrop-filter: blur(40px) saturate(0) !important;
-          transform: scale(0.0001) rotate(720deg) !important;
-        }
-      }
-      
-      /* حماية للشاشات الصغيرة */
-      @media (max-width: 768px) {
-        .ytp-chrome-controls .ytp-right-controls::after {
-          width: 120px !important;
-        }
-        
-        .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
-          width: 160px !important;
-        }
-      }
-      
-      /* حماية للشاشات الكبيرة جداً */
-      @media (min-width: 1920px) {
-        .ytp-chrome-controls .ytp-right-controls::after {
-          width: 250px !important;
-        }
-        
-        .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
-          width: 300px !important;
-        }
-      }
-      
-      /* تأثير خاص عند hover */
-      .ytp-chrome-controls:hover .ytp-right-controls::after {
-        backdrop-filter: blur(20px) saturate(0.2) contrast(0.8) !important;
-        background: linear-gradient(90deg, 
-          transparent 0%, 
-          rgba(0, 0, 0, 0.5) 10%,
-          rgba(0, 0, 0, 0.9) 30%,
-          rgba(0, 0, 0, 1) 50%,
-          rgba(0, 0, 0, 1) 100%
-        ) !important;
+      /* حماية من العناصر المنبثقة */
+      .ytp-popup,
+      .ytp-panel,
+      .ytp-contextmenu,
+      .ytp-overflow-menu,
+      .ytp-cards-teaser,
+      .ytp-videowall-still,
+      .ytp-suggestion-set,
+      .ytp-pause-overlay,
+      .ytp-watermark,
+      [role="dialog"]:not(.live-content):not(.empty-state),
+      [role="menu"]:not(.live-content):not(.empty-state),
+      [role="listbox"]:not(.live-content):not(.empty-state) {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        left: -999999px !important;
+        top: -999999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        z-index: -999999 !important;
+        transform: scale(0) !important;
+        filter: blur(100px) !important;
       }
       
       /* منع ظهور tooltips للأزرار المخفية */
       .ytp-tooltip,
       .ytp-tooltip-text,
       [role="tooltip"] {
-        filter: blur(20px) !important;
-        opacity: 0 !important;
+        display: none !important;
         visibility: hidden !important;
+        opacity: 0 !important;
         pointer-events: none !important;
         transform: scale(0) !important;
       }
@@ -339,9 +263,60 @@ function LiveGrade3() {
       [onclick*="Share"],
       [data-action*="share"] {
         pointer-events: none !important;
-        filter: blur(30px) !important;
-        opacity: 0 !important;
+        display: none !important;
         visibility: hidden !important;
+        opacity: 0 !important;
+      }
+      
+      /* حماية خاصة للشاشات الصغيرة */
+      @media (max-width: 768px) {
+        .ytp-chrome-controls .ytp-right-controls::after {
+          width: 150px !important;
+        }
+        
+        .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
+          width: 200px !important;
+        }
+      }
+      
+      /* حماية للشاشات الكبيرة جداً */
+      @media (min-width: 1920px) {
+        .ytp-chrome-controls .ytp-right-controls::after {
+          width: 350px !important;
+        }
+        
+        .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
+          width: 400px !important;
+        }
+      }
+      
+      /* تأثير خاص عند hover - تعزيز الحماية */
+      .ytp-chrome-controls:hover .ytp-right-controls::after {
+        backdrop-filter: blur(35px) saturate(0) !important;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(0, 0, 0, 0.6) 5%,
+          rgba(0, 0, 0, 0.95) 25%,
+          #000000 45%,
+          #000000 100%
+        ) !important;
+      }
+      
+      /* حماية إضافية للعناصر الجديدة */
+      iframe[src*="youtube"] {
+        position: relative !important;
+      }
+      
+      iframe[src*="youtube"]::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        width: 25% !important;
+        height: 100% !important;
+        background: rgba(0, 0, 0, 0.8) !important;
+        z-index: 999999 !important;
+        pointer-events: auto !important;
       }
     `;
     
@@ -353,30 +328,39 @@ function LiveGrade3() {
         mutation.addedNodes.forEach((node) => {
           if (node.nodeType === 1) {
             // تطبيق التأثيرات على العناصر الجديدة
-            const applyBlurEffect = (element) => {
+            const destroyElement = (element) => {
               if (element && !element.closest('.live-content, .empty-state')) {
-                element.style.filter = 'blur(25px) saturate(0) contrast(0.1) brightness(0.2)';
-                element.style.backdropFilter = 'blur(30px) saturate(0.1)';
-                element.style.background = 'rgba(0, 0, 0, 0.95)';
-                element.style.transform = 'scale(0.01) rotate(45deg)';
-                element.style.opacity = '0';
-                element.style.visibility = 'hidden';
-                element.style.pointerEvents = 'none';
-                element.style.position = 'absolute';
-                element.style.left = '-99999px';
-                element.style.top = '-99999px';
-                element.style.zIndex = '-99999';
+                // تدمير كامل للعنصر
+                element.style.cssText = `
+                  display: none !important;
+                  visibility: hidden !important;
+                  opacity: 0 !important;
+                  pointer-events: none !important;
+                  position: absolute !important;
+                  left: -999999px !important;
+                  top: -999999px !important;
+                  width: 0 !important;
+                  height: 0 !important;
+                  overflow: hidden !important;
+                  z-index: -999999 !important;
+                  transform: scale(0) !important;
+                  filter: blur(100px) !important;
+                `;
                 
-                // إزالة العنصر بعد تطبيق التأثيرات
+                // إزالة العنصر نهائياً
                 setTimeout(() => {
-                  if (element.parentNode) {
-                    element.remove();
+                  try {
+                    if (element.parentNode) {
+                      element.remove();
+                    }
+                  } catch (e) {
+                    // تجاهل أخطاء الإزالة
                   }
-                }, 100);
+                }, 50);
               }
             };
             
-            // البحث عن عناصر الشير الجديدة
+            // البحث عن عناصر الشير الجديدة وتدميرها
             const shareSelectors = [
               '.ytp-share-button',
               '.ytp-share-panel',
@@ -384,6 +368,12 @@ function LiveGrade3() {
               '.ytp-popup',
               '.ytp-panel',
               '.ytp-contextmenu',
+              '.ytp-chrome-top',
+              '.ytp-chrome-top-buttons',
+              '.ytp-title',
+              '.ytp-watermark',
+              '.ytp-cards-button',
+              '.ytp-cards-teaser',
               '[class*="share" i]',
               '[id*="share" i]',
               '[aria-label*="Share"]',
@@ -396,11 +386,11 @@ function LiveGrade3() {
             shareSelectors.forEach(selector => {
               try {
                 const elements = node.querySelectorAll ? node.querySelectorAll(selector) : [];
-                elements.forEach(applyBlurEffect);
+                elements.forEach(destroyElement);
                 
                 // فحص العنصر نفسه
                 if (node.matches && node.matches(selector)) {
-                  applyBlurEffect(node);
+                  destroyElement(node);
                 }
               } catch (e) {
                 // تجاهل الأخطاء في التحديد
@@ -419,8 +409,8 @@ function LiveGrade3() {
       attributeFilter: ['class', 'style', 'aria-label', 'role', 'id']
     });
     
-    // تطبيق التأثيرات كل نصف ثانية
-    const blurInterval = setInterval(() => {
+    // تطبيق التأثيرات كل ربع ثانية
+    const destroyInterval = setInterval(() => {
       const shareElements = document.querySelectorAll(`
         .ytp-share-button,
         .ytp-share-panel,
@@ -428,6 +418,12 @@ function LiveGrade3() {
         .ytp-popup:not(.live-content):not(.empty-state),
         .ytp-panel:not(.live-content):not(.empty-state),
         .ytp-contextmenu,
+        .ytp-chrome-top,
+        .ytp-chrome-top-buttons,
+        .ytp-title,
+        .ytp-watermark,
+        .ytp-cards-button,
+        .ytp-cards-teaser,
         [class*="share" i]:not(.live-content):not(.empty-state),
         [id*="share" i]:not(.live-content):not(.empty-state),
         [aria-label*="Share"],
@@ -438,18 +434,21 @@ function LiveGrade3() {
       
       shareElements.forEach(el => {
         if (el && !el.closest('.live-content, .empty-state')) {
-          // تطبيق تأثير blur متقدم
-          el.style.filter = 'blur(30px) saturate(0) contrast(0) brightness(0)';
-          el.style.backdropFilter = 'blur(35px) saturate(0)';
-          el.style.background = 'rgba(0, 0, 0, 1)';
-          el.style.transform = 'scale(0) rotate(180deg)';
-          el.style.opacity = '0';
-          el.style.visibility = 'hidden';
-          el.style.pointerEvents = 'none';
-          el.style.position = 'absolute';
-          el.style.left = '-999999px';
-          el.style.top = '-999999px';
-          el.style.zIndex = '-999999';
+          // تدمير فوري
+          el.style.cssText = `
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            position: absolute !important;
+            left: -999999px !important;
+            top: -999999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            z-index: -999999 !important;
+            transform: scale(0) !important;
+          `;
           
           // محاولة إزالة العنصر
           try {
@@ -459,7 +458,7 @@ function LiveGrade3() {
           }
         }
       });
-    }, 500);
+    }, 250);
     
     // تنظيف عند إلغاء المكون
     return () => {
@@ -468,7 +467,7 @@ function LiveGrade3() {
         document.head.removeChild(style);
       }
       advancedObserver.disconnect();
-      clearInterval(blurInterval);
+      clearInterval(destroyInterval);
     };
   }, []);
 
@@ -691,16 +690,16 @@ function LiveGrade3() {
                   position: 'absolute',
                   bottom: '0px',
                   right: '0px',
-                  width: '250px',
-                  height: '60px',
-                  background: 'rgba(0, 0, 0, 0.9)',
+                  width: '300px',
+                  height: '80px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.95) 70%, #000000 100%)',
                   zIndex: 999999,
                   pointerEvents: 'auto',
                   borderRadius: '0 0 20px 0',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'rgba(255, 255, 255, 0.3)',
+                  color: 'rgba(255, 255, 255, 0.2)',
                   fontSize: '12px',
                   fontWeight: '600'
                 }}
@@ -743,9 +742,9 @@ function LiveGrade3() {
                   position: 'absolute',
                   top: '0px',
                   right: '0px',
-                  width: '180px',
-                  height: '60px',
-                  background: 'rgba(0, 0, 0, 0.8)',
+                  width: '250px',
+                  height: '80px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.6) 30%, rgba(0,0,0,0.9) 60%, #000000 100%)',
                   zIndex: 999998,
                   pointerEvents: 'auto',
                   borderRadius: '0 20px 0 0'
@@ -769,8 +768,8 @@ function LiveGrade3() {
                   position: 'absolute',
                   top: '50%',
                   right: '0px',
-                  width: '120px',
-                  height: '80px',
+                  width: '180px',
+                  height: '120px',
                   background: 'transparent',
                   zIndex: 999997,
                   pointerEvents: 'auto',
@@ -814,8 +813,8 @@ function LiveGrade3() {
                     position: 'absolute',
                     bottom: '0',
                     right: '0',
-                    width: '300px',
-                    height: '100px',
+                    width: '350px',
+                    height: '120px',
                     background: 'transparent',
                     zIndex: 999999,
                     pointerEvents: 'auto',
@@ -1082,6 +1081,24 @@ function LiveGrade3() {
             .control-buttons button {
               width: 100% !important;
             }
+            
+            /* تصغير أحجام طبقات الحماية للموبايل */
+            .youtube-share-blocker-advanced {
+              width: 200px !important;
+              height: 80px !important;
+            }
+            
+            .live-content div[style*="width: 300px"] {
+              width: 180px !important;
+            }
+            
+            .live-content div[style*="width: 250px"] {
+              width: 150px !important;
+            }
+            
+            .live-content div[style*="width: 180px"] {
+              width: 120px !important;
+            }
           }
           
           @media (max-width: 480px) {
@@ -1124,6 +1141,22 @@ function LiveGrade3() {
               top: 15px !important;
               right: 15px !important;
             }
+            
+            /* أحجام أصغر لطبقات الحماية للشاشات الصغيرة جداً */
+            .youtube-share-blocker-advanced {
+              width: 150px !important;
+              height: 60px !important;
+            }
+            
+            .live-content div[style*="bottom: 0px"] {
+              width: 150px !important;
+              height: 60px !important;
+            }
+            
+            .live-content div[style*="top: 0px"] {
+              width: 120px !important;
+              height: 60px !important;
+            }
           }
           
           @media (max-width: 360px) {
@@ -1160,6 +1193,12 @@ function LiveGrade3() {
               height: 12px !important;
               top: 12px !important;
               right: 12px !important;
+            }
+            
+            /* أحجام دقيقة جداً للشاشات الصغيرة */
+            .youtube-share-blocker-advanced {
+              width: 120px !important;
+              height: 50px !important;
             }
           }
           
