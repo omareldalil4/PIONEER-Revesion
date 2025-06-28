@@ -58,12 +58,13 @@ function LiveGrade3() {
     return url;
   };
 
-  // إضافة دالة لحقن CSS ديناميكياً ومراقبة DOM لمنع الشير
+  // إضافة دالة لحقن CSS ديناميكياً ومراقبة DOM لمنع الشير مع تأثير blur متقدم
   useEffect(() => {
-    // حقن CSS قوي لإخفاء أزرار YouTube
-    const style = document.createElement('style');
-    style.textContent = `
-      /* إخفاء أزرار الشير في YouTube بقوة */
+    // حقن CSS متقدم مع تأثير blur وزجاجي على أيقونات الشير
+    const advancedStyle = document.createElement('style');
+    advancedStyle.id = 'youtube-share-blur-protection';
+    advancedStyle.textContent = `
+      /* تأثير blur وزجاجي متقدم على جميع أيقونات الشير */
       .ytp-share-button,
       .ytp-share-button-visible,
       .ytp-share-panel,
@@ -72,14 +73,6 @@ function LiveGrade3() {
       .ytp-share-panel-container,
       .ytp-panel.ytp-share-panel,
       .ytp-popup.ytp-share-panel,
-      div[class*="share"],
-      div[id*="share"],
-      button[data-tooltip-target-id*="share"],
-      button[aria-label*="Share"],
-      button[aria-label*="شارك"],
-      button[title*="Share"],
-      button[title*="شارك"],
-      .ytp-button[data-tooltip-target-id*="ytp-share"],
       .ytp-overflow-button,
       .ytp-overflow-menu,
       .ytp-contextmenu,
@@ -95,153 +88,345 @@ function LiveGrade3() {
       .ytp-watch-later-button,
       .ytp-playlist-menu-button,
       .ytp-chrome-top-buttons,
-      .ytp-settings-menu .ytp-menuitem:nth-child(n+3),
+      button[data-tooltip-target-id*="share"],
+      button[aria-label*="Share"],
+      button[aria-label*="شارك"],
+      button[title*="Share"],
+      button[title*="شارك"],
+      .ytp-button[data-tooltip-target-id*="ytp-share"],
       [role="button"][aria-label*="Share"],
       [role="button"][aria-label*="شارك"],
       [role="dialog"][aria-label*="Share"],
-      [role="dialog"][aria-label*="شارك"] {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        position: absolute !important;
-        left: -9999px !important;
-        top: -9999px !important;
-        width: 0 !important;
-        height: 0 !important;
-        overflow: hidden !important;
-        z-index: -9999 !important;
-        transform: scale(0) !important;
-        clip: rect(0 0 0 0) !important;
-      }
-      
-      /* إخفاء العناصر التي تحتوي على كلمة Share */
+      [role="dialog"][aria-label*="شارك"],
+      div[class*="share" i]:not(.live-content):not(.empty-state),
+      div[id*="share" i]:not(.live-content):not(.empty-state),
       *[class*="share" i]:not(.live-content):not(.empty-state),
       *[id*="share" i]:not(.live-content):not(.empty-state),
       *[data-tooltip*="share" i],
       *[aria-label*="share" i] {
-        display: none !important;
+        /* تأثير blur وتشويش قوي */
+        filter: blur(20px) saturate(0) contrast(0.1) brightness(0.3) !important;
+        backdrop-filter: blur(25px) saturate(0.2) !important;
+        
+        /* تأثير زجاجي شفاف */
+        background: rgba(0, 0, 0, 0.9) !important;
+        background-image: linear-gradient(45deg, 
+          rgba(255, 255, 255, 0.1) 25%, 
+          transparent 25%, 
+          transparent 75%, 
+          rgba(255, 255, 255, 0.1) 75%, 
+          rgba(255, 255, 255, 0.1)
+        ) !important;
+        background-size: 4px 4px !important;
+        
+        /* تشويه إضافي */
+        transform: scale(0.1) rotate(45deg) skew(30deg, 15deg) !important;
+        opacity: 0.01 !important;
         visibility: hidden !important;
-        opacity: 0 !important;
+        
+        /* منع التفاعل */
         pointer-events: none !important;
-      }
-      
-      /* منع النقر الأيمن على الفيديو */
-      .live-content iframe {
-        -webkit-user-select: none !important;
-        -moz-user-select: none !important;
         user-select: none !important;
-        pointer-events: auto !important;
-      }
-      
-      /* إخفاء شريط التحكم العلوي */
-      .ytp-chrome-top {
-        display: none !important;
-      }
-      
-      /* تقليل عرض شريط التحكم للتحكم في الأزرار */
-      .ytp-chrome-controls .ytp-right-controls {
-        max-width: 60px !important;
+        
+        /* إخفاء قوي */
+        position: absolute !important;
+        left: -99999px !important;
+        top: -99999px !important;
+        width: 0 !important;
+        height: 0 !important;
         overflow: hidden !important;
+        z-index: -99999 !important;
+        
+        /* تأثير انتقالي سلس */
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        
+        /* تشويه النص */
+        color: transparent !important;
+        text-shadow: 0 0 20px rgba(0, 0, 0, 0.9) !important;
+        
+        /* حدود ضبابية */
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 50% !important;
+        box-shadow: 
+          inset 0 0 20px rgba(0, 0, 0, 0.9),
+          0 0 20px rgba(0, 0, 0, 0.8),
+          0 0 40px rgba(0, 0, 0, 0.6) !important;
+        
+        /* قطع المحتوى */
+        clip: rect(0 0 0 0) !important;
+        clip-path: polygon(0 0, 0 0, 0 0) !important;
+        
+        /* تأثير matrix للتشويه */
+        transform-origin: center !important;
+        animation: shareBlurGlitch 2s infinite linear !important;
       }
       
-      /* إخفاء آخر 5 أزرار في شريط التحكم */
-      .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-last-child(-n+5) {
-        display: none !important;
+      /* تأثير خاص للوضع العادي */
+      .ytp-chrome-controls .ytp-right-controls {
+        position: relative !important;
+      }
+      
+      .ytp-chrome-controls .ytp-right-controls::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        width: 150px !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(0, 0, 0, 0.3) 20%,
+          rgba(0, 0, 0, 0.7) 40%,
+          rgba(0, 0, 0, 0.9) 60%,
+          rgba(0, 0, 0, 0.95) 80%,
+          rgba(0, 0, 0, 1) 100%
+        ) !important;
+        backdrop-filter: blur(15px) saturate(0.3) !important;
+        z-index: 999999 !important;
+        pointer-events: auto !important;
+        border-radius: 0 5px 5px 0 !important;
+      }
+      
+      /* تأثير خاص للفل سكرين */
+      .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
+        width: 200px !important;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(0, 0, 0, 0.4) 15%,
+          rgba(0, 0, 0, 0.8) 30%,
+          rgba(0, 0, 0, 0.95) 50%,
+          rgba(0, 0, 0, 1) 70%,
+          rgba(0, 0, 0, 1) 100%
+        ) !important;
+        backdrop-filter: blur(25px) saturate(0.1) contrast(0.5) !important;
+      }
+      
+      /* حماية إضافية للشريط العلوي */
+      .ytp-chrome-top {
+        filter: blur(30px) saturate(0) !important;
+        backdrop-filter: blur(35px) !important;
+        background: rgba(0, 0, 0, 0.95) !important;
+        opacity: 0 !important;
         visibility: hidden !important;
+        pointer-events: none !important;
+        transform: scale(0) !important;
       }
       
-      /* إخفاء أي نافذة منبثقة */
+      /* تأثير blur على العناصر المنبثقة */
       .ytp-popup,
       .ytp-panel,
-      [role="dialog"],
-      [role="menu"],
-      [role="listbox"] {
-        display: none !important;
-        visibility: hidden !important;
+      .ytp-contextmenu,
+      .ytp-overflow-menu,
+      [role="dialog"]:not(.live-content):not(.empty-state),
+      [role="menu"]:not(.live-content):not(.empty-state),
+      [role="listbox"]:not(.live-content):not(.empty-state) {
+        filter: blur(50px) saturate(0) contrast(0) brightness(0) !important;
+        backdrop-filter: blur(60px) saturate(0) !important;
+        background: rgba(0, 0, 0, 1) !important;
+        transform: scale(0) rotate(180deg) !important;
         opacity: 0 !important;
+        visibility: hidden !important;
         pointer-events: none !important;
+        position: absolute !important;
+        left: -999999px !important;
+        top: -999999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        z-index: -999999 !important;
+        animation: glitchDestroy 0.1s infinite !important;
       }
       
-      /* منع ظهور أي overlay من YouTube */
-      .ytp-ce-element,
-      .ytp-cards-teaser,
-      .ytp-endscreen-element {
-        display: none !important;
+      /* تأثيرات الحركة المضطربة */
+      @keyframes shareBlurGlitch {
+        0% { 
+          transform: scale(0.01) rotate(0deg) skew(0deg, 0deg) translate(-999px, -999px);
+          filter: blur(20px) saturate(0) contrast(0.1) brightness(0.1);
+        }
+        25% { 
+          transform: scale(0.005) rotate(90deg) skew(15deg, 30deg) translate(-1999px, -1999px);
+          filter: blur(35px) saturate(0) contrast(0.05) brightness(0.05);
+        }
+        50% { 
+          transform: scale(0.002) rotate(180deg) skew(45deg, 60deg) translate(-2999px, -2999px);
+          filter: blur(50px) saturate(0) contrast(0.02) brightness(0.02);
+        }
+        75% { 
+          transform: scale(0.001) rotate(270deg) skew(75deg, 90deg) translate(-3999px, -3999px);
+          filter: blur(65px) saturate(0) contrast(0.01) brightness(0.01);
+        }
+        100% { 
+          transform: scale(0.0001) rotate(360deg) skew(90deg, 120deg) translate(-4999px, -4999px);
+          filter: blur(80px) saturate(0) contrast(0) brightness(0);
+        }
+      }
+      
+      @keyframes glitchDestroy {
+        0% { opacity: 0; transform: scale(0) rotate(0deg); }
+        50% { opacity: 0.001; transform: scale(0.001) rotate(180deg); }
+        100% { opacity: 0; transform: scale(0) rotate(360deg); }
+      }
+      
+      /* حماية خاصة للوضع المظلم */
+      @media (prefers-color-scheme: dark) {
+        .ytp-share-button,
+        .ytp-overflow-button,
+        button[aria-label*="Share"],
+        button[aria-label*="شارك"] {
+          filter: blur(25px) saturate(0) contrast(0) brightness(0) invert(1) !important;
+          backdrop-filter: blur(30px) saturate(0) contrast(0.1) !important;
+        }
+      }
+      
+      /* حماية للشاشات عالية الدقة */
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .ytp-share-button,
+        .ytp-overflow-button,
+        *[class*="share" i]:not(.live-content):not(.empty-state) {
+          filter: blur(30px) saturate(0) contrast(0) brightness(0) !important;
+          backdrop-filter: blur(40px) saturate(0) !important;
+          transform: scale(0.0001) rotate(720deg) !important;
+        }
+      }
+      
+      /* حماية للشاشات الصغيرة */
+      @media (max-width: 768px) {
+        .ytp-chrome-controls .ytp-right-controls::after {
+          width: 120px !important;
+        }
+        
+        .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
+          width: 160px !important;
+        }
+      }
+      
+      /* حماية للشاشات الكبيرة جداً */
+      @media (min-width: 1920px) {
+        .ytp-chrome-controls .ytp-right-controls::after {
+          width: 250px !important;
+        }
+        
+        .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
+          width: 300px !important;
+        }
+      }
+      
+      /* تأثير خاص عند hover */
+      .ytp-chrome-controls:hover .ytp-right-controls::after {
+        backdrop-filter: blur(20px) saturate(0.2) contrast(0.8) !important;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(0, 0, 0, 0.5) 10%,
+          rgba(0, 0, 0, 0.9) 30%,
+          rgba(0, 0, 0, 1) 50%,
+          rgba(0, 0, 0, 1) 100%
+        ) !important;
+      }
+      
+      /* منع ظهور tooltips للأزرار المخفية */
+      .ytp-tooltip,
+      .ytp-tooltip-text,
+      [role="tooltip"] {
+        filter: blur(20px) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transform: scale(0) !important;
+      }
+      
+      /* حماية من JavaScript injection */
+      [onclick*="share"],
+      [onclick*="Share"],
+      [data-action*="share"] {
+        pointer-events: none !important;
+        filter: blur(30px) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
       }
     `;
-    document.head.appendChild(style);
     
-    // مراقب DOM لإزالة أي عناصر شير تظهر ديناميكياً
-    const observer = new MutationObserver((mutations) => {
+    document.head.appendChild(advancedStyle);
+    
+    // مراقب DOM متقدم لتطبيق التأثيرات على العناصر الجديدة
+    const advancedObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === 1) { // Element node
-            // البحث عن عناصر الشير والقوائم المنبثقة
-            const shareElements = node.querySelectorAll ? node.querySelectorAll(`
-              .ytp-share-panel,
-              .ytp-share-button,
-              .ytp-popup,
-              .ytp-panel,
-              .ytp-overflow-menu,
-              .ytp-contextmenu,
-              [class*="share" i],
-              [id*="share" i],
-              [aria-label*="Share"],
-              [aria-label*="شارك"],
-              [role="dialog"],
-              [role="menu"],
-              [role="listbox"]
-            `) : [];
+          if (node.nodeType === 1) {
+            // تطبيق التأثيرات على العناصر الجديدة
+            const applyBlurEffect = (element) => {
+              if (element && !element.closest('.live-content, .empty-state')) {
+                element.style.filter = 'blur(25px) saturate(0) contrast(0.1) brightness(0.2)';
+                element.style.backdropFilter = 'blur(30px) saturate(0.1)';
+                element.style.background = 'rgba(0, 0, 0, 0.95)';
+                element.style.transform = 'scale(0.01) rotate(45deg)';
+                element.style.opacity = '0';
+                element.style.visibility = 'hidden';
+                element.style.pointerEvents = 'none';
+                element.style.position = 'absolute';
+                element.style.left = '-99999px';
+                element.style.top = '-99999px';
+                element.style.zIndex = '-99999';
+                
+                // إزالة العنصر بعد تطبيق التأثيرات
+                setTimeout(() => {
+                  if (element.parentNode) {
+                    element.remove();
+                  }
+                }, 100);
+              }
+            };
             
-            // إخفاء العناصر فوراً
-            shareElements.forEach(el => {
-              if (el && !el.closest('.live-content, .empty-state')) {
-                el.style.display = 'none';
-                el.style.visibility = 'hidden';
-                el.style.opacity = '0';
-                el.style.pointerEvents = 'none';
-                el.style.position = 'absolute';
-                el.style.left = '-9999px';
-                el.style.top = '-9999px';
-                el.style.zIndex = '-9999';
-                el.remove(); // إزالة العنصر نهائياً
+            // البحث عن عناصر الشير الجديدة
+            const shareSelectors = [
+              '.ytp-share-button',
+              '.ytp-share-panel',
+              '.ytp-overflow-button',
+              '.ytp-popup',
+              '.ytp-panel',
+              '.ytp-contextmenu',
+              '[class*="share" i]',
+              '[id*="share" i]',
+              '[aria-label*="Share"]',
+              '[aria-label*="شارك"]',
+              '[role="dialog"]',
+              '[role="menu"]',
+              '[role="listbox"]'
+            ];
+            
+            shareSelectors.forEach(selector => {
+              try {
+                const elements = node.querySelectorAll ? node.querySelectorAll(selector) : [];
+                elements.forEach(applyBlurEffect);
+                
+                // فحص العنصر نفسه
+                if (node.matches && node.matches(selector)) {
+                  applyBlurEffect(node);
+                }
+              } catch (e) {
+                // تجاهل الأخطاء في التحديد
               }
             });
-            
-            // فحص العنصر نفسه
-            if (node.classList && (
-              node.classList.contains('ytp-share-panel') ||
-              node.classList.contains('ytp-popup') ||
-              node.classList.contains('ytp-panel') ||
-              node.getAttribute('role') === 'dialog' ||
-              node.getAttribute('role') === 'menu' ||
-              node.className.toLowerCase().includes('share')
-            )) {
-              node.style.display = 'none';
-              node.remove();
-            }
           }
         });
       });
     });
     
-    // بدء مراقبة التغييرات
-    observer.observe(document.body, {
+    // بدء المراقبة المتقدمة
+    advancedObserver.observe(document.documentElement, {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['class', 'style', 'aria-label']
+      attributeFilter: ['class', 'style', 'aria-label', 'role', 'id']
     });
     
-    // تدمير أي عناصر شير موجودة كل ثانية
-    const destroyInterval = setInterval(() => {
+    // تطبيق التأثيرات كل نصف ثانية
+    const blurInterval = setInterval(() => {
       const shareElements = document.querySelectorAll(`
-        .ytp-share-panel,
         .ytp-share-button,
-        .ytp-popup,
-        .ytp-panel,
-        .ytp-overflow-menu,
+        .ytp-share-panel,
+        .ytp-overflow-button,
+        .ytp-popup:not(.live-content):not(.empty-state),
+        .ytp-panel:not(.live-content):not(.empty-state),
         .ytp-contextmenu,
         [class*="share" i]:not(.live-content):not(.empty-state),
         [id*="share" i]:not(.live-content):not(.empty-state),
@@ -253,18 +438,37 @@ function LiveGrade3() {
       
       shareElements.forEach(el => {
         if (el && !el.closest('.live-content, .empty-state')) {
-          el.remove();
+          // تطبيق تأثير blur متقدم
+          el.style.filter = 'blur(30px) saturate(0) contrast(0) brightness(0)';
+          el.style.backdropFilter = 'blur(35px) saturate(0)';
+          el.style.background = 'rgba(0, 0, 0, 1)';
+          el.style.transform = 'scale(0) rotate(180deg)';
+          el.style.opacity = '0';
+          el.style.visibility = 'hidden';
+          el.style.pointerEvents = 'none';
+          el.style.position = 'absolute';
+          el.style.left = '-999999px';
+          el.style.top = '-999999px';
+          el.style.zIndex = '-999999';
+          
+          // محاولة إزالة العنصر
+          try {
+            el.remove();
+          } catch (e) {
+            // تجاهل أخطاء الإزالة
+          }
         }
       });
-    }, 1000);
+    }, 500);
     
-    // تنظيف عند إزالة المكون
+    // تنظيف عند إلغاء المكون
     return () => {
-      if (document.head.contains(style)) {
+      const style = document.getElementById('youtube-share-blur-protection');
+      if (style && document.head.contains(style)) {
         document.head.removeChild(style);
       }
-      observer.disconnect();
-      clearInterval(destroyInterval);
+      advancedObserver.disconnect();
+      clearInterval(blurInterval);
     };
   }, []);
 
