@@ -58,12 +58,12 @@ function LiveGrade3() {
     return url;
   };
 
-  // نظام حماية متقدم ومتعدد الطبقات ضد أزرار الشير
+  // نظام حماية نهائي ومتطور جداً ضد أزرار الشير في YouTube
   useEffect(() => {
-    // حقن CSS قوي جداً لإخفاء أزرار YouTube
+    // حقن CSS قوي جداً ومتطور لإخفاء أزرار YouTube نهائياً
     const style = document.createElement('style');
     style.textContent = `
-      /* إخفاء أزرار الشير في YouTube بقوة قصوى - طبقة 1 */
+      /* إخفاء نهائي وقوي جداً لجميع أزرار الشير والقوائل - المستوى الأول */
       .ytp-share-button,
       .ytp-share-button-visible,
       .ytp-share-panel,
@@ -72,20 +72,10 @@ function LiveGrade3() {
       .ytp-share-panel-container,
       .ytp-panel.ytp-share-panel,
       .ytp-popup.ytp-share-panel,
-      div[class*="share" i]:not(.live-content):not(.empty-state),
-      div[id*="share" i]:not(.live-content):not(.empty-state),
-      button[data-tooltip-target-id*="share" i],
-      button[aria-label*="Share" i],
-      button[aria-label*="شارك" i],
-      button[title*="Share" i],
-      button[title*="شارك" i],
-      .ytp-button[data-tooltip-target-id*="ytp-share"],
       .ytp-overflow-button,
       .ytp-overflow-menu,
       .ytp-contextmenu,
       .ytp-popup.ytp-contextmenu,
-      .ytp-menuitem[aria-label*="Share" i],
-      .ytp-menuitem[aria-label*="شارك" i],
       .ytp-cards-button,
       .ytp-cards-teaser,
       .ytp-ce-element,
@@ -95,7 +85,42 @@ function LiveGrade3() {
       .ytp-watch-later-button,
       .ytp-playlist-menu-button,
       .ytp-chrome-top-buttons,
-      .ytp-settings-menu .ytp-menuitem:nth-child(n+3),
+      .ytp-watermark,
+      .ytp-title,
+      .ytp-title-text,
+      .ytp-title-link,
+      .ytp-chrome-top {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        position: fixed !important;
+        left: -999999px !important;
+        top: -999999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        z-index: -999999 !important;
+        transform: scale(0) translate3d(-999999px, -999999px, -999999px) !important;
+        clip: rect(0 0 0 0) !important;
+        clip-path: polygon(0 0, 0 0, 0 0) !important;
+        content-visibility: hidden !important;
+        contain: strict !important;
+        isolation: isolate !important;
+        filter: opacity(0) !important;
+      }
+      
+      /* المستوى الثاني - إخفاء بواسطة الخصائص المتقدمة */
+      div[class*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"]),
+      div[id*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"]),
+      button[data-tooltip-target-id*="share" i],
+      button[aria-label*="Share" i],
+      button[aria-label*="شارك" i],
+      button[title*="Share" i],
+      button[title*="شارك" i],
+      .ytp-button[data-tooltip-target-id*="ytp-share"],
+      .ytp-menuitem[aria-label*="Share" i],
+      .ytp-menuitem[aria-label*="شارك" i],
       [role="button"][aria-label*="Share" i],
       [role="button"][aria-label*="شارك" i],
       [role="dialog"][aria-label*="Share" i],
@@ -103,29 +128,9 @@ function LiveGrade3() {
       [role="menu"]:not(.live-content):not(.empty-state),
       [role="listbox"]:not(.live-content):not(.empty-state),
       [role="menuitem"][aria-label*="Share" i],
-      [role="menuitem"][aria-label*="شارك" i] {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        position: fixed !important;
-        left: -99999px !important;
-        top: -99999px !important;
-        width: 0 !important;
-        height: 0 !important;
-        overflow: hidden !important;
-        z-index: -999999 !important;
-        transform: scale(0) translate3d(-99999px, -99999px, -99999px) !important;
-        clip: rect(0 0 0 0) !important;
-        clip-path: polygon(0 0, 0 0, 0 0) !important;
-        content-visibility: hidden !important;
-        contain: strict !important;
-        isolation: isolate !important;
-      }
-      
-      /* طبقة 2 - إخفاء العناصر التي تحتوي على كلمة Share بأي شكل */
-      *[class*="share" i]:not(.live-content):not(.empty-state):not(.youtube-share-blocker),
-      *[id*="share" i]:not(.live-content):not(.empty-state):not(.youtube-share-blocker),
+      [role="menuitem"][aria-label*="شارك" i],
+      *[class*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"]),
+      *[id*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"]),
       *[data-tooltip*="share" i]:not(.live-content):not(.empty-state),
       *[aria-label*="share" i]:not(.live-content):not(.empty-state),
       *[title*="share" i]:not(.live-content):not(.empty-state),
@@ -135,241 +140,273 @@ function LiveGrade3() {
         opacity: 0 !important;
         pointer-events: none !important;
         position: fixed !important;
-        left: -99999px !important;
-        top: -99999px !important;
+        left: -999999px !important;
+        top: -999999px !important;
         z-index: -999999 !important;
         transform: scale(0) !important;
+        filter: opacity(0) blur(999px) !important;
+        content-visibility: hidden !important;
       }
       
-      /* طبقة 3 - منع النقر الأيمن على الفيديو */
-      .live-content iframe {
-        -webkit-user-select: none !important;
-        -moz-user-select: none !important;
-        user-select: none !important;
-        pointer-events: auto !important;
-        -webkit-touch-callout: none !important;
-        -webkit-tap-highlight-color: transparent !important;
-      }
-      
-      /* طبقة 4 - إخفاء شريط التحكم العلوي */
-      .ytp-chrome-top,
-      .ytp-title,
-      .ytp-title-text,
-      .ytp-title-link,
-      .ytp-watermark {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-      }
-      
-      /* طبقة 5 - تقليل عرض شريط التحكم للتحكم في الأزرار */
+      /* المستوى الثالث - إخفاء الأزرار في الشريط الأيمن */
       .ytp-chrome-controls .ytp-right-controls {
-        max-width: 50px !important;
+        max-width: 40px !important;
         overflow: hidden !important;
+        position: relative !important;
       }
       
-      /* طبقة 6 - إخفاء آخر 6 أزرار في شريط التحكم بقوة */
-      .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-last-child(-n+6) {
+      /* إخفاء آخر 8 أزرار في شريط التحكم */
+      .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-last-child(-n+8),
+      .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-child(n+2) {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
         position: absolute !important;
-        left: -9999px !important;
+        left: -99999px !important;
         width: 0 !important;
         height: 0 !important;
+        transform: scale(0) !important;
       }
       
-      /* طبقة 7 - إخفاء أي نافذة منبثقة */
+      /* المستوى الرابع - حجب أي نافذة منبثقة */
       .ytp-popup,
       .ytp-panel,
       [role="dialog"]:not(.live-content):not(.empty-state),
       [role="menu"]:not(.live-content):not(.empty-state),
       [role="listbox"]:not(.live-content):not(.empty-state),
       .ytp-overflow-menu,
-      .ytp-contextmenu {
+      .ytp-contextmenu,
+      .ytp-settings-menu .ytp-menuitem:nth-child(n+3) {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
         position: fixed !important;
-        left: -99999px !important;
-        top: -99999px !important;
+        left: -999999px !important;
+        top: -999999px !important;
         z-index: -999999 !important;
         transform: scale(0) !important;
+        content-visibility: hidden !important;
       }
       
-      /* طبقة 8 - منع ظهور أي overlay من YouTube */
+      /* المستوى الخامس - منع ظهور أي overlay من YouTube */
       .ytp-ce-element,
       .ytp-cards-teaser,
       .ytp-endscreen-element,
       .annotation,
-      .video-annotations {
+      .video-annotations,
+      .ytp-pause-overlay,
+      .ytp-gradient-bottom,
+      .ytp-chrome-top {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
       }
       
-      /* طبقة 9 - حماية إضافية للعناصر التفاعلية */
+      /* المستوى السادس - حماية iframe بشكل كامل */
       iframe[src*="youtube"] {
         -webkit-user-select: none !important;
         -moz-user-select: none !important;
         user-select: none !important;
         -webkit-touch-callout: none !important;
+        -webkit-tap-highlight-color: transparent !important;
       }
       
-      /* طبقة 10 - منع أي تفاعل مع المنطقة اليمنى */
-      .youtube-share-blocker-ultimate {
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        width: 200px !important;
-        height: 100% !important;
-        background: transparent !important;
-        z-index: 999999 !important;
-        pointer-events: auto !important;
-        cursor: not-allowed !important;
-        user-select: none !important;
+      /* المستوى السابع - حجب المنطقة اليمنى بالكامل */
+      .youtube-ultimate-blocker-physical-1,
+      .youtube-ultimate-blocker-physical-2,
+      .youtube-ultimate-blocker-physical-3 {
         -webkit-user-select: none !important;
         -moz-user-select: none !important;
         -ms-user-select: none !important;
+        user-select: none !important;
+        -webkit-touch-callout: none !important;
+        -webkit-tap-highlight-color: transparent !important;
       }
       
-      /* طبقة 11 - حجب المنطقة السفلية اليمنى */
-      .youtube-bottom-blocker {
-        position: absolute !important;
-        bottom: 0 !important;
-        right: 0 !important;
-        width: 300px !important;
-        height: 100px !important;
-        background: rgba(0, 0, 0, 0.01) !important;
-        z-index: 999999 !important;
-        pointer-events: auto !important;
-        cursor: not-allowed !important;
+      /* المستوى الثامن - إزالة فورية لأي عنصر يحتوي على share */
+      *[class*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"]) {
+        animation: hideShareElement 0.001s forwards !important;
       }
       
-      /* طبقة 12 - حجب المنطقة العلوية اليمنى */
-      .youtube-top-blocker {
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        width: 250px !important;
-        height: 80px !important;
-        background: transparent !important;
-        z-index: 999999 !important;
+      @keyframes hideShareElement {
+        to {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          transform: scale(0) translate3d(-999999px, -999999px, -999999px) !important;
+        }
+      }
+      
+      /* المستوى التاسع - منع أي تفاعل مع العناصر المخفية */
+      .ytp-share-button *,
+      .ytp-share-panel *,
+      .ytp-popup *,
+      .ytp-panel *,
+      .ytp-overflow-menu *,
+      .ytp-contextmenu * {
+        pointer-events: none !important;
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+      }
+      
+      /* المستوى العاشر - حماية أقوى للمحتوى */
+      .live-content {
+        position: relative !important;
+        overflow: hidden !important;
+      }
+      
+      .live-content iframe {
         pointer-events: auto !important;
-        cursor: not-allowed !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        user-select: none !important;
+      }
+      
+      /* المستوى الحادي عشر - منع ظهور أي قائمة سياق */
+      iframe[src*="youtube"],
+      iframe[src*="youtube"] * {
+        -webkit-context-menu: none !important;
+        context-menu: none !important;
       }
     `;
     document.head.appendChild(style);
     
-    // مراقب DOM متقدم لإزالة أي عناصر شير تظهر ديناميكياً
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === 1) { // Element node
-            // البحث الشامل عن عناصر الشير
-            const shareSelectors = [
-              '.ytp-share-panel', '.ytp-share-button', '.ytp-popup', '.ytp-panel',
-              '.ytp-overflow-menu', '.ytp-contextmenu', '.ytp-cards-button',
-              '.ytp-endscreen-element', '.ytp-ce-element', '.annotation',
-              '[class*="share" i]', '[id*="share" i]', '[aria-label*="Share"]',
-              '[aria-label*="شارك"]', '[role="dialog"]', '[role="menu"]',
-              '[role="listbox"]', '[role="menuitem"]', '[data-tooltip*="share" i]',
-              '[title*="share" i]', 'button[aria-label*="Share"]',
-              'button[aria-label*="شارك"]', '.ytp-watch-later-button',
-              '.ytp-playlist-menu-button', '.ytp-chrome-top-buttons'
-            ];
-            
-            const shareElements = node.querySelectorAll ? 
-              node.querySelectorAll(shareSelectors.join(', ')) : [];
-            
-            // إزالة فورية وقوية للعناصر
-            shareElements.forEach(el => {
-              if (el && !el.closest('.live-content, .empty-state, .youtube-share-blocker')) {
-                // إخفاء فوري
-                el.style.cssText = `
-                  display: none !important;
-                  visibility: hidden !important;
-                  opacity: 0 !important;
-                  pointer-events: none !important;
-                  position: fixed !important;
-                  left: -99999px !important;
-                  top: -99999px !important;
-                  z-index: -999999 !important;
-                  width: 0 !important;
-                  height: 0 !important;
-                  overflow: hidden !important;
-                  transform: scale(0) !important;
-                `;
-                
-                // إزالة العنصر نهائياً بعد إخفائه
-                setTimeout(() => {
-                  try {
-                    if (el.parentNode) {
-                      el.parentNode.removeChild(el);
-                    }
-                  } catch (e) {
-                    // تجاهل الأخطاء
-                  }
-                }, 0);
-              }
-            });
-            
-            // فحص العنصر نفسه
-            if (node.classList && node.getAttribute) {
-              const classList = Array.from(node.classList || []);
-              const attributes = {
-                class: node.className || '',
-                id: node.id || '',
-                role: node.getAttribute('role') || '',
-                'aria-label': node.getAttribute('aria-label') || '',
-                'data-tooltip': node.getAttribute('data-tooltip') || '',
-                title: node.getAttribute('title') || ''
-              };
-              
-              // فحص شامل للعقد
-              const shouldRemove = 
-                classList.some(cls => cls.toLowerCase().includes('share')) ||
-                Object.values(attributes).some(attr => 
-                  attr.toLowerCase().includes('share') || 
-                  attr.toLowerCase().includes('شارك')
-                ) ||
-                ['ytp-popup', 'ytp-panel', 'ytp-overflow-menu', 'ytp-contextmenu'].some(cls => 
-                  classList.includes(cls)
-                ) ||
-                ['dialog', 'menu', 'listbox', 'menuitem'].includes(attributes.role);
-              
-              if (shouldRemove && !node.closest('.live-content, .empty-state, .youtube-share-blocker')) {
-                node.style.cssText = `
-                  display: none !important;
-                  visibility: hidden !important;
-                  opacity: 0 !important;
-                  pointer-events: none !important;
-                  position: fixed !important;
-                  left: -99999px !important;
-                  top: -99999px !important;
-                  z-index: -999999 !important;
-                `;
-                
-                setTimeout(() => {
-                  try {
-                    if (node.parentNode) {
-                      node.parentNode.removeChild(node);
-                    }
-                  } catch (e) {
-                    // تجاهل الأخطاء
-                  }
-                }, 0);
-              }
+    // مراقب DOM متطور جداً ومتعدد المستويات
+    const createAdvancedObserver = () => {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          // معالجة العقد المضافة
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) { // Element node
+              processShareElements(node);
+            }
+          });
+          
+          // معالجة تغييرات الخصائص
+          if (mutation.type === 'attributes') {
+            const target = mutation.target;
+            if (isShareElement(target)) {
+              hideElementCompletely(target);
             }
           }
         });
       });
-    });
+      
+      return observer;
+    };
     
-    // بدء مراقبة شاملة للتغييرات
+    // دالة فحص العناصر للشير
+    const isShareElement = (element) => {
+      if (!element || !element.getAttribute) return false;
+      
+      const checkAttributes = [
+        'class', 'id', 'aria-label', 'data-tooltip', 'title', 'role'
+      ];
+      
+      const shareKeywords = [
+        'share', 'شارك', 'ytp-share', 'ytp-popup', 'ytp-panel', 
+        'ytp-overflow', 'ytp-contextmenu', 'ytp-cards', 'ytp-endscreen'
+      ];
+      
+      return checkAttributes.some(attr => {
+        const value = (element.getAttribute(attr) || '').toLowerCase();
+        return shareKeywords.some(keyword => value.includes(keyword));
+      }) || shareKeywords.some(keyword => 
+        element.className && element.className.toLowerCase().includes(keyword)
+      );
+    };
+    
+    // دالة إخفاء العناصر بشكل كامل
+    const hideElementCompletely = (element) => {
+      if (!element || element.closest('.live-content, .empty-state') || 
+          (element.className && element.className.includes('youtube-ultimate-blocker'))) {
+        return;
+      }
+      
+      try {
+        // إخفاء فوري وقوي
+        element.style.cssText = `
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          position: fixed !important;
+          left: -999999px !important;
+          top: -999999px !important;
+          z-index: -999999 !important;
+          width: 0 !important;
+          height: 0 !important;
+          overflow: hidden !important;
+          transform: scale(0) translate3d(-999999px, -999999px, -999999px) !important;
+          clip: rect(0 0 0 0) !important;
+          clip-path: polygon(0 0, 0 0, 0 0) !important;
+          content-visibility: hidden !important;
+          contain: strict !important;
+          filter: opacity(0) blur(999px) !important;
+        `;
+        
+        // محاولة إزالة العنصر نهائياً
+        setTimeout(() => {
+          try {
+            if (element.parentNode && element.parentNode.contains(element)) {
+              element.parentNode.removeChild(element);
+            }
+          } catch (e) {
+            // تجاهل الأخطاء
+          }
+        }, 0);
+        
+      } catch (e) {
+        // تجاهل الأخطاء
+      }
+    };
+    
+    // دالة معالجة العناصر
+    const processShareElements = (node) => {
+      try {
+        // فحص العقدة نفسها
+        if (isShareElement(node)) {
+          hideElementCompletely(node);
+          return;
+        }
+        
+        // البحث في العقد الفرعية
+        if (node.querySelectorAll) {
+          const shareSelectors = [
+            '.ytp-share-button', '.ytp-share-panel', '.ytp-popup', '.ytp-panel',
+            '.ytp-overflow-menu', '.ytp-overflow-button', '.ytp-contextmenu', 
+            '.ytp-cards-button', '.ytp-cards-teaser', '.ytp-endscreen-element', 
+            '.ytp-ce-element', '.annotation', '.video-annotations',
+            '.ytp-watch-later-button', '.ytp-playlist-menu-button',
+            '.ytp-chrome-top-buttons', '.ytp-watermark', '.ytp-title',
+            '[class*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"])', 
+            '[id*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"])', 
+            '[aria-label*="Share"]', '[aria-label*="شارك"]', '[role="dialog"]', 
+            '[role="menu"]', '[role="listbox"]', '[role="menuitem"]', 
+            '[data-tooltip*="share" i]', '[title*="share" i]', 
+            'button[aria-label*="Share"]', 'button[aria-label*="شارك"]'
+          ];
+          
+          shareSelectors.forEach(selector => {
+            try {
+              const elements = node.querySelectorAll(selector);
+              elements.forEach(hideElementCompletely);
+            } catch (e) {
+              // تجاهل الأخطاء في العثور على العناصر
+            }
+          });
+        }
+      } catch (e) {
+        // تجاهل الأخطاء
+      }
+    };
+    
+    // بدء المراقبة المتقدمة
+    const observer = createAdvancedObserver();
     observer.observe(document.body, {
       childList: true,
       subtree: true,
@@ -377,14 +414,20 @@ function LiveGrade3() {
       attributeFilter: ['class', 'style', 'aria-label', 'role', 'data-tooltip', 'title', 'id']
     });
     
-    // تدمير منتظم ومكثف لأي عناصر شير
-    const destroyInterval = setInterval(() => {
-      const shareSelectors = [
-        '.ytp-share-panel', '.ytp-share-button', '.ytp-popup', '.ytp-panel',
-        '.ytp-overflow-menu', '.ytp-contextmenu', '.ytp-cards-button',
-        '.ytp-endscreen-element', '.ytp-ce-element', '.annotation',
-        '[class*="share" i]:not(.live-content):not(.empty-state):not(.youtube-share-blocker)',
-        '[id*="share" i]:not(.live-content):not(.empty-state):not(.youtube-share-blocker)',
+    // تدمير دوري ومكثف كل 200ms
+    const fastDestroyInterval = setInterval(() => {
+      const allShareSelectors = [
+        '.ytp-share-button', '.ytp-share-button-visible', '.ytp-share-panel',
+        '.ytp-share-panel-visible', '.ytp-share-panel-content', 
+        '.ytp-share-panel-container', '.ytp-panel.ytp-share-panel',
+        '.ytp-popup.ytp-share-panel', '.ytp-overflow-button', '.ytp-overflow-menu',
+        '.ytp-contextmenu', '.ytp-popup.ytp-contextmenu', '.ytp-cards-button',
+        '.ytp-cards-teaser', '.ytp-endscreen-element', '.ytp-ce-element',
+        '.annotation', '.video-annotations', '.ytp-watch-later-button',
+        '.ytp-playlist-menu-button', '.ytp-chrome-top-buttons', '.ytp-watermark',
+        '.ytp-title', '.ytp-title-text', '.ytp-title-link', '.ytp-chrome-top',
+        '[class*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"])',
+        '[id*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"])',
         '[aria-label*="Share"]:not(.live-content):not(.empty-state)',
         '[aria-label*="شارك"]:not(.live-content):not(.empty-state)',
         '[role="dialog"]:not(.live-content):not(.empty-state)',
@@ -395,87 +438,40 @@ function LiveGrade3() {
         '[title*="share" i]:not(.live-content):not(.empty-state)',
         'button[aria-label*="Share"]:not(.live-content):not(.empty-state)',
         'button[aria-label*="شارك"]:not(.live-content):not(.empty-state)',
-        '.ytp-watch-later-button', '.ytp-playlist-menu-button',
-        '.ytp-chrome-top-buttons', '.ytp-cards-teaser', '.video-annotations'
+        'button[data-tooltip-target-id*="share" i]',
+        'button[title*="Share" i]', 'button[title*="شارك" i]',
+        '.ytp-button[data-tooltip-target-id*="ytp-share"]',
+        '.ytp-menuitem[aria-label*="Share" i]',
+        '.ytp-menuitem[aria-label*="شارك" i]'
       ];
       
-      shareSelectors.forEach(selector => {
+      allShareSelectors.forEach(selector => {
         try {
           const elements = document.querySelectorAll(selector);
-          elements.forEach(el => {
-            if (el && !el.closest('.live-content, .empty-state, .youtube-share-blocker')) {
-              // إخفاء فوري
-              el.style.cssText = `
-                display: none !important;
-                visibility: hidden !important;
-                opacity: 0 !important;
-                pointer-events: none !important;
-                position: fixed !important;
-                left: -99999px !important;
-                top: -99999px !important;
-                z-index: -999999 !important;
-                width: 0 !important;
-                height: 0 !important;
-              `;
-              
-              // محاولة إزالة العنصر
-              try {
-                if (el.parentNode) {
-                  el.parentNode.removeChild(el);
-                }
-              } catch (e) {
-                // تجاهل الأخطاء
-              }
-            }
-          });
-        } catch (e) {
-          // تجاهل الأخطاء في العثور على العناصر
-        }
-      });
-    }, 500); // كل نصف ثانية للحماية القصوى
-    
-    // تدمير إضافي كل ثانية
-    const extraDestroyInterval = setInterval(() => {
-      // البحث عن أي iframe YouTube وحقن CSS إضافي
-      const youtubeIframes = document.querySelectorAll('iframe[src*="youtube"]');
-      youtubeIframes.forEach(iframe => {
-        try {
-          // منع أي تفاعل مع المنطقة اليمنى
-          const container = iframe.closest('.live-content');
-          if (container) {
-            // التأكد من وجود طبقات الحماية
-            if (!container.querySelector('.youtube-share-blocker-ultimate')) {
-              const blocker = document.createElement('div');
-              blocker.className = 'youtube-share-blocker-ultimate';
-              blocker.style.cssText = `
-                position: absolute !important;
-                top: 0 !important;
-                right: 0 !important;
-                width: 200px !important;
-                height: 100% !important;
-                background: transparent !important;
-                z-index: 999999 !important;
-                pointer-events: auto !important;
-                cursor: not-allowed !important;
-              `;
-              
-              // منع جميع أنواع التفاعل
-              ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'contextmenu', 'dblclick'].forEach(event => {
-                blocker.addEventListener(event, (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  e.stopImmediatePropagation();
-                  return false;
-                }, true);
-              });
-              
-              container.appendChild(blocker);
-            }
-          }
+          elements.forEach(hideElementCompletely);
         } catch (e) {
           // تجاهل الأخطاء
         }
       });
+    }, 200);
+    
+    // تدمير إضافي كل ثانية
+    const mainDestroyInterval = setInterval(() => {
+      // إزالة أي عناصر شير جديدة
+      try {
+        const allShareElements = document.querySelectorAll(`
+          .ytp-share-button, .ytp-share-panel, .ytp-popup, .ytp-panel,
+          .ytp-overflow-menu, .ytp-contextmenu, .ytp-cards-button,
+          .ytp-endscreen-element, .ytp-ce-element, .annotation,
+          [class*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"]),
+          [aria-label*="Share"]:not(.live-content):not(.empty-state),
+          [aria-label*="شارك"]:not(.live-content):not(.empty-state)
+        `);
+        
+        allShareElements.forEach(hideElementCompletely);
+      } catch (e) {
+        // تجاهل الأخطاء
+      }
     }, 1000);
     
     // تنظيف عند إزالة المكون
@@ -484,8 +480,8 @@ function LiveGrade3() {
         document.head.removeChild(style);
       }
       observer.disconnect();
-      clearInterval(destroyInterval);
-      clearInterval(extraDestroyInterval);
+      clearInterval(fastDestroyInterval);
+      clearInterval(mainDestroyInterval);
     };
   }, []);
 
@@ -703,156 +699,23 @@ function LiveGrade3() {
                   onSelectStart={(e) => e.preventDefault()}
                 />
                 
-                {/* طبقة حماية قصوى لمنع الوصول لأزرار YouTube - الطبقة الأولى */}
+                {/* الطبقة الفيزيائية الأولى - حجب كامل للجانب الأيمن */}
                 <div 
-                  className="youtube-share-blocker-layer-1"
+                  className="youtube-ultimate-blocker-physical-1"
                   style={{
                     position: 'absolute',
-                    bottom: '0px',
-                    right: '0px',
-                    width: '350px',
-                    height: '80px',
-                    background: 'rgba(0, 0, 0, 0.8)',
-                    zIndex: 999999,
+                    top: 0,
+                    right: 0,
+                    width: '400px',
+                    height: '100%',
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.001) 50%, rgba(0,0,0,0.02) 100%)',
+                    zIndex: 999999999,
                     pointerEvents: 'auto',
-                    borderRadius: '0 0 20px 0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'rgba(255, 255, 255, 0.4)',
-                    fontSize: '12px',
-                    fontWeight: '600',
                     cursor: 'not-allowed',
                     userSelect: 'none',
-                    webkitUserSelect: 'none',
-                    mozUserSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
                     msUserSelect: 'none'
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                  onTouchStart={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                  }}
-                  onDoubleClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                >
-                  🔒 منطقة محمية
-                </div>
-                
-                {/* طبقة حماية علوية يمنى - الطبقة الثانية */}
-                <div 
-                  className="youtube-share-blocker-layer-2"
-                  style={{
-                    position: 'absolute',
-                    top: '0px',
-                    right: '0px',
-                    width: '220px',
-                    height: '80px',
-                    background: 'rgba(0, 0, 0, 0.7)',
-                    zIndex: 999998,
-                    pointerEvents: 'auto',
-                    borderRadius: '0 20px 0 0',
-                    cursor: 'not-allowed'
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                  onTouchStart={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                  }}
-                ></div>
-                
-                {/* طبقة حماية وسطى يمنى - الطبقة الثالثة */}
-                <div 
-                  className="youtube-share-blocker-layer-3"
-                  style={{
-                    position: 'absolute',
-                    top: '30%',
-                    right: '0px',
-                    width: '150px',
-                    height: '40%',
-                    background: 'transparent',
-                    zIndex: 999997,
-                    pointerEvents: 'auto',
-                    cursor: 'not-allowed'
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                  onTouchStart={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    return false;
-                  }}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                  }}
-                ></div>
-                
-                {/* طبقة حماية شاملة للجانب الأيمن بالكامل - الطبقة الرابعة */}
-                <div 
-                  className="youtube-share-blocker-layer-4"
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    right: '0',
-                    width: '300px',
-                    height: '100%',
-                    background: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.01) 70%, rgba(0,0,0,0.1) 100%)',
-                    zIndex: 999996,
-                    pointerEvents: 'auto',
-                    cursor: 'not-allowed'
                   }}
                   onClick={(e) => {
                     e.preventDefault();
@@ -864,11 +727,12 @@ function LiveGrade3() {
                       const shareElements = document.querySelectorAll(`
                         .ytp-share-panel, .ytp-popup, .ytp-panel, .ytp-overflow-menu,
                         .ytp-contextmenu, [role="dialog"], [role="menu"], [role="listbox"],
-                        [class*="share" i]:not(.live-content):not(.empty-state):not(.youtube-share-blocker),
+                        [class*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"]),
                         [aria-label*="Share"], [aria-label*="شارك"]
                       `);
                       shareElements.forEach(el => {
-                        if (el && !el.closest('.live-content, .empty-state, .youtube-share-blocker')) {
+                        if (el && !el.closest('.live-content, .empty-state') && 
+                            !el.className.includes('youtube-ultimate-blocker')) {
                           el.style.display = 'none !important';
                           el.style.visibility = 'hidden !important';
                           el.style.opacity = '0 !important';
@@ -902,7 +766,119 @@ function LiveGrade3() {
                     e.stopImmediatePropagation();
                     return false;
                   }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  }}
                   onDoubleClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onWheel={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  }}
+                  onKeyDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  }}
+                />
+                
+                {/* الطبقة الفيزيائية الثانية - حجب المنطقة السفلية اليمنى */}
+                <div 
+                  className="youtube-ultimate-blocker-physical-2"
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    width: '450px',
+                    height: '100px',
+                    background: 'rgba(0, 0, 0, 0.9)',
+                    zIndex: 999999998,
+                    pointerEvents: 'auto',
+                    cursor: 'not-allowed',
+                    borderRadius: '0 0 20px 0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'rgba(255, 255, 255, 0.3)',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none'
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  }}
+                  onDoubleClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                >
+                  🔒 منطقة محمية بالكامل
+                </div>
+                
+                {/* الطبقة الفيزيائية الثالثة - حجب المنطقة العلوية اليمنى */}
+                <div 
+                  className="youtube-ultimate-blocker-physical-3"
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    width: '300px',
+                    height: '100px',
+                    background: 'rgba(0, 0, 0, 0.8)',
+                    zIndex: 999999997,
+                    pointerEvents: 'auto',
+                    cursor: 'not-allowed',
+                    borderRadius: '0 20px 0 0',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none'
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onTouchStart={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     e.stopImmediatePropagation();
@@ -915,24 +891,71 @@ function LiveGrade3() {
                   }}
                 ></div>
                 
-                {/* طبقة حماية للمنطقة السفلية بالكامل - الطبقة الخامسة */}
+                {/* الطبقة الفيزيائية الرابعة - حجب الوسط الأيمن */}
                 <div 
-                  className="youtube-share-blocker-layer-5"
+                  className="youtube-ultimate-blocker-physical-4"
                   style={{
                     position: 'absolute',
-                    bottom: '0',
-                    left: '0',
-                    width: '100%',
-                    height: '60px',
-                    background: 'linear-gradient(0deg, rgba(0,0,0,0.1) 0%, transparent 100%)',
-                    zIndex: 999995,
-                    pointerEvents: 'none'
+                    top: '30%',
+                    right: 0,
+                    width: '180px',
+                    height: '40%',
+                    background: 'transparent',
+                    zIndex: 999999996,
+                    pointerEvents: 'auto',
+                    cursor: 'not-allowed',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none'
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
                   }}
                 ></div>
                 
-                {/* طبقة حماية نهائية وشاملة - الطبقة السادسة */}
+                {/* الطبقة الفيزيائية الخامسة - حجب المنطقة السفلية بالكامل */}
                 <div 
-                  className="youtube-share-blocker-ultimate"
+                  className="youtube-ultimate-blocker-physical-5"
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '80px',
+                    background: 'linear-gradient(0deg, rgba(0,0,0,0.02) 0%, transparent 100%)',
+                    zIndex: 999999995,
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none'
+                  }}
+                ></div>
+                
+                {/* طبقة حماية شاملة ونهائية ضد أي تفاعل مع اليوتيوب */}
+                <div 
+                  className="youtube-ultimate-blocker-final-layer"
                   style={{
                     position: 'absolute',
                     top: 0,
@@ -941,7 +964,11 @@ function LiveGrade3() {
                     height: '100%',
                     zIndex: 1,
                     pointerEvents: 'none',
-                    background: 'transparent'
+                    background: 'transparent',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none'
                   }}
                   onContextMenu={(e) => e.preventDefault()}
                   onSelectStart={(e) => e.preventDefault()}
@@ -1105,12 +1132,12 @@ function LiveGrade3() {
           }
           
           /* حماية قصوى ضد أزرار الشير - CSS إضافي */
-          .youtube-share-blocker-layer-1,
-          .youtube-share-blocker-layer-2,
-          .youtube-share-blocker-layer-3,
-          .youtube-share-blocker-layer-4,
-          .youtube-share-blocker-layer-5,
-          .youtube-share-blocker-ultimate {
+          .youtube-ultimate-blocker-physical-1,
+          .youtube-ultimate-blocker-physical-2,
+          .youtube-ultimate-blocker-physical-3,
+          .youtube-ultimate-blocker-physical-4,
+          .youtube-ultimate-blocker-physical-5,
+          .youtube-ultimate-blocker-final-layer {
             -webkit-user-select: none !important;
             -moz-user-select: none !important;
             -ms-user-select: none !important;
@@ -1120,12 +1147,12 @@ function LiveGrade3() {
           }
           
           /* منع جميع أشكال التفاعل مع طبقات الحماية */
-          .youtube-share-blocker-layer-1 *,
-          .youtube-share-blocker-layer-2 *,
-          .youtube-share-blocker-layer-3 *,
-          .youtube-share-blocker-layer-4 *,
-          .youtube-share-blocker-layer-5 *,
-          .youtube-share-blocker-ultimate * {
+          .youtube-ultimate-blocker-physical-1 *,
+          .youtube-ultimate-blocker-physical-2 *,
+          .youtube-ultimate-blocker-physical-3 *,
+          .youtube-ultimate-blocker-physical-4 *,
+          .youtube-ultimate-blocker-physical-5 *,
+          .youtube-ultimate-blocker-final-layer * {
             pointer-events: none !important;
             user-select: none !important;
             -webkit-user-select: none !important;
@@ -1167,22 +1194,27 @@ function LiveGrade3() {
             }
             
             /* تقليل حجم طبقات الحماية للموبايل */
-            .youtube-share-blocker-layer-1 {
-              width: 280px !important;
-              height: 70px !important;
+            .youtube-ultimate-blocker-physical-1 {
+              width: 320px !important;
             }
             
-            .youtube-share-blocker-layer-2 {
-              width: 180px !important;
-              height: 60px !important;
+            .youtube-ultimate-blocker-physical-2 {
+              width: 350px !important;
+              height: 80px !important;
+              font-size: 10px !important;
             }
             
-            .youtube-share-blocker-layer-3 {
-              width: 120px !important;
-            }
-            
-            .youtube-share-blocker-layer-4 {
+            .youtube-ultimate-blocker-physical-3 {
               width: 250px !important;
+              height: 80px !important;
+            }
+            
+            .youtube-ultimate-blocker-physical-4 {
+              width: 150px !important;
+            }
+            
+            .youtube-ultimate-blocker-physical-5 {
+              height: 70px !important;
             }
           }
           
@@ -1209,23 +1241,27 @@ function LiveGrade3() {
             }
             
             /* تقليل حجم طبقات الحماية أكثر للشاشات الصغيرة */
-            .youtube-share-blocker-layer-1 {
-              width: 250px !important;
-              height: 60px !important;
-              font-size: 10px !important;
+            .youtube-ultimate-blocker-physical-1 {
+              width: 280px !important;
             }
             
-            .youtube-share-blocker-layer-2 {
-              width: 150px !important;
-              height: 50px !important;
+            .youtube-ultimate-blocker-physical-2 {
+              width: 300px !important;
+              height: 70px !important;
+              font-size: 9px !important;
             }
             
-            .youtube-share-blocker-layer-3 {
-              width: 100px !important;
-            }
-            
-            .youtube-share-blocker-layer-4 {
+            .youtube-ultimate-blocker-physical-3 {
               width: 200px !important;
+              height: 70px !important;
+            }
+            
+            .youtube-ultimate-blocker-physical-4 {
+              width: 120px !important;
+            }
+            
+            .youtube-ultimate-blocker-physical-5 {
+              height: 60px !important;
             }
           }
           
@@ -1247,23 +1283,27 @@ function LiveGrade3() {
             }
             
             /* تقليل حجم طبقات الحماية للشاشات الصغيرة جداً */
-            .youtube-share-blocker-layer-1 {
-              width: 200px !important;
-              height: 50px !important;
-              font-size: 9px !important;
+            .youtube-ultimate-blocker-physical-1 {
+              width: 220px !important;
             }
             
-            .youtube-share-blocker-layer-2 {
-              width: 120px !important;
-              height: 40px !important;
+            .youtube-ultimate-blocker-physical-2 {
+              width: 250px !important;
+              height: 60px !important;
+              font-size: 8px !important;
             }
             
-            .youtube-share-blocker-layer-3 {
-              width: 80px !important;
-            }
-            
-            .youtube-share-blocker-layer-4 {
+            .youtube-ultimate-blocker-physical-3 {
               width: 150px !important;
+              height: 60px !important;
+            }
+            
+            .youtube-ultimate-blocker-physical-4 {
+              width: 100px !important;
+            }
+            
+            .youtube-ultimate-blocker-physical-5 {
+              height: 50px !important;
             }
           }
           
@@ -1315,18 +1355,18 @@ function LiveGrade3() {
           }
           
           /* حماية إضافية ضد طبقات YouTube */
-          .youtube-share-blocker-layer-1:hover,
-          .youtube-share-blocker-layer-2:hover,
-          .youtube-share-blocker-layer-3:hover,
-          .youtube-share-blocker-layer-4:hover {
-            background: rgba(255, 0, 0, 0.05) !important;
+          .youtube-ultimate-blocker-physical-1:hover,
+          .youtube-ultimate-blocker-physical-2:hover,
+          .youtube-ultimate-blocker-physical-3:hover,
+          .youtube-ultimate-blocker-physical-4:hover {
+            background: rgba(255, 0, 0, 0.03) !important;
           }
           
-          .youtube-share-blocker-layer-1:active,
-          .youtube-share-blocker-layer-2:active,
-          .youtube-share-blocker-layer-3:active,
-          .youtube-share-blocker-layer-4:active {
-            background: rgba(255, 0, 0, 0.1) !important;
+          .youtube-ultimate-blocker-physical-1:active,
+          .youtube-ultimate-blocker-physical-2:active,
+          .youtube-ultimate-blocker-physical-3:active,
+          .youtube-ultimate-blocker-physical-4:active {
+            background: rgba(255, 0, 0, 0.05) !important;
           }
           
           @media (prefers-reduced-motion: reduce) {
@@ -1362,6 +1402,128 @@ function LiveGrade3() {
               color: #000 !important;
               background: #fff !important;
             }
+          }
+          
+         /* حماية شاملة ضد جميع عناصر الشير */
+          .youtube-ultimate-blocker-physical-1,
+          .youtube-ultimate-blocker-physical-2,
+          .youtube-ultimate-blocker-physical-3,
+          .youtube-ultimate-blocker-physical-4,
+          .youtube-ultimate-blocker-physical-5 {
+            position: absolute !important;
+            z-index: 999999999 !important;
+            pointer-events: auto !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            cursor: not-allowed !important;
+          }
+          
+          /* منع أي تفاعل مع العناصر داخل طبقات الحماية */
+          .youtube-ultimate-blocker-physical-1 *,
+          .youtube-ultimate-blocker-physical-2 *,
+          .youtube-ultimate-blocker-physical-3 *,
+          .youtube-ultimate-blocker-physical-4 *,
+          .youtube-ultimate-blocker-physical-5 * {
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: not-allowed !important;
+          }
+          
+          /* حماية إضافية لمنع ظهور قوائم YouTube */
+          .ytp-share-button,
+          .ytp-share-panel,
+          .ytp-popup,
+          .ytp-panel,
+          .ytp-overflow-menu,
+          .ytp-contextmenu,
+          .ytp-cards-button,
+          .ytp-endscreen-element,
+          .ytp-ce-element,
+          .annotation,
+          .video-annotations,
+          .ytp-watch-later-button,
+          .ytp-playlist-menu-button,
+          .ytp-chrome-top-buttons,
+          .ytp-watermark,
+          .ytp-title,
+          .ytp-chrome-top,
+          [class*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"]),
+          [id*="share" i]:not(.live-content):not(.empty-state):not([class*="youtube-ultimate-blocker"]),
+          [aria-label*="Share"]:not(.live-content):not(.empty-state),
+          [aria-label*="شارك"]:not(.live-content):not(.empty-state),
+          [role="dialog"]:not(.live-content):not(.empty-state),
+          [role="menu"]:not(.live-content):not(.empty-state),
+          [role="listbox"]:not(.live-content):not(.empty-state) {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            position: fixed !important;
+            left: -999999px !important;
+            top: -999999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            z-index: -999999 !important;
+            transform: scale(0) translate3d(-999999px, -999999px, -999999px) !important;
+            clip: rect(0 0 0 0) !important;
+            clip-path: polygon(0 0, 0 0, 0 0) !important;
+            content-visibility: hidden !important;
+            contain: strict !important;
+            filter: opacity(0) blur(999px) !important;
+          }
+          
+          /* إخفاء قوي للغاية لأزرار شريط التحكم الأيمن */
+          .ytp-chrome-controls .ytp-right-controls {
+            max-width: 30px !important;
+            overflow: hidden !important;
+            position: relative !important;
+          }
+          
+          .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-last-child(-n+10),
+          .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-child(n+2) {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            position: absolute !important;
+            left: -99999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            transform: scale(0) !important;
+          }
+          
+          /* حماية نهائية للفيديو */
+          .live-content iframe {
+            border: none !important;
+            outline: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            pointer-events: auto !important;
+          }
+          
+          /* منع السحب والنقر الأيمن */
+          .live-content,
+          .live-content iframe,
+          .live-content * {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-context-menu: none !important;
+            context-menu: none !important;
           }
         `}
       </style>
