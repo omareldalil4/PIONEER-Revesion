@@ -58,6 +58,94 @@ function LiveGrade3() {
     return url;
   };
 
+  // إضافة دالة لحقن CSS ديناميكياً لإخفاء أزرار الشير
+  useEffect(() => {
+    // حقن CSS لإخفاء أزرار YouTube
+    const style = document.createElement('style');
+    style.textContent = `
+      /* إخفاء أزرار الشير في YouTube بقوة */
+      .ytp-share-button,
+      .ytp-share-button-visible,
+      button[data-tooltip-target-id*="share"],
+      button[aria-label*="Share"],
+      button[aria-label*="شارك"],
+      button[title*="Share"],
+      button[title*="شارك"],
+      .ytp-button[data-tooltip-target-id*="ytp-share"],
+      .ytp-share-panel,
+      .ytp-overflow-button,
+      .ytp-contextmenu,
+      .ytp-popup.ytp-contextmenu,
+      .ytp-menuitem[aria-label*="Share"],
+      .ytp-menuitem[aria-label*="شارك"],
+      .ytp-cards-button,
+      .ytp-cards-teaser,
+      .ytp-ce-element,
+      .ytp-endscreen-element,
+      .annotation,
+      .video-annotations,
+      .ytp-watch-later-button,
+      .ytp-playlist-menu-button,
+      .ytp-chrome-top-buttons,
+      .ytp-overflow-menu,
+      .ytp-settings-menu .ytp-menuitem:nth-child(n+3),
+      [role="button"][aria-label*="Share"],
+      [role="button"][aria-label*="شارك"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        left: -9999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        z-index: -1 !important;
+      }
+      
+      /* إخفاء العناصر التي تحتوي على كلمة Share */
+      *[class*="share" i],
+      *[id*="share" i],
+      *[data-tooltip*="share" i] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+      }
+      
+      /* منع النقر الأيمن على الفيديو */
+      .live-content iframe {
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        user-select: none !important;
+        pointer-events: auto !important;
+      }
+      
+      /* إخفاء شريط التحكم العلوي */
+      .ytp-chrome-top {
+        display: none !important;
+      }
+      
+      /* تقليل عرض شريط التحكم للتحكم في الأزرار */
+      .ytp-chrome-controls .ytp-right-controls {
+        max-width: 100px !important;
+        overflow: hidden !important;
+      }
+      
+      /* إخفاء آخر 3 أزرار في شريط التحكم */
+      .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-last-child(-n+3) {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // تنظيف عند إزالة المكون
+    return () => {
+      if (document.head.contains(style)) {
+        document.head.removeChild(style);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const fetchLiveStream = async () => {
       try {
@@ -238,7 +326,7 @@ function LiveGrade3() {
                 🔴 LIVE
               </div>
 
-              {/* الفيديو مع طبقة إخفاء إضافية */}
+              {/* الفيديو مع طبقة إخفاء متقدمة */}
               <div style={{
                 position: 'relative',
                 paddingBottom: '56.25%', // نسبة 16:9
@@ -266,7 +354,48 @@ function LiveGrade3() {
                   }}
                   // إضافة sandbox للأمان مع منع الشير والتحميل
                   sandbox="allow-scripts allow-same-origin allow-presentation"
+                  // منع النقر الأيمن والسحب
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
+                  onSelectStart={(e) => e.preventDefault()}
                 />
+                
+                {/* طبقة إخفاء شاملة لأزرار YouTube */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '40px',
+                  right: '10px',
+                  width: '200px',
+                  height: '50px',
+                  background: 'transparent',
+                  zIndex: 100,
+                  pointerEvents: 'none'
+                }}></div>
+                
+                {/* طبقة إخفاء الزاوية اليمنى العلوية */}
+                <div style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  width: '120px',
+                  height: '50px',
+                  background: 'transparent',
+                  zIndex: 100,
+                  pointerEvents: 'none'
+                }}></div>
+                
+                {/* طبقة إخفاء شريط التحكم السفلي (منطقة الشير) */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0px',
+                  right: '0px',
+                  width: '150px',
+                  height: '48px',
+                  background: 'rgba(0, 0, 0, 0.8)',
+                  zIndex: 99,
+                  pointerEvents: 'none',
+                  borderRadius: '0 0 20px 0'
+                }}></div>
                 
                 {/* طبقة حماية إضافية لمنع النقر الأيمن والشير */}
                 <div 
@@ -285,17 +414,36 @@ function LiveGrade3() {
                   onDragStart={(e) => e.preventDefault()}
                 ></div>
                 
-                {/* طبقة شفافة لإخفاء بعض عناصر YouTube */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  width: '100px',
-                  height: '40px',
-                  background: 'transparent',
-                  zIndex: 5,
-                  pointerEvents: 'none'
-                }}></div>
+                {/* overlay خفي لمنع الوصول لأزرار YouTube */}
+                <div 
+                  className="youtube-overlay-blocker"
+                  style={{
+                    position: 'absolute',
+                    bottom: '0',
+                    right: '0',
+                    width: '200px',
+                    height: '60px',
+                    background: 'transparent',
+                    zIndex: 999,
+                    pointerEvents: 'auto',
+                    cursor: 'default'
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  }}
+                ></div>
               </div>
 
               {/* معلومات إضافية */}
@@ -601,7 +749,8 @@ function LiveGrade3() {
             outline-offset: 2px !important;
           }
           
-          /* إخفاء عناصر YouTube وأزرار الشير */
+          /* إخفاء عناصر YouTube وأزرار الشير بقوة شديدة */
+          iframe[src*="youtube.com"] ~ *,
           .ytp-chrome-top,
           .ytp-title,
           .ytp-title-text,
@@ -621,16 +770,62 @@ function LiveGrade3() {
           .ytp-endscreen-element,
           .annotation,
           .video-annotations,
-          [title*="Share"],
-          [title*="شارك"],
-          [aria-label*="Share"],
-          [aria-label*="شارك"],
-          .ytp-chrome-controls .ytp-button[data-tooltip-target-id*="share"],
-          .ytp-menuitem[role="menuitemradio"]:has-text("Share") {
+          button[data-tooltip-target-id*="share"],
+          button[aria-label*="Share"],
+          button[aria-label*="شارك"],
+          button[title*="Share"],
+          button[title*="شارك"],
+          .ytp-button[data-tooltip-target-id*="ytp-share"],
+          .ytp-share-panel,
+          .ytp-menuitem[aria-label*="Share"],
+          .ytp-menuitem[aria-label*="شارك"],
+          [role="button"][aria-label*="Share"],
+          [role="button"][aria-label*="شارك"],
+          *[class*="share" i],
+          *[id*="share" i],
+          *[data-tooltip*="share" i],
+          .ytp-overflow-menu,
+          .ytp-settings-menu .ytp-menuitem:nth-child(n+3) {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
             pointer-events: none !important;
+            position: absolute !important;
+            left: -9999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            z-index: -9999 !important;
+            transform: scale(0) !important;
+          }
+          
+          /* إخفاء أزرار التحكم الإضافية */
+          .ytp-chrome-controls .ytp-right-controls {
+            max-width: 80px !important;
+            overflow: hidden !important;
+          }
+          
+          .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-last-child(-n+4) {
+            display: none !important;
+            visibility: hidden !important;
+          }
+          
+          /* منع ظهور القوائم المنبثقة */
+          .ytp-popup,
+          .ytp-contextmenu,
+          .ytp-overflow-menu {
+            display: none !important;
+            visibility: hidden !important;
+          }
+          
+          /* طبقة حجب الشير */
+          .youtube-overlay-blocker {
+            background: rgba(0, 0, 0, 0.01) !important;
+            cursor: not-allowed !important;
+          }
+          
+          .youtube-overlay-blocker:hover {
+            background: rgba(255, 0, 0, 0.1) !important;
           }
           
           @media (prefers-reduced-motion: reduce) {
