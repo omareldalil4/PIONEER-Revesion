@@ -7,7 +7,7 @@ function LiveGrade3() {
   const [liveStreamUrl, setLiveStreamUrl] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // دالة لتحويل رابط يوتيوب إلى رابط embed
+  // دالة لتحويل رابط يوتيوب إلى رابط embed مع إخفاء معلومات القناة
   const convertYouTubeURL = (url) => {
     if (!url) return '';
     
@@ -31,11 +31,26 @@ function LiveGrade3() {
     }
     // رابط embed مباشر
     else if (url.includes('youtube.com/embed/')) {
-      return url;
+      const match = url.match(/embed\/([a-zA-Z0-9_-]+)/);
+      if (match) videoId = match[1];
     }
     
     if (videoId) {
-      return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=1&showinfo=1&rel=0&modestbranding=1`;
+      // إعدادات YouTube لإخفاء معلومات القناة قدر الإمكان
+      return `https://www.youtube.com/embed/${videoId}?` +
+        'autoplay=1&' +           // تشغيل تلقائي
+        'mute=0&' +               // عدم كتم الصوت
+        'controls=1&' +           // إظهار أزرار التحكم
+        'showinfo=0&' +           // إخفاء معلومات الفيديو (deprecated لكن قد يعمل)
+        'rel=0&' +                // عدم إظهار فيديوهات مقترحة من قنوات أخرى
+        'modestbranding=1&' +     // إخفاء شعار YouTube قدر الإمكان
+        'iv_load_policy=3&' +     // إخفاء التعليقات التوضيحية
+        'cc_load_policy=0&' +     // إخفاء الترجمة التلقائية
+        'fs=1&' +                 // السماح بملء الشاشة
+        'disablekb=0&' +          // السماح بالتحكم عبر الكيبورد
+        'playsinline=1&' +        // تشغيل داخل المتصفح في الموبايل
+        'enablejsapi=1&' +        // تفعيل JavaScript API
+        'origin=' + window.location.origin; // تحديد المصدر للأمان
     }
     
     return url;
@@ -221,7 +236,7 @@ function LiveGrade3() {
                 🔴 LIVE
               </div>
 
-              {/* الفيديو */}
+              {/* الفيديو مع طبقة إخفاء إضافية */}
               <div style={{
                 position: 'relative',
                 paddingBottom: '56.25%', // نسبة 16:9
@@ -229,11 +244,12 @@ function LiveGrade3() {
                 borderRadius: '20px',
                 overflow: 'hidden',
                 border: '3px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)'
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+                background: '#000' // خلفية سوداء للفيديو
               }}>
                 <iframe
                   src={liveStreamUrl}
-                  title="البث المباشر - يوتيوب"
+                  title="البث المباشر التعليمي"
                   frameBorder="0"
                   allowFullScreen
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -242,9 +258,25 @@ function LiveGrade3() {
                     top: 0,
                     left: 0,
                     width: '100%',
-                    height: '100%'
+                    height: '100%',
+                    border: 'none',
+                    outline: 'none'
                   }}
+                  // إضافة sandbox للأمان مع السماح بالعمليات المطلوبة فقط
+                  sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
                 />
+                
+                {/* طبقة شفافة لإخفاء بعض عناصر YouTube */}
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  width: '100px',
+                  height: '40px',
+                  background: 'transparent',
+                  zIndex: 5,
+                  pointerEvents: 'none'
+                }}></div>
               </div>
 
               {/* معلومات إضافية */}
@@ -252,15 +284,60 @@ function LiveGrade3() {
                 marginTop: '20px',
                 textAlign: 'center'
               }}>
-                <p style={{
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  margin: 0,
-                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '15px',
+                  padding: '15px',
+                  marginBottom: '15px'
                 }}>
-                  📺 يمكنك تكبير الشاشة للحصول على تجربة أفضل
-                </p>
+                  <p style={{
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    margin: '0 0 10px 0',
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
+                  }}>
+                    📺 يمكنك تكبير الشاشة للحصول على تجربة أفضل
+                  </p>
+                  <p style={{
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: '0.9rem',
+                    margin: 0,
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
+                  }}>
+                    🎯 للحصول على أفضل جودة، تأكد من سرعة الإنترنت
+                  </p>
+                </div>
+                
+                {/* أزرار إضافية للتحكم */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  flexWrap: 'wrap'
+                }}>
+                  <button
+                    onClick={() => window.location.reload()}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '10px',
+                      color: 'white',
+                      padding: '8px 15px',
+                      fontSize: '0.9rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                    }}
+                  >
+                    🔄 تحديث البث
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
@@ -319,7 +396,8 @@ function LiveGrade3() {
                 }}>
                   <li style={{ marginBottom: '8px' }}>🔄 تحديث الصفحة تلقائياً كل 15 ثانية</li>
                   <li style={{ marginBottom: '8px' }}>📱 يمكنك مشاهدة البث من الهاتف أو الكمبيوتر</li>
-                  <li>🔔 ستظهر إشارة حمراء عند بدء البث</li>
+                  <li style={{ marginBottom: '8px' }}>🔔 ستظهر إشارة حمراء عند بدء البث</li>
+                  <li>🌐 تأكد من قوة الإنترنت لأفضل جودة</li>
                 </ul>
               </div>
             </div>
@@ -403,6 +481,15 @@ function LiveGrade3() {
             .header-section p {
               font-size: 1rem !important;
             }
+            
+            .control-buttons {
+              flex-direction: column !important;
+              gap: 8px !important;
+            }
+            
+            .control-buttons button {
+              width: 100% !important;
+            }
           }
           
           @media (max-width: 480px) {
@@ -484,9 +571,29 @@ function LiveGrade3() {
             }
           }
           
+          /* تحسين iframe للبث */
+          iframe {
+            border: none !important;
+            outline: none !important;
+          }
+          
           iframe:focus {
-            outline: 3px solid rgba(255, 255, 255, 0.5);
-            outline-offset: 2px;
+            outline: 3px solid rgba(255, 255, 255, 0.5) !important;
+            outline-offset: 2px !important;
+          }
+          
+          /* إخفاء عناصر YouTube قدر الإمكان */
+          .ytp-chrome-top,
+          .ytp-title,
+          .ytp-title-text,
+          .ytp-title-link,
+          .ytp-chrome-top-buttons,
+          .ytp-watermark,
+          .ytp-cards-teaser,
+          .ytp-ce-element {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
           }
           
           @media (prefers-reduced-motion: reduce) {
@@ -522,6 +629,17 @@ function LiveGrade3() {
               color: #000 !important;
               background: #fff !important;
             }
+          }
+          
+          /* تحسين الأداء */
+          .live-content {
+            will-change: transform;
+            transform: translateZ(0);
+          }
+          
+          iframe {
+            will-change: auto;
+            backface-visibility: hidden;
           }
         `}
       </style>
