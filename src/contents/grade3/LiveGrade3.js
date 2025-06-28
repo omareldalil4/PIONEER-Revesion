@@ -36,12 +36,12 @@ function LiveGrade3() {
     }
     
     if (videoId) {
-      // إعدادات YouTube لإخفاء معلومات القناة قدر الإمكان
+      // إعدادات YouTube لإخفاء معلومات القناة وإيقاف الشير
       return `https://www.youtube.com/embed/${videoId}?` +
         'autoplay=1&' +           // تشغيل تلقائي
         'mute=0&' +               // عدم كتم الصوت
-        'controls=1&' +           // إظهار أزرار التحكم
-        'showinfo=0&' +           // إخفاء معلومات الفيديو (deprecated لكن قد يعمل)
+        'controls=1&' +           // إظهار أزرار التحكم الأساسية
+        'showinfo=0&' +           // إخفاء معلومات الفيديو
         'rel=0&' +                // عدم إظهار فيديوهات مقترحة من قنوات أخرى
         'modestbranding=1&' +     // إخفاء شعار YouTube قدر الإمكان
         'iv_load_policy=3&' +     // إخفاء التعليقات التوضيحية
@@ -50,6 +50,8 @@ function LiveGrade3() {
         'disablekb=0&' +          // السماح بالتحكم عبر الكيبورد
         'playsinline=1&' +        // تشغيل داخل المتصفح في الموبايل
         'enablejsapi=1&' +        // تفعيل JavaScript API
+        'widget_referrer=' + encodeURIComponent(window.location.origin) + '&' + // تحديد المرجع
+        'wmode=opaque&' +         // منع التداخل مع عناصر الصفحة
         'origin=' + window.location.origin; // تحديد المصدر للأمان
     }
     
@@ -262,9 +264,26 @@ function LiveGrade3() {
                     border: 'none',
                     outline: 'none'
                   }}
-                  // إضافة sandbox للأمان مع السماح بالعمليات المطلوبة فقط
-                  sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+                  // إضافة sandbox للأمان مع منع الشير والتحميل
+                  sandbox="allow-scripts allow-same-origin allow-presentation"
                 />
+                
+                {/* طبقة حماية إضافية لمنع النقر الأيمن والشير */}
+                <div 
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    zIndex: 1,
+                    pointerEvents: 'none',
+                    background: 'transparent'
+                  }}
+                  onContextMenu={(e) => e.preventDefault()}
+                  onSelectStart={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
+                ></div>
                 
                 {/* طبقة شفافة لإخفاء بعض عناصر YouTube */}
                 <div style={{
@@ -582,7 +601,7 @@ function LiveGrade3() {
             outline-offset: 2px !important;
           }
           
-          /* إخفاء عناصر YouTube قدر الإمكان */
+          /* إخفاء عناصر YouTube وأزرار الشير */
           .ytp-chrome-top,
           .ytp-title,
           .ytp-title-text,
@@ -590,10 +609,28 @@ function LiveGrade3() {
           .ytp-chrome-top-buttons,
           .ytp-watermark,
           .ytp-cards-teaser,
-          .ytp-ce-element {
+          .ytp-ce-element,
+          .ytp-share-button,
+          .ytp-share-button-visible,
+          .ytp-watch-later-button,
+          .ytp-playlist-menu-button,
+          .ytp-overflow-button,
+          .ytp-contextmenu,
+          .ytp-popup,
+          .ytp-cards-button,
+          .ytp-endscreen-element,
+          .annotation,
+          .video-annotations,
+          [title*="Share"],
+          [title*="شارك"],
+          [aria-label*="Share"],
+          [aria-label*="شارك"],
+          .ytp-chrome-controls .ytp-button[data-tooltip-target-id*="share"],
+          .ytp-menuitem[role="menuitemradio"]:has-text("Share") {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
+            pointer-events: none !important;
           }
           
           @media (prefers-reduced-motion: reduce) {
@@ -629,6 +666,31 @@ function LiveGrade3() {
               color: #000 !important;
               background: #fff !important;
             }
+          }
+          
+          /* منع النقر الأيمن والتحديد والسحب على الفيديو */
+          .live-content {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+          }
+          
+          .live-content iframe {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            pointer-events: auto !important;
+          }
+          
+          /* منع النقر الأيمن */
+          .live-content iframe,
+          .live-content {
+            -webkit-context-menu: none !important;
+            context-menu: none !important;
           }
           
           /* تحسين الأداء */
