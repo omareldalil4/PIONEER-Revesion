@@ -5,164 +5,130 @@ import { Container } from 'react-bootstrap';
 function LiveGrade3() {
   const [isLiveStreamActive, setIsLiveStreamActive] = useState(false);
   const [liveStreamUrl, setLiveStreamUrl] = useState('');
-  const [streamType, setStreamType] = useState('youtube'); // youtube, meet, vimeo
-  const [streamOwner, setStreamOwner] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // دالة محسنة لتحويل روابط متعددة المنصات
-  const convertStreamURL = (url, type = 'auto') => {
+  // دالة لتحويل رابط يوتيوب إلى رابط embed مع إخفاء معلومات القناة
+  const convertYouTubeURL = (url) => {
     if (!url) return '';
     
-    // تحديد نوع المنصة تلقائياً إذا لم يتم تحديدها
-    let detectedType = type;
-    if (type === 'auto') {
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        detectedType = 'youtube';
-      } else if (url.includes('meet.google.com')) {
-        detectedType = 'meet';
-      } else if (url.includes('vimeo.com')) {
-        detectedType = 'vimeo';
-      } else if (url.includes('facebook.com')) {
-        detectedType = 'facebook';
-      }
+    // معالجة روابط يوتيوب المختلفة
+    let videoId = '';
+    
+    // رابط البث المباشر: https://www.youtube.com/live/qK52qqYaS3o?feature=shared
+    if (url.includes('youtube.com/live/')) {
+      const match = url.match(/youtube\.com\/live\/([a-zA-Z0-9_-]+)/);
+      if (match) videoId = match[1];
+    }
+    // رابط عادي: https://www.youtube.com/watch?v=VIDEO_ID
+    else if (url.includes('youtube.com/watch?v=')) {
+      const match = url.match(/watch\?v=([a-zA-Z0-9_-]+)/);
+      if (match) videoId = match[1];
+    }
+    // رابط مختصر: https://youtu.be/VIDEO_ID
+    else if (url.includes('youtu.be/')) {
+      const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      if (match) videoId = match[1];
+    }
+    // رابط embed مباشر
+    else if (url.includes('youtube.com/embed/')) {
+      const match = url.match(/embed\/([a-zA-Z0-9_-]+)/);
+      if (match) videoId = match[1];
     }
     
-    // معالجة روابط YouTube
-    if (detectedType === 'youtube') {
-      let videoId = '';
-      
-      // رابط البث المباشر: https://www.youtube.com/live/VIDEO_ID
-      if (url.includes('youtube.com/live/')) {
-        const match = url.match(/youtube\.com\/live\/([a-zA-Z0-9_-]+)/);
-        if (match) videoId = match[1];
-      }
-      // رابط عادي: https://www.youtube.com/watch?v=VIDEO_ID
-      else if (url.includes('youtube.com/watch?v=')) {
-        const match = url.match(/watch\?v=([a-zA-Z0-9_-]+)/);
-        if (match) videoId = match[1];
-      }
-      // رابط مختصر: https://youtu.be/VIDEO_ID
-      else if (url.includes('youtu.be/')) {
-        const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-        if (match) videoId = match[1];
-      }
-      // رابط embed مباشر
-      else if (url.includes('youtube.com/embed/')) {
-        const match = url.match(/embed\/([a-zA-Z0-9_-]+)/);
-        if (match) videoId = match[1];
-      }
-      // معرف فقط
-      else if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) {
-        videoId = url.trim();
-      }
-      
-      if (videoId) {
-        setStreamType('youtube');
-        return `https://www.youtube.com/embed/${videoId}?` +
-          'autoplay=1&' +           // تشغيل تلقائي
-          'mute=0&' +               // عدم كتم الصوت
-          'controls=1&' +           // إظهار أزرار التحكم الأساسية
-          'showinfo=0&' +           // إخفاء معلومات الفيديو
-          'rel=0&' +                // عدم إظهار فيديوهات مقترحة من قنوات أخرى
-          'modestbranding=1&' +     // إخفاء شعار YouTube قدر الإمكان
-          'iv_load_policy=3&' +     // إخفاء التعليقات التوضيحية
-          'cc_load_policy=0&' +     // إخفاء الترجمة التلقائية
-          'fs=1&' +                 // السماح بملء الشاشة
-          'disablekb=0&' +          // السماح بالتحكم عبر الكيبورد
-          'playsinline=1&' +        // تشغيل داخل المتصفح في الموبايل
-          'enablejsapi=1&' +        // تفعيل JavaScript API
-          'widget_referrer=' + encodeURIComponent(window.location.origin) + '&' +
-          'wmode=opaque&' +         // منع التداخل مع عناصر الصفحة
-          'origin=' + window.location.origin; // تحديد المصدر للأمان
-      }
-    }
-    
-    // معالجة Google Meet
-    if (detectedType === 'meet') {
-      setStreamType('meet');
-      // إضافة معرف المدير للمصادقة
-      const meetUrl = url.includes('?') ? 
-        url + '&authuser=' + encodeURIComponent('omareldalil060@gmail.com') :
-        url + '?authuser=' + encodeURIComponent('omareldalil060@gmail.com');
-      return meetUrl;
-    }
-    
-    // معالجة Facebook Live
-    if (detectedType === 'facebook') {
-      setStreamType('facebook');
-      if (url.includes('facebook.com')) {
-        // استخراج معرف البث من Facebook
-        const match = url.match(/facebook\.com\/([^\/]+)\/videos\/([0-9]+)/);
-        if (match) {
-          const pageId = match[1];
-          const videoId = match[2];
-          return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&width=800&show_text=false&height=450&appId`;
-        }
-      }
-      return url;
-    }
-    
-    // معالجة Vimeo (كما هو حالياً)
-    if (detectedType === 'vimeo') {
-      let videoId = '';
-      
-      if (url.includes('vimeo.com/live/')) {
-        const match = url.match(/vimeo\.com\/live\/([a-zA-Z0-9_-]+)/);
-        if (match) videoId = match[1];
-      } else if (url.includes('vimeo.com/')) {
-        const match = url.match(/vimeo\.com\/(\d+)/);
-        if (match) videoId = match[1];
-      } else if (/^\d+$/.test(url.trim())) {
-        videoId = url.trim();
-      }
-      
-      if (videoId) {
-        setStreamType('vimeo');
-        return `https://player.vimeo.com/video/${videoId}?` +
-          'autoplay=1&' +
-          'muted=0&' +
-          'controls=1&' +
-          'portrait=0&' +
-          'title=0&' +
-          'byline=0&' +
-          'badge=0&' +
-          'background=0&' +
-          'transparent=1&' +
-          'responsive=1';
-      }
+    if (videoId) {
+      // إعدادات YouTube لإخفاء معلومات القناة وإيقاف الشير
+      return `https://www.youtube.com/embed/${videoId}?` +
+        'autoplay=1&' +           // تشغيل تلقائي
+        'mute=0&' +               // عدم كتم الصوت
+        'controls=1&' +           // إظهار أزرار التحكم الأساسية
+        'showinfo=0&' +           // إخفاء معلومات الفيديو
+        'rel=0&' +                // عدم إظهار فيديوهات مقترحة من قنوات أخرى
+        'modestbranding=1&' +     // إخفاء شعار YouTube قدر الإمكان
+        'iv_load_policy=3&' +     // إخفاء التعليقات التوضيحية
+        'cc_load_policy=0&' +     // إخفاء الترجمة التلقائية
+        'fs=1&' +                 // السماح بملء الشاشة
+        'disablekb=0&' +          // السماح بالتحكم عبر الكيبورد
+        'playsinline=1&' +        // تشغيل داخل المتصفح في الموبايل
+        'enablejsapi=1&' +        // تفعيل JavaScript API
+        'widget_referrer=' + encodeURIComponent(window.location.origin) + '&' + // تحديد المرجع
+        'wmode=opaque&' +         // منع التداخل مع عناصر الصفحة
+        'origin=' + window.location.origin; // تحديد المصدر للأمان
     }
     
     return url;
   };
 
-  // حقن CSS متقدم لحماية المحتوى حسب نوع المنصة
+  // إضافة دالة لحقن CSS ديناميكياً ومراقبة DOM لمنع الشير مع تأثير blur متقدم
   useEffect(() => {
+    // حقن CSS متقدم مع تأثير blur وزجاجي على أيقونات الشير
     const advancedStyle = document.createElement('style');
-    advancedStyle.id = 'multi-platform-protection';
+    advancedStyle.id = 'youtube-share-blur-protection';
     advancedStyle.textContent = `
-      /* حماية YouTube */
-      .youtube-container .ytp-share-button,
-      .youtube-container .ytp-share-button-visible,
-      .youtube-container .ytp-share-panel,
-      .youtube-container .ytp-overflow-button,
-      .youtube-container .ytp-overflow-menu,
-      .youtube-container .ytp-contextmenu,
-      .youtube-container .ytp-popup,
-      .youtube-container .ytp-cards-button,
-      .youtube-container .ytp-endscreen-element,
-      .youtube-container .ytp-watch-later-button,
-      .youtube-container .ytp-playlist-menu-button,
-      .youtube-container .ytp-chrome-top-buttons,
-      .youtube-container button[data-tooltip-target-id*="share"],
-      .youtube-container button[aria-label*="Share"],
-      .youtube-container button[aria-label*="شارك"],
-      .youtube-container [role="button"][aria-label*="Share"],
-      .youtube-container *[class*="share" i]:not(.live-content):not(.empty-state),
-      .youtube-container *[id*="share" i]:not(.live-content):not(.empty-state) {
-        display: none !important;
+      /* تأثير blur وزجاجي متقدم على جميع أيقونات الشير */
+      .ytp-share-button,
+      .ytp-share-button-visible,
+      .ytp-share-panel,
+      .ytp-share-panel-visible,
+      .ytp-share-panel-content,
+      .ytp-share-panel-container,
+      .ytp-panel.ytp-share-panel,
+      .ytp-popup.ytp-share-panel,
+      .ytp-overflow-button,
+      .ytp-overflow-menu,
+      .ytp-contextmenu,
+      .ytp-popup.ytp-contextmenu,
+      .ytp-menuitem[aria-label*="Share"],
+      .ytp-menuitem[aria-label*="شارك"],
+      .ytp-cards-button,
+      .ytp-cards-teaser,
+      .ytp-ce-element,
+      .ytp-endscreen-element,
+      .annotation,
+      .video-annotations,
+      .ytp-watch-later-button,
+      .ytp-playlist-menu-button,
+      .ytp-chrome-top-buttons,
+      button[data-tooltip-target-id*="share"],
+      button[aria-label*="Share"],
+      button[aria-label*="شارك"],
+      button[title*="Share"],
+      button[title*="شارك"],
+      .ytp-button[data-tooltip-target-id*="ytp-share"],
+      [role="button"][aria-label*="Share"],
+      [role="button"][aria-label*="شارك"],
+      [role="dialog"][aria-label*="Share"],
+      [role="dialog"][aria-label*="شارك"],
+      div[class*="share" i]:not(.live-content):not(.empty-state),
+      div[id*="share" i]:not(.live-content):not(.empty-state),
+      *[class*="share" i]:not(.live-content):not(.empty-state),
+      *[id*="share" i]:not(.live-content):not(.empty-state),
+      *[data-tooltip*="share" i],
+      *[aria-label*="share" i] {
+        /* تأثير blur وتشويش قوي */
+        filter: blur(20px) saturate(0) contrast(0.1) brightness(0.3) !important;
+        backdrop-filter: blur(25px) saturate(0.2) !important;
+        
+        /* تأثير زجاجي شفاف */
+        background: rgba(0, 0, 0, 0.9) !important;
+        background-image: linear-gradient(45deg, 
+          rgba(255, 255, 255, 0.1) 25%, 
+          transparent 25%, 
+          transparent 75%, 
+          rgba(255, 255, 255, 0.1) 75%, 
+          rgba(255, 255, 255, 0.1)
+        ) !important;
+        background-size: 4px 4px !important;
+        
+        /* تشويه إضافي */
+        transform: scale(0.1) rotate(45deg) skew(30deg, 15deg) !important;
+        opacity: 0.01 !important;
         visibility: hidden !important;
-        opacity: 0 !important;
+        
+        /* منع التفاعل */
         pointer-events: none !important;
+        user-select: none !important;
+        
+        /* إخفاء قوي */
         position: absolute !important;
         left: -99999px !important;
         top: -99999px !important;
@@ -170,220 +136,346 @@ function LiveGrade3() {
         height: 0 !important;
         overflow: hidden !important;
         z-index: -99999 !important;
-        transform: scale(0) !important;
-        filter: blur(50px) saturate(0) contrast(0) brightness(0) !important;
+        
+        /* تأثير انتقالي سلس */
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        
+        /* تشويه النص */
+        color: transparent !important;
+        text-shadow: 0 0 20px rgba(0, 0, 0, 0.9) !important;
+        
+        /* حدود ضبابية */
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 50% !important;
+        box-shadow: 
+          inset 0 0 20px rgba(0, 0, 0, 0.9),
+          0 0 20px rgba(0, 0, 0, 0.8),
+          0 0 40px rgba(0, 0, 0, 0.6) !important;
+        
+        /* قطع المحتوى */
+        clip: rect(0 0 0 0) !important;
+        clip-path: polygon(0 0, 0 0, 0 0) !important;
+        
+        /* تأثير matrix للتشويه */
+        transform-origin: center !important;
+        animation: shareBlurGlitch 2s infinite linear !important;
       }
       
-      /* حماية Google Meet */
-      .meet-container [jsaction*="share"],
-      .meet-container [data-tooltip*="share" i],
-      .meet-container [aria-label*="share" i],
-      .meet-container [title*="share" i],
-      .meet-container .google-material-icons:contains("share"),
-      .meet-container button[jsaction*="invite"],
-      .meet-container [data-tooltip*="invite" i] {
-        display: none !important;
-        visibility: hidden !important;
+      /* تأثير خاص للوضع العادي */
+      .ytp-chrome-controls .ytp-right-controls {
+        position: relative !important;
+      }
+      
+      .ytp-chrome-controls .ytp-right-controls::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        width: 150px !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(0, 0, 0, 0.3) 20%,
+          rgba(0, 0, 0, 0.7) 40%,
+          rgba(0, 0, 0, 0.9) 60%,
+          rgba(0, 0, 0, 0.95) 80%,
+          rgba(0, 0, 0, 1) 100%
+        ) !important;
+        backdrop-filter: blur(15px) saturate(0.3) !important;
+        z-index: 999999 !important;
+        pointer-events: auto !important;
+        border-radius: 0 5px 5px 0 !important;
+      }
+      
+      /* تأثير خاص للفل سكرين */
+      .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
+        width: 200px !important;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(0, 0, 0, 0.4) 15%,
+          rgba(0, 0, 0, 0.8) 30%,
+          rgba(0, 0, 0, 0.95) 50%,
+          rgba(0, 0, 0, 1) 70%,
+          rgba(0, 0, 0, 1) 100%
+        ) !important;
+        backdrop-filter: blur(25px) saturate(0.1) contrast(0.5) !important;
+      }
+      
+      /* حماية إضافية للشريط العلوي */
+      .ytp-chrome-top {
+        filter: blur(30px) saturate(0) !important;
+        backdrop-filter: blur(35px) !important;
+        background: rgba(0, 0, 0, 0.95) !important;
         opacity: 0 !important;
+        visibility: hidden !important;
         pointer-events: none !important;
+        transform: scale(0) !important;
       }
       
-      /* حماية Facebook */
-      .facebook-container [aria-label*="Share"],
-      .facebook-container [aria-label*="شارك"],
-      .facebook-container [data-testid*="share"],
-      .facebook-container ._4xev,
-      .facebook-container ._15py {
-        display: none !important;
+      /* تأثير blur على العناصر المنبثقة */
+      .ytp-popup,
+      .ytp-panel,
+      .ytp-contextmenu,
+      .ytp-overflow-menu,
+      [role="dialog"]:not(.live-content):not(.empty-state),
+      [role="menu"]:not(.live-content):not(.empty-state),
+      [role="listbox"]:not(.live-content):not(.empty-state) {
+        filter: blur(50px) saturate(0) contrast(0) brightness(0) !important;
+        backdrop-filter: blur(60px) saturate(0) !important;
+        background: rgba(0, 0, 0, 1) !important;
+        transform: scale(0) rotate(180deg) !important;
+        opacity: 0 !important;
         visibility: hidden !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        left: -999999px !important;
+        top: -999999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        z-index: -999999 !important;
+        animation: glitchDestroy 0.1s infinite !important;
       }
       
-      /* حماية Vimeo */
-      .vimeo-container .share,
-      .vimeo-container [data-menu="share"],
-      .vimeo-container .js-share,
-      .vimeo-container [title*="Share"],
-      .vimeo-container [aria-label*="Share"] {
-        display: none !important;
+      /* تأثيرات الحركة المضطربة */
+      @keyframes shareBlurGlitch {
+        0% { 
+          transform: scale(0.01) rotate(0deg) skew(0deg, 0deg) translate(-999px, -999px);
+          filter: blur(20px) saturate(0) contrast(0.1) brightness(0.1);
+        }
+        25% { 
+          transform: scale(0.005) rotate(90deg) skew(15deg, 30deg) translate(-1999px, -1999px);
+          filter: blur(35px) saturate(0) contrast(0.05) brightness(0.05);
+        }
+        50% { 
+          transform: scale(0.002) rotate(180deg) skew(45deg, 60deg) translate(-2999px, -2999px);
+          filter: blur(50px) saturate(0) contrast(0.02) brightness(0.02);
+        }
+        75% { 
+          transform: scale(0.001) rotate(270deg) skew(75deg, 90deg) translate(-3999px, -3999px);
+          filter: blur(65px) saturate(0) contrast(0.01) brightness(0.01);
+        }
+        100% { 
+          transform: scale(0.0001) rotate(360deg) skew(90deg, 120deg) translate(-4999px, -4999px);
+          filter: blur(80px) saturate(0) contrast(0) brightness(0);
+        }
+      }
+      
+      @keyframes glitchDestroy {
+        0% { opacity: 0; transform: scale(0) rotate(0deg); }
+        50% { opacity: 0.001; transform: scale(0.001) rotate(180deg); }
+        100% { opacity: 0; transform: scale(0) rotate(360deg); }
+      }
+      
+      /* حماية خاصة للوضع المظلم */
+      @media (prefers-color-scheme: dark) {
+        .ytp-share-button,
+        .ytp-overflow-button,
+        button[aria-label*="Share"],
+        button[aria-label*="شارك"] {
+          filter: blur(25px) saturate(0) contrast(0) brightness(0) invert(1) !important;
+          backdrop-filter: blur(30px) saturate(0) contrast(0.1) !important;
+        }
+      }
+      
+      /* حماية للشاشات عالية الدقة */
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .ytp-share-button,
+        .ytp-overflow-button,
+        *[class*="share" i]:not(.live-content):not(.empty-state) {
+          filter: blur(30px) saturate(0) contrast(0) brightness(0) !important;
+          backdrop-filter: blur(40px) saturate(0) !important;
+          transform: scale(0.0001) rotate(720deg) !important;
+        }
+      }
+      
+      /* حماية للشاشات الصغيرة */
+      @media (max-width: 768px) {
+        .ytp-chrome-controls .ytp-right-controls::after {
+          width: 120px !important;
+        }
+        
+        .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
+          width: 160px !important;
+        }
+      }
+      
+      /* حماية للشاشات الكبيرة جداً */
+      @media (min-width: 1920px) {
+        .ytp-chrome-controls .ytp-right-controls::after {
+          width: 250px !important;
+        }
+        
+        .ytp-fullscreen .ytp-chrome-controls .ytp-right-controls::after {
+          width: 300px !important;
+        }
+      }
+      
+      /* تأثير خاص عند hover */
+      .ytp-chrome-controls:hover .ytp-right-controls::after {
+        backdrop-filter: blur(20px) saturate(0.2) contrast(0.8) !important;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(0, 0, 0, 0.5) 10%,
+          rgba(0, 0, 0, 0.9) 30%,
+          rgba(0, 0, 0, 1) 50%,
+          rgba(0, 0, 0, 1) 100%
+        ) !important;
+      }
+      
+      /* منع ظهور tooltips للأزرار المخفية */
+      .ytp-tooltip,
+      .ytp-tooltip-text,
+      [role="tooltip"] {
+        filter: blur(20px) !important;
+        opacity: 0 !important;
         visibility: hidden !important;
+        pointer-events: none !important;
+        transform: scale(0) !important;
       }
       
-      /* تأثير blur عام للحماية */
-      .stream-protection-overlay {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 200px;
-        height: 80px;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 999999;
-        pointer-events: auto;
-        border-radius: 0 0 20px 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255, 255, 255, 0.3);
-        font-size: 12px;
-        font-weight: 600;
-      }
-      
-      /* تحسين لكل منصة */
-      .youtube-container iframe {
-        border-radius: 15px;
-        border: 3px solid #ff0000;
-      }
-      
-      .meet-container iframe {
-        border-radius: 15px;
-        border: 3px solid #4285f4;
-      }
-      
-      .facebook-container iframe {
-        border-radius: 15px;
-        border: 3px solid #1877f2;
-      }
-      
-      .vimeo-container iframe {
-        border-radius: 15px;
-        border: 3px solid #1ab7ea;
-      }
-      
-      /* رسوم متحركة للمنصات */
-      @keyframes youtubeGlow {
-        0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); }
-        50% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); }
-      }
-      
-      @keyframes meetGlow {
-        0%, 100% { box-shadow: 0 0 20px rgba(66, 133, 244, 0.3); }
-        50% { box-shadow: 0 0 30px rgba(66, 133, 244, 0.5); }
-      }
-      
-      @keyframes facebookGlow {
-        0%, 100% { box-shadow: 0 0 20px rgba(24, 119, 242, 0.3); }
-        50% { box-shadow: 0 0 30px rgba(24, 119, 242, 0.5); }
-      }
-      
-      @keyframes vimeoGlow {
-        0%, 100% { box-shadow: 0 0 20px rgba(26, 183, 234, 0.3); }
-        50% { box-shadow: 0 0 30px rgba(26, 183, 234, 0.5); }
-      }
-      
-      .youtube-container .video-wrapper {
-        animation: youtubeGlow 3s infinite;
-      }
-      
-      .meet-container .video-wrapper {
-        animation: meetGlow 3s infinite;
-      }
-      
-      .facebook-container .video-wrapper {
-        animation: facebookGlow 3s infinite;
-      }
-      
-      .vimeo-container .video-wrapper {
-        animation: vimeoGlow 3s infinite;
+      /* حماية من JavaScript injection */
+      [onclick*="share"],
+      [onclick*="Share"],
+      [data-action*="share"] {
+        pointer-events: none !important;
+        filter: blur(30px) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
       }
     `;
     
     document.head.appendChild(advancedStyle);
     
-    // مراقب DOM متقدم
-    const protectionObserver = new MutationObserver((mutations) => {
+    // مراقب DOM متقدم لتطبيق التأثيرات على العناصر الجديدة
+    const advancedObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
           if (node.nodeType === 1) {
-            // تطبيق الحماية على عناصر جديدة
-            const hideElement = (element) => {
+            // تطبيق التأثيرات على العناصر الجديدة
+            const applyBlurEffect = (element) => {
               if (element && !element.closest('.live-content, .empty-state')) {
-                element.style.display = 'none';
-                element.style.visibility = 'hidden';
+                element.style.filter = 'blur(25px) saturate(0) contrast(0.1) brightness(0.2)';
+                element.style.backdropFilter = 'blur(30px) saturate(0.1)';
+                element.style.background = 'rgba(0, 0, 0, 0.95)';
+                element.style.transform = 'scale(0.01) rotate(45deg)';
                 element.style.opacity = '0';
+                element.style.visibility = 'hidden';
                 element.style.pointerEvents = 'none';
                 element.style.position = 'absolute';
                 element.style.left = '-99999px';
+                element.style.top = '-99999px';
                 element.style.zIndex = '-99999';
+                
+                // إزالة العنصر بعد تطبيق التأثيرات
                 setTimeout(() => {
                   if (element.parentNode) {
                     element.remove();
                   }
-                }, 50);
+                }, 100);
               }
             };
             
-            // حماية متعددة المنصات
-            const protectionSelectors = [
-              // YouTube
-              '.ytp-share-button', '.ytp-share-panel', '.ytp-overflow-button',
-              // Google Meet
-              '[jsaction*="share"]', '[data-tooltip*="share" i]',
-              // Facebook
-              '[data-testid*="share"]', '._4xev', '._15py',
-              // Vimeo
-              '.share', '[data-menu="share"]', '.js-share',
-              // عام
-              '[class*="share" i]', '[id*="share" i]', '[aria-label*="Share"]'
+            // البحث عن عناصر الشير الجديدة
+            const shareSelectors = [
+              '.ytp-share-button',
+              '.ytp-share-panel',
+              '.ytp-overflow-button',
+              '.ytp-popup',
+              '.ytp-panel',
+              '.ytp-contextmenu',
+              '[class*="share" i]',
+              '[id*="share" i]',
+              '[aria-label*="Share"]',
+              '[aria-label*="شارك"]',
+              '[role="dialog"]',
+              '[role="menu"]',
+              '[role="listbox"]'
             ];
             
-            protectionSelectors.forEach(selector => {
+            shareSelectors.forEach(selector => {
               try {
                 const elements = node.querySelectorAll ? node.querySelectorAll(selector) : [];
-                elements.forEach(hideElement);
+                elements.forEach(applyBlurEffect);
+                
+                // فحص العنصر نفسه
                 if (node.matches && node.matches(selector)) {
-                  hideElement(node);
+                  applyBlurEffect(node);
                 }
-              } catch (e) {}
+              } catch (e) {
+                // تجاهل الأخطاء في التحديد
+              }
             });
           }
         });
       });
     });
     
-    protectionObserver.observe(document.documentElement, {
+    // بدء المراقبة المتقدمة
+    advancedObserver.observe(document.documentElement, {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['class', 'style', 'aria-label', 'role', 'id', 'jsaction', 'data-testid']
+      attributeFilter: ['class', 'style', 'aria-label', 'role', 'id']
     });
     
-    // تطبيق الحماية دورياً
-    const protectionInterval = setInterval(() => {
+    // تطبيق التأثيرات كل نصف ثانية
+    const blurInterval = setInterval(() => {
       const shareElements = document.querySelectorAll(`
-        .ytp-share-button, .ytp-share-panel, .ytp-overflow-button,
-        [jsaction*="share"], [data-tooltip*="share" i],
-        [data-testid*="share"], ._4xev, ._15py,
-        .share:not(.live-content):not(.empty-state),
-        [data-menu="share"], .js-share,
+        .ytp-share-button,
+        .ytp-share-panel,
+        .ytp-overflow-button,
+        .ytp-popup:not(.live-content):not(.empty-state),
+        .ytp-panel:not(.live-content):not(.empty-state),
+        .ytp-contextmenu,
         [class*="share" i]:not(.live-content):not(.empty-state),
         [id*="share" i]:not(.live-content):not(.empty-state),
-        [aria-label*="Share"], [aria-label*="شارك"]
+        [aria-label*="Share"],
+        [aria-label*="شارك"],
+        [role="dialog"]:not(.live-content):not(.empty-state),
+        [role="menu"]:not(.live-content):not(.empty-state)
       `);
       
       shareElements.forEach(el => {
         if (el && !el.closest('.live-content, .empty-state')) {
-          el.style.display = 'none';
-          el.style.visibility = 'hidden';
+          // تطبيق تأثير blur متقدم
+          el.style.filter = 'blur(30px) saturate(0) contrast(0) brightness(0)';
+          el.style.backdropFilter = 'blur(35px) saturate(0)';
+          el.style.background = 'rgba(0, 0, 0, 1)';
+          el.style.transform = 'scale(0) rotate(180deg)';
           el.style.opacity = '0';
+          el.style.visibility = 'hidden';
           el.style.pointerEvents = 'none';
-          try { el.remove(); } catch (e) {}
+          el.style.position = 'absolute';
+          el.style.left = '-999999px';
+          el.style.top = '-999999px';
+          el.style.zIndex = '-999999';
+          
+          // محاولة إزالة العنصر
+          try {
+            el.remove();
+          } catch (e) {
+            // تجاهل أخطاء الإزالة
+          }
         }
       });
-    }, 300);
+    }, 500);
     
+    // تنظيف عند إلغاء المكون
     return () => {
-      const style = document.getElementById('multi-platform-protection');
+      const style = document.getElementById('youtube-share-blur-protection');
       if (style && document.head.contains(style)) {
         document.head.removeChild(style);
       }
-      protectionObserver.disconnect();
-      clearInterval(protectionInterval);
+      advancedObserver.disconnect();
+      clearInterval(blurInterval);
     };
   }, []);
 
-  // جلب إعدادات البث
   useEffect(() => {
     const fetchLiveStream = async () => {
       try {
+        // إضافة timestamp لتجنب الكاش
         const res = await fetch(
           `https://raw.githubusercontent.com/omareldalil24/PIONEER/main/public/grades/grade3/live.json?t=${Date.now()}`
         );
@@ -391,22 +483,21 @@ function LiveGrade3() {
           const data = await res.json();
           console.log('✅ تم جلب إعدادات البث من الأدمن:', data);
           setIsLiveStreamActive(data.isActive || false);
-          setStreamOwner(data.streamOwner || 'omareldalil060@gmail.com');
           
-          // تحويل الرابط حسب نوع المنصة
-          const convertedUrl = convertStreamURL(data.streamUrl || '', data.streamType || 'auto');
+          // تحويل الرابط إذا كان يوتيوب
+          const convertedUrl = convertYouTubeURL(data.streamUrl || '');
           setLiveStreamUrl(convertedUrl);
           
           console.log('🔗 الرابط الأصلي:', data.streamUrl);
           console.log('🔗 الرابط المحول:', convertedUrl);
-          console.log('📺 نوع المنصة:', streamType);
-          console.log('👨‍🏫 صاحب البث:', streamOwner);
         } else {
+          // لا يوجد بث مباشر
           setIsLiveStreamActive(false);
           setLiveStreamUrl('');
         }
       } catch (error) {
         console.error('Error fetching live stream:', error);
+        // لا يوجد بث مباشر في حالة الخطأ
         setIsLiveStreamActive(false);
         setLiveStreamUrl('');
       } finally {
@@ -416,59 +507,11 @@ function LiveGrade3() {
     
     fetchLiveStream();
     
-    // تحديث حالة البث كل 10 ثواني (أسرع من السابق)
-    const interval = setInterval(fetchLiveStream, 10000);
+    // تحديث حالة البث كل 15 ثانية (أسرع من الفيديوهات والملفات)
+    const interval = setInterval(fetchLiveStream, 15000);
     
     return () => clearInterval(interval);
   }, []);
-
-  // دالة للحصول على أيقونة وألوان المنصة
-  const getPlatformInfo = (type) => {
-    switch (type) {
-      case 'youtube':
-        return {
-          icon: '📺',
-          name: 'YouTube Live',
-          color: '#ff0000',
-          bgColor: 'rgba(255, 0, 0, 0.1)',
-          borderColor: 'rgba(255, 0, 0, 0.3)'
-        };
-      case 'meet':
-        return {
-          icon: '👥',
-          name: 'Google Meet',
-          color: '#4285f4',
-          bgColor: 'rgba(66, 133, 244, 0.1)',
-          borderColor: 'rgba(66, 133, 244, 0.3)'
-        };
-      case 'facebook':
-        return {
-          icon: '📘',
-          name: 'Facebook Live',
-          color: '#1877f2',
-          bgColor: 'rgba(24, 119, 242, 0.1)',
-          borderColor: 'rgba(24, 119, 242, 0.3)'
-        };
-      case 'vimeo':
-        return {
-          icon: '🎬',
-          name: 'Vimeo',
-          color: '#1ab7ea',
-          bgColor: 'rgba(26, 183, 234, 0.1)',
-          borderColor: 'rgba(26, 183, 234, 0.3)'
-        };
-      default:
-        return {
-          icon: '🔴',
-          name: 'البث المباشر',
-          color: '#e74c3c',
-          bgColor: 'rgba(231, 76, 60, 0.1)',
-          borderColor: 'rgba(231, 76, 60, 0.3)'
-        };
-    }
-  };
-
-  const platformInfo = getPlatformInfo(streamType);
 
   if (loading) {
     return (
@@ -494,7 +537,7 @@ function LiveGrade3() {
             fontWeight: '700', 
             fontSize: '1.8rem',
             textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-          }}>🔄 جاري تحميل البث المباشر...</h3>
+          }}>🔴 جاري تحميل البث المباشر...</h3>
         </div>
       </div>
     );
@@ -515,72 +558,38 @@ function LiveGrade3() {
           alignItems: 'center'
         }}
       >
-        {/* Header Section - محسن مع معلومات المنصة */}
+        {/* Header Section - متوسط دائماً */}
         <div style={{
           background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
           margin: '0 auto 40px auto',
           padding: '30px 35px',
           borderRadius: '20px',
-          maxWidth: '700px',
+          maxWidth: '600px',
           width: '90%',
           textAlign: 'center',
           boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
           border: '1px solid rgba(255, 255, 255, 0.3)',
           animation: 'slideInUp 0.6s ease-out'
         }}>
-          <div style={{ fontSize: '3.5rem', marginBottom: '15px' }}>{platformInfo.icon}</div>
+          <div style={{ fontSize: '3.5rem', marginBottom: '15px' }}>🔴</div>
           <h1 style={{ 
             fontSize: '2rem',
             fontWeight: '700',
             marginBottom: '15px',
             color: '#2c3e50'
           }}>
-            {platformInfo.name}
+            البث المباشر
           </h1>
-          
-          {/* معلومات المنصة والمدير */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '15px',
-            marginBottom: '20px',
-            flexWrap: 'wrap'
-          }}>
-            <div style={{
-              background: platformInfo.bgColor,
-              color: platformInfo.color,
-              padding: '8px 15px',
-              borderRadius: '15px',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              border: `2px solid ${platformInfo.borderColor}`
-            }}>
-              📡 {platformInfo.name}
-            </div>
-            
-            <div style={{
-              background: 'rgba(40, 167, 69, 0.1)',
-              color: '#28a745',
-              padding: '8px 15px',
-              borderRadius: '15px',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              border: '2px solid rgba(40, 167, 69, 0.3)'
-            }}>
-              👨‍🏫 {streamOwner}
-            </div>
-          </div>
-          
           <div style={{
             background: isLiveStreamActive ? 
               'linear-gradient(135deg, #28a745, #20c997)' : 
               'linear-gradient(135deg, #6c757d, #5a6268)',
             color: 'white',
-            padding: '12px 25px',
+            padding: '10px 20px',
             borderRadius: '20px',
             display: 'inline-block',
-            fontSize: '1rem',
+            fontSize: '0.9rem',
             fontWeight: '600',
             boxShadow: `0 4px 12px ${isLiveStreamActive ? 'rgba(40, 167, 69, 0.3)' : 'rgba(108, 117, 125, 0.3)'}`
           }}>
@@ -588,26 +597,26 @@ function LiveGrade3() {
           </div>
         </div>
 
-        {/* Content Container */}
+        {/* Content Container - متوسط للشاشات العادية */}
         <div style={{
           width: '100%',
-          maxWidth: '1000px',
+          maxWidth: '900px', // عرض محدود للشاشات العادية
           padding: '0 20px 50px 20px',
           display: 'flex',
           justifyContent: 'center'
         }}>
           {/* المحتوى الرئيسي */}
           {isLiveStreamActive && liveStreamUrl ? (
-            <div className={`live-content ${streamType}-container`} style={{
+            <div className="live-content" style={{
               background: 'rgba(255, 255, 255, 0.1)',
               backdropFilter: 'blur(20px)',
               borderRadius: '25px',
               padding: '25px',
-              border: `2px solid ${platformInfo.borderColor}`,
+              border: '1px solid rgba(255, 255, 255, 0.2)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
               animation: 'slideInUp 0.8s ease-out',
               position: 'relative',
-              maxWidth: '900px',
+              maxWidth: '800px',
               width: '100%'
             }}>
               {/* نقطة البث المباشر */}
@@ -617,399 +626,309 @@ function LiveGrade3() {
                 right: '25px',
                 width: '20px',
                 height: '20px',
-                backgroundColor: platformInfo.color,
+                backgroundColor: '#ff0000',
                 borderRadius: '50%',
                 animation: 'pulse 1.5s infinite',
-                boxShadow: `0 0 0 8px ${platformInfo.bgColor}`,
+                boxShadow: '0 0 0 8px rgba(255, 0, 0, 0.3)',
                 zIndex: 10,
                 border: '3px solid #ffffff'
               }}></div>
 
-              {/* علامة LIVE مع اسم المنصة */}
+              {/* علامة LIVE */}
               <div style={{
                 position: 'absolute',
                 top: '20px',
                 left: '25px',
-                background: platformInfo.color,
+                background: '#ff0000',
                 color: 'white',
-                padding: '8px 15px',
+                padding: '5px 12px',
                 borderRadius: '15px',
-                fontSize: '0.9rem',
+                fontSize: '0.8rem',
                 fontWeight: '700',
                 zIndex: 10,
-                boxShadow: `0 2px 8px ${platformInfo.bgColor}`,
-                animation: 'pulse 2s infinite',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px'
+                boxShadow: '0 2px 8px rgba(255, 0, 0, 0.3)',
+                animation: 'pulse 2s infinite'
               }}>
-                {platformInfo.icon} LIVE
+                🔴 LIVE
               </div>
 
-              {/* الفيديو مع طبقة حماية متقدمة */}
-              <div className="video-wrapper" style={{
+              {/* الفيديو مع طبقة إخفاء متقدمة */}
+              <div style={{
                 position: 'relative',
-                paddingBottom: streamType === 'meet' ? '75%' : '56.25%', // نسبة مختلفة للـ Meet
+                paddingBottom: '56.25%', // نسبة 16:9
                 height: 0,
                 borderRadius: '20px',
                 overflow: 'hidden',
-                border: `3px solid ${platformInfo.borderColor}`,
-                background: '#000'
+                border: '3px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+                background: '#000' // خلفية سوداء للفيديو
               }}>
-                {streamType === 'meet' ? (
-                  // عرض خاص للـ Google Meet
-                  <div style={{
+                <iframe
+                  src={liveStreamUrl}
+                  title="البث المباشر التعليمي"
+                  frameBorder="0"
+                  allowFullScreen
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    background: 'linear-gradient(135deg, #4285f4, #1a73e8)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    textAlign: 'center',
-                    borderRadius: '20px'
-                  }}>
-                    <div style={{ fontSize: '4rem', marginBottom: '20px' }}>👥</div>
-                    <h3 style={{ fontSize: '1.8rem', fontWeight: '700', marginBottom: '15px' }}>
-                      Google Meet جاهز
-                    </h3>
-                    <p style={{ fontSize: '1.2rem', marginBottom: '25px', opacity: 0.9 }}>
-                      انقر للانضمام إلى الاجتماع
-                    </p>
-                   <a
-                      href={liveStreamUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.2)',
-                        color: 'white',
-                        padding: '15px 30px',
-                        borderRadius: '15px',
-                        textDecoration: 'none',
-                        fontSize: '1.1rem',
-                        fontWeight: '600',
-                        border: '2px solid rgba(255, 255, 255, 0.3)',
-                        transition: 'all 0.3s ease',
-                        display: 'inline-block'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-                        e.target.style.transform = 'translateY(-2px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                        e.target.style.transform = 'translateY(0)';
-                      }}
-                    >
-                      🚀 الانضمام للاجتماع
-                    </a>
-                    
-                    <div style={{
-                      marginTop: '20px',
-                      padding: '15px',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      borderRadius: '10px',
-                      fontSize: '0.9rem',
-                      opacity: 0.8
-                    }}>
-                      💡 سيتم فتح Google Meet في نافذة جديدة
-                    </div>
-                  </div>
-                ) : (
-                  // عرض iframe للمنصات الأخرى
-                  <>
-                    <iframe
-                      src={liveStreamUrl}
-                      title={`البث المباشر - ${platformInfo.name}`}
-                      frameBorder="0"
-                      allowFullScreen
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        border: 'none',
-                        outline: 'none'
-                      }}
-                      sandbox="allow-scripts allow-same-origin allow-presentation"
-                      onContextMenu={(e) => e.preventDefault()}
-                      onDragStart={(e) => e.preventDefault()}
-                      onSelectStart={(e) => e.preventDefault()}
-                    />
-                    
-                    {/* طبقة حماية شاملة متقدمة */}
-                    <div className="stream-protection-overlay"
-                      style={{
-                        position: 'absolute',
-                        bottom: '0px',
-                        right: '0px',
-                        width: '250px',
-                        height: '60px',
-                        background: `linear-gradient(90deg, transparent 0%, ${platformInfo.color}AA 50%, ${platformInfo.color} 100%)`,
-                        zIndex: 999999,
-                        pointerEvents: 'auto',
-                        borderRadius: '0 0 20px 0',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        cursor: 'not-allowed'
-                      }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.stopImmediatePropagation();
-                        return false;
-                      }}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.stopImmediatePropagation();
-                        return false;
-                      }}
-                      onTouchStart={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.stopImmediatePropagation();
-                        return false;
-                      }}
-                      onContextMenu={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                      }}
-                    >
-                      🔒 محمي - {platformInfo.name}
-                    </div>
-                    
-                    {/* طبقة حماية علوية */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '0px',
-                      right: '0px',
-                      width: '200px',
-                      height: '80px',
-                      background: `linear-gradient(180deg, ${platformInfo.color}CC 0%, transparent 100%)`,
-                      zIndex: 999998,
-                      pointerEvents: 'auto',
-                      borderRadius: '0 20px 0 0'
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      e.stopImmediatePropagation();
-                      return false;
-                    }}
-                    ></div>
-                    
-                    {/* طبقة حماية وسطى */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '50%',
-                      right: '0px',
-                      width: '150px',
-                      height: '100px',
-                      background: 'transparent',
-                      zIndex: 999997,
-                      pointerEvents: 'auto',
-                      transform: 'translateY(-50%)'
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      e.stopImmediatePropagation();
-                      return false;
-                    }}
-                    ></div>
-                  </>
-                )}
-              </div>
-
-              {/* معلومات إضافية محسنة */}
-              <div style={{ marginTop: '25px' }}>
+                    border: 'none',
+                    outline: 'none'
+                  }}
+                  // إضافة sandbox للأمان مع منع الشير والتحميل
+                  sandbox="allow-scripts allow-same-origin allow-presentation"
+                  // منع النقر الأيمن والسحب
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
+                  onSelectStart={(e) => e.preventDefault()}
+                />
+                
+                {/* طبقة إخفاء شاملة متقدمة لمنع أي تفاعل مع أزرار YouTube */}
                 <div style={{
-                  background: platformInfo.bgColor,
-                  border: `2px solid ${platformInfo.borderColor}`,
-                  borderRadius: '15px',
-                  padding: '20px',
-                  marginBottom: '20px'
-                }}>
-                  <h4 style={{
-                    color: platformInfo.color,
-                    fontSize: '1.3rem',
-                    fontWeight: '700',
-                    marginBottom: '15px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px'
-                  }}>
-                    {platformInfo.icon} معلومات البث
-                  </h4>
-                  
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    gap: '15px',
-                    marginBottom: '15px'
-                  }}>
-                    <div style={{
-                      background: 'rgba(255, 255, 255, 0.7)',
-                      padding: '12px 15px',
-                      borderRadius: '10px',
-                      textAlign: 'center'
-                    }}>
-                      <div style={{ color: platformInfo.color, fontWeight: '600', marginBottom: '5px' }}>
-                        📡 المنصة
-                      </div>
-                      <div style={{ color: '#2c3e50', fontSize: '0.9rem' }}>
-                        {platformInfo.name}
-                      </div>
-                    </div>
-                    
-                    <div style={{
-                      background: 'rgba(255, 255, 255, 0.7)',
-                      padding: '12px 15px',
-                      borderRadius: '10px',
-                      textAlign: 'center'
-                    }}>
-                      <div style={{ color: platformInfo.color, fontWeight: '600', marginBottom: '5px' }}>
-                        👨‍🏫 المدير
-                      </div>
-                      <div style={{ color: '#2c3e50', fontSize: '0.9rem' }}>
-                        {streamOwner}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{
-                    background: 'rgba(255, 255, 255, 0.5)',
-                    borderRadius: '10px',
-                    padding: '15px',
-                    textAlign: 'center'
-                  }}>
-                    {streamType === 'youtube' && (
-                      <p style={{
-                        color: '#2c3e50',
-                        fontSize: '0.95rem',
-                        margin: '0 0 10px 0',
-                        fontWeight: '500'
-                      }}>
-                        📺 يمكنك التحكم في جودة الفيديو من الإعدادات<br/>
-                        🔄 البث محدث تلقائياً كل 10 ثوانِ
-                      </p>
-                    )}
-                    
-                    {streamType === 'meet' && (
-                      <p style={{
-                        color: '#2c3e50',
-                        fontSize: '0.95rem',
-                        margin: '0 0 10px 0',
-                        fontWeight: '500'
-                      }}>
-                        👥 اجتماع تفاعلي مع الأستاذ<br/>
-                        🎤 يمكنك طرح الأسئلة صوتياً
-                      </p>
-                    )}
-                    
-                    {streamType === 'facebook' && (
-                      <p style={{
-                        color: '#2c3e50',
-                        fontSize: '0.95rem',
-                        margin: '0 0 10px 0',
-                        fontWeight: '500'
-                      }}>
-                        📘 بث مباشر على Facebook<br/>
-                        💬 يمكنك التفاعل في التعليقات
-                      </p>
-                    )}
-                    
-                    {streamType === 'vimeo' && (
-                      <p style={{
-                        color: '#2c3e50',
-                        fontSize: '0.95rem',
-                        margin: '0 0 10px 0',
-                        fontWeight: '500'
-                      }}>
-                        🎬 بث عالي الجودة على Vimeo<br/>
-                        🎯 تجربة مشاهدة احترافية
-                      </p>
-                    )}
-                  </div>
+                  position: 'absolute',
+                  bottom: '0px',
+                  right: '0px',
+                  width: '250px',
+                  height: '60px',
+                  background: 'rgba(0, 0, 0, 0.9)',
+                  zIndex: 999999,
+                  pointerEvents: 'auto',
+                  borderRadius: '0 0 20px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'rgba(255, 255, 255, 0.3)',
+                  fontSize: '12px',
+                  fontWeight: '600'
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.stopImmediatePropagation();
+                  return false;
+                }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.stopImmediatePropagation();
+                  return false;
+                }}
+                onTouchStart={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.stopImmediatePropagation();
+                  return false;
+                }}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  return false;
+                }}
+                style={{
+                  cursor: 'not-allowed',
+                  userSelect: 'none',
+                  webkitUserSelect: 'none',
+                  mozUserSelect: 'none',
+                  msUserSelect: 'none'
+                }}
+                >
+                  🔒 محمي
                 </div>
                 
-                {/* أزرار التحكم المحسنة */}
+                {/* طبقة إخفاء علوية إضافية */}
+                <div style={{
+                  position: 'absolute',
+                  top: '0px',
+                  right: '0px',
+                  width: '180px',
+                  height: '60px',
+                  background: 'rgba(0, 0, 0, 0.8)',
+                  zIndex: 999998,
+                  pointerEvents: 'auto',
+                  borderRadius: '0 20px 0 0'
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.stopImmediatePropagation();
+                  return false;
+                }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.stopImmediatePropagation();
+                  return false;
+                }}
+                ></div>
+                
+                {/* طبقة إخفاء وسطى يمنى */}
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  right: '0px',
+                  width: '120px',
+                  height: '80px',
+                  background: 'transparent',
+                  zIndex: 999997,
+                  pointerEvents: 'auto',
+                  transform: 'translateY(-50%)'
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.stopImmediatePropagation();
+                  return false;
+                }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.stopImmediatePropagation();
+                  return false;
+                }}
+                ></div>
+                
+                {/* طبقة حماية إضافية لمنع النقر الأيمن والشير */}
+                <div 
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    zIndex: 1,
+                    pointerEvents: 'none',
+                    background: 'transparent'
+                  }}
+                  onContextMenu={(e) => e.preventDefault()}
+                  onSelectStart={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
+                ></div>
+                
+                {/* overlay متقدم لحجب كامل لمنطقة الأزرار */}
+                <div 
+                  className="youtube-share-blocker-advanced"
+                  style={{
+                    position: 'absolute',
+                    bottom: '0',
+                    right: '0',
+                    width: '300px',
+                    height: '100px',
+                    background: 'transparent',
+                    zIndex: 999999,
+                    pointerEvents: 'auto',
+                    cursor: 'not-allowed'
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    
+                    // إزالة أي قوائم شير ظاهرة
+                    setTimeout(() => {
+                      const shareElements = document.querySelectorAll(`
+                        .ytp-share-panel,
+                        .ytp-popup,
+                        .ytp-panel,
+                        [role="dialog"],
+                        [role="menu"],
+                        [class*="share" i]:not(.live-content):not(.empty-state)
+                      `);
+                      shareElements.forEach(el => {
+                        if (el && !el.closest('.live-content, .empty-state')) {
+                          el.remove();
+                        }
+                      });
+                    }, 0);
+                    
+                    return false;
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onDoubleClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  }}
+                ></div>
+              </div>
+
+              {/* معلومات إضافية */}
+              <div style={{
+                marginTop: '20px',
+                textAlign: 'center'
+              }}>
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '15px',
+                  padding: '15px',
+                  marginBottom: '15px'
+                }}>
+                  <p style={{
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    margin: '0 0 10px 0',
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
+                  }}>
+                    📺 يمكنك تكبير الشاشة للحصول على تجربة أفضل
+                  </p>
+                  <p style={{
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: '0.9rem',
+                    margin: 0,
+                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
+                  }}>
+                    🎯 للحصول على أفضل جودة، تأكد من سرعة الإنترنت
+                  </p>
+                </div>
+                
+                {/* أزرار إضافية للتحكم */}
                 <div style={{
                   display: 'flex',
                   justifyContent: 'center',
-                  gap: '15px',
+                  gap: '10px',
                   flexWrap: 'wrap'
                 }}>
                   <button
                     onClick={() => window.location.reload()}
                     style={{
-                      background: `linear-gradient(135deg, ${platformInfo.color}, ${platformInfo.color}CC)`,
-                      border: 'none',
-                      borderRadius: '12px',
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '10px',
                       color: 'white',
-                      padding: '12px 20px',
-                      fontSize: '0.95rem',
-                      fontWeight: '600',
+                      padding: '8px 15px',
+                      fontSize: '0.9rem',
                       cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      boxShadow: `0 4px 15px ${platformInfo.bgColor}`
+                      transition: 'all 0.3s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = `0 6px 20px ${platformInfo.bgColor}`;
+                      e.target.style.background = 'rgba(255, 255, 255, 0.3)';
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = `0 4px 15px ${platformInfo.bgColor}`;
+                      e.target.style.background = 'rgba(255, 255, 255, 0.2)';
                     }}
                   >
                     🔄 تحديث البث
                   </button>
-                  
-                  {streamType !== 'meet' && (
-                    <button
-                      onClick={() => {
-                        const iframe = document.querySelector('.live-content iframe');
-                        if (iframe && iframe.requestFullscreen) {
-                          iframe.requestFullscreen();
-                        }
-                      }}
-                      style={{
-                        background: 'linear-gradient(135deg, #6c757d, #5a6268)',
-                        border: 'none',
-                        borderRadius: '12px',
-                        color: 'white',
-                        padding: '12px 20px',
-                        fontSize: '0.95rem',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        boxShadow: '0 4px 15px rgba(108, 117, 125, 0.3)'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 6px 20px rgba(108, 117, 125, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 4px 15px rgba(108, 117, 125, 0.3)';
-                      }}
-                    >
-                      📺 ملء الشاشة
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
@@ -1024,12 +943,10 @@ function LiveGrade3() {
               border: '1px solid rgba(255, 255, 255, 0.2)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
               animation: 'slideInUp 0.6s ease-out',
-              maxWidth: '700px',
+              maxWidth: '600px',
               width: '100%'
             }}>
-              <div className="icon" style={{ fontSize: '5rem', marginBottom: '25px', opacity: 0.7 }}>
-                {platformInfo.icon}
-              </div>
+              <div className="icon" style={{ fontSize: '5rem', marginBottom: '25px', opacity: 0.7 }}>📺</div>
               <h3 style={{ 
                 color: 'white', 
                 marginBottom: '20px',
@@ -1049,89 +966,31 @@ function LiveGrade3() {
                 ترقب الإعلان عن مواعيد البث المباشر للمراجعة النهائية
               </p>
               
-              {/* معلومات المنصات المتاحة */}
+              {/* نصائح للطلاب */}
               <div style={{
                 background: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: '20px',
-                padding: '25px',
-                marginTop: '30px'
+                borderRadius: '15px',
+                padding: '20px',
+                marginTop: '25px'
               }}>
                 <h4 style={{
                   color: 'white',
-                  fontSize: '1.3rem',
+                  fontSize: '1.2rem',
                   fontWeight: '600',
-                  marginBottom: '20px'
-                }}>📡 المنصات المتاحة للبث:</h4>
-                
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                  gap: '15px',
-                  marginBottom: '25px'
+                  marginBottom: '15px'
+                }}>💡 نصائح مهمة:</h4>
+                <ul style={{
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  fontSize: '1rem',
+                  textAlign: 'right',
+                  listStyle: 'none',
+                  padding: 0
                 }}>
-                  <div style={{
-                    background: 'rgba(255, 0, 0, 0.1)',
-                    border: '2px solid rgba(255, 0, 0, 0.3)',
-                    borderRadius: '12px',
-                    padding: '15px',
-                    textAlign: 'center'
-                  }}>
-                    <div style={{ fontSize: '2rem', marginBottom: '8px' }}>📺</div>
-                    <div style={{ color: 'white', fontWeight: '600' }}>YouTube Live</div>
-                    <small style={{ color: 'rgba(255, 255, 255, 0.8)' }}>بث عالي الجودة</small>
-                  </div>
-                  
-                  <div style={{
-                    background: 'rgba(66, 133, 244, 0.1)',
-                    border: '2px solid rgba(66, 133, 244, 0.3)',
-                    borderRadius: '12px',
-                    padding: '15px',
-                    textAlign: 'center'
-                  }}>
-                    <div style={{ fontSize: '2rem', marginBottom: '8px' }}>👥</div>
-                    <div style={{ color: 'white', fontWeight: '600' }}>Google Meet</div>
-                    <small style={{ color: 'rgba(255, 255, 255, 0.8)' }}>تفاعل مباشر</small>
-                  </div>
-                  
-                  <div style={{
-                    background: 'rgba(26, 183, 234, 0.1)',
-                    border: '2px solid rgba(26, 183, 234, 0.3)',
-                    borderRadius: '12px',
-                    padding: '15px',
-                    textAlign: 'center'
-                  }}>
-                    <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🎬</div>
-                    <div style={{ color: 'white', fontWeight: '600' }}>Vimeo</div>
-                    <small style={{ color: 'rgba(255, 255, 255, 0.8)' }}>جودة احترافية</small>
-                  </div>
-                </div>
-                
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  borderRadius: '12px',
-                  padding: '20px'
-                }}>
-                  <h4 style={{
-                    color: 'white',
-                    fontSize: '1.1rem',
-                    fontWeight: '600',
-                    marginBottom: '15px'
-                  }}>💡 نصائح مهمة:</h4>
-                  <ul style={{
-                    color: 'rgba(255, 255, 255, 0.9)',
-                    fontSize: '1rem',
-                    textAlign: 'right',
-                    listStyle: 'none',
-                    padding: 0,
-                    lineHeight: '1.8'
-                  }}>
-                    <li style={{ marginBottom: '8px' }}>🔄 تحديث الصفحة تلقائياً كل 10 ثوانِ</li>
-                    <li style={{ marginBottom: '8px' }}>📱 يمكنك مشاهدة البث من الهاتف أو الكمبيوتر</li>
-                    <li style={{ marginBottom: '8px' }}>🔔 ستظهر إشارة حمراء عند بدء البث</li>
-                    <li style={{ marginBottom: '8px' }}>🌐 تأكد من قوة الإنترنت لأفضل جودة</li>
-                    <li>👨‍🏫 جميع البثوث مدارة بواسطة {streamOwner}</li>
-                  </ul>
-                </div>
+                  <li style={{ marginBottom: '8px' }}>🔄 تحديث الصفحة تلقائياً كل 15 ثانية</li>
+                  <li style={{ marginBottom: '8px' }}>📱 يمكنك مشاهدة البث من الهاتف أو الكمبيوتر</li>
+                  <li style={{ marginBottom: '8px' }}>🔔 ستظهر إشارة حمراء عند بدء البث</li>
+                  <li>🌐 تأكد من قوة الإنترنت لأفضل جودة</li>
+                </ul>
               </div>
             </div>
           )}
@@ -1167,21 +1026,20 @@ function LiveGrade3() {
             }
           }
           
-          /* تحسين للشاشات الكبيرة */
+          /* تحسين للشاشات الكبيرة - توسيط المحتوى */
           @media (min-width: 992px) {
             .live-content {
-              max-width: 900px !important;
+              max-width: 800px !important;
               margin: 0 auto !important;
             }
           }
           
           @media (min-width: 1200px) {
             .live-content {
-              max-width: 1000px !important;
+              max-width: 900px !important;
             }
           }
           
-          /* تحسين للموبايل */
           @media (max-width: 768px) {
             .live-content {
               padding: 20px 15px !important;
@@ -1201,30 +1059,28 @@ function LiveGrade3() {
               font-size: 1.1rem !important;
             }
             
-            .video-wrapper {
-              border-radius: 15px !important;
+            .pulse-dot {
+              width: 16px !important;
+              height: 16px !important;
+              top: 20px !important;
+              right: 20px !important;
             }
             
-            .stream-protection-overlay {
-              width: 200px !important;
-              height: 50px !important;
-              font-size: 10px !important;
+            .header-section h1 {
+              font-size: 2rem !important;
             }
             
-            .platform-info-grid {
-              grid-template-columns: 1fr !important;
-              gap: 10px !important;
+            .header-section p {
+              font-size: 1rem !important;
             }
             
             .control-buttons {
               flex-direction: column !important;
-              gap: 10px !important;
+              gap: 8px !important;
             }
             
             .control-buttons button {
               width: 100% !important;
-              padding: 10px 15px !important;
-              font-size: 0.9rem !important;
             }
           }
           
@@ -1250,22 +1106,23 @@ function LiveGrade3() {
               margin-bottom: 20px !important;
             }
             
-            .video-wrapper {
-              border-radius: 12px !important;
+            .header-section {
+              padding: 20px 0 !important;
             }
             
-            .stream-protection-overlay {
-              width: 150px !important;
-              height: 40px !important;
-              font-size: 9px !important;
+            .header-section h1 {
+              font-size: 1.8rem !important;
             }
             
-            .platform-info {
-              padding: 15px !important;
+            .header-section .icon {
+              font-size: 2.5rem !important;
             }
             
-            .platform-info h4 {
-              font-size: 1.1rem !important;
+            .pulse-dot {
+              width: 14px !important;
+              height: 14px !important;
+              top: 15px !important;
+              right: 15px !important;
             }
           }
           
@@ -1286,14 +1143,23 @@ function LiveGrade3() {
               font-size: 0.9rem !important;
             }
             
-            .video-wrapper {
-              border-radius: 10px !important;
+            .header-content {
+              padding: 0 10px !important;
             }
             
-            .stream-protection-overlay {
-              width: 120px !important;
-              height: 35px !important;
-              font-size: 8px !important;
+            .header-content h1 {
+              font-size: 1.4rem !important;
+            }
+            
+            .header-content p {
+              font-size: 0.9rem !important;
+            }
+            
+            .pulse-dot {
+              width: 12px !important;
+              height: 12px !important;
+              top: 12px !important;
+              right: 12px !important;
             }
           }
           
@@ -1308,7 +1174,164 @@ function LiveGrade3() {
             outline-offset: 2px !important;
           }
           
-          /* منع النقر الأيمن والتحديد والسحب */
+          /* إخفاء عناصر YouTube وأزرار الشير بقوة شديدة */
+          iframe[src*="youtube.com"] ~ *,
+          .ytp-chrome-top,
+          .ytp-title,
+          .ytp-title-text,
+          .ytp-title-link,
+          .ytp-chrome-top-buttons,
+          .ytp-watermark,
+          .ytp-cards-teaser,
+          .ytp-ce-element,
+          .ytp-share-button,
+          .ytp-share-button-visible,
+          .ytp-watch-later-button,
+          .ytp-playlist-menu-button,
+          .ytp-overflow-button,
+          .ytp-contextmenu,
+          .ytp-popup,
+          .ytp-cards-button,
+          .ytp-endscreen-element,
+          .annotation,
+          .video-annotations,
+          button[data-tooltip-target-id*="share"],
+          button[aria-label*="Share"],
+          button[aria-label*="شارك"],
+          button[title*="Share"],
+          button[title*="شارك"],
+          .ytp-button[data-tooltip-target-id*="ytp-share"],
+          .ytp-share-panel,
+          .ytp-menuitem[aria-label*="Share"],
+          .ytp-menuitem[aria-label*="شارك"],
+          [role="button"][aria-label*="Share"],
+          [role="button"][aria-label*="شارك"],
+          *[class*="share" i],
+          *[id*="share" i],
+          *[data-tooltip*="share" i],
+          .ytp-overflow-menu,
+          .ytp-settings-menu .ytp-menuitem:nth-child(n+3) {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            position: absolute !important;
+            left: -9999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            z-index: -9999 !important;
+            transform: scale(0) !important;
+          }
+          
+          /* إخفاء أزرار التحكم الإضافية */
+          .ytp-chrome-controls .ytp-right-controls {
+            max-width: 80px !important;
+            overflow: hidden !important;
+          }
+          
+          .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-last-child(-n+4) {
+            display: none !important;
+            visibility: hidden !important;
+          }
+          
+          /* منع ظهور القوائم المنبثقة */
+          .ytp-popup,
+          .ytp-contextmenu,
+          .ytp-overflow-menu {
+            display: none !important;
+            visibility: hidden !important;
+          }
+          
+          /* حماية قصوى ضد قوائم الشير */
+          .ytp-share-panel,
+          .ytp-share-panel-visible,
+          .ytp-share-panel-content,
+          .ytp-share-panel-container,
+          .ytp-popup.ytp-share-panel,
+          .ytp-panel.ytp-share-panel,
+          div[class*="share"]:not(.live-content):not(.empty-state),
+          div[id*="share"]:not(.live-content):not(.empty-state),
+          [role="dialog"]:not(.live-content):not(.empty-state),
+          [role="menu"]:not(.live-content):not(.empty-state),
+          [role="listbox"]:not(.live-content):not(.empty-state) {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            position: absolute !important;
+            left: -99999px !important;
+            top: -99999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            z-index: -99999 !important;
+            transform: scale(0) translate(-99999px, -99999px) !important;
+            clip: rect(0 0 0 0) !important;
+            clip-path: polygon(0 0, 0 0, 0 0) !important;
+          }
+          
+          /* منع ظهور أي نافذة منبثقة من YouTube */
+          iframe[src*="youtube"] + *,
+          .ytp-popup,
+          .ytp-panel,
+          .ytp-contextmenu,
+          .ytp-overflow-menu {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+          }
+          
+          /* حجب منطقة الأزرار اليمنى */
+          .youtube-share-blocker-advanced {
+            background: linear-gradient(45deg, transparent 49%, rgba(255, 0, 0, 0.01) 50%, transparent 51%) !important;
+          }
+          
+          .youtube-share-blocker-advanced:hover {
+            background: rgba(255, 0, 0, 0.05) !important;
+          }
+          
+          .youtube-share-blocker-advanced:active {
+            background: rgba(255, 0, 0, 0.1) !important;
+          }
+          
+          @media (prefers-reduced-motion: reduce) {
+            * {
+              animation-duration: 0.01ms !important;
+              animation-iteration-count: 1 !important;
+              transition-duration: 0.01ms !important;
+            }
+          }
+          
+          /* تحسين التباين للرؤية */
+          @media (prefers-contrast: high) {
+            .live-content {
+              border: 3px solid #fff !important;
+            }
+            
+            .empty-state {
+              border: 3px solid #fff !important;
+            }
+          }
+          
+          /* تحسين للطباعة */
+          @media print {
+            .live-content iframe {
+              display: none !important;
+            }
+            
+            .live-content::after {
+              content: "البث المباشر متاح على الموقع الإلكتروني" !important;
+              display: block !important;
+              text-align: center !important;
+              padding: 50px !important;
+              color: #000 !important;
+              background: #fff !important;
+            }
+          }
+          
+          /* منع النقر الأيمن والتحديد والسحب على الفيديو */
           .live-content {
             -webkit-user-select: none !important;
             -moz-user-select: none !important;
@@ -1326,6 +1349,13 @@ function LiveGrade3() {
             pointer-events: auto !important;
           }
           
+          /* منع النقر الأيمن */
+          .live-content iframe,
+          .live-content {
+            -webkit-context-menu: none !important;
+            context-menu: none !important;
+          }
+          
           /* تحسين الأداء */
           .live-content {
             will-change: transform;
@@ -1335,41 +1365,6 @@ function LiveGrade3() {
           iframe {
             will-change: auto;
             backface-visibility: hidden;
-          }
-          
-          /* تأثيرات خاصة للمنصات */
-          .youtube-container {
-            border-color: #ff0000 !important;
-          }
-          
-          .meet-container {
-            border-color: #4285f4 !important;
-          }
-          
-          .facebook-container {
-            border-color: #1877f2 !important;
-          }
-          
-          .vimeo-container {
-            border-color: #1ab7ea !important;
-          }
-          
-          /* حماية متقدمة ضد العناصر المنبثقة */
-          .live-content *[class*="share"],
-          .live-content *[id*="share"],
-          .live-content *[data-testid*="share"],
-          .live-content *[jsaction*="share"],
-          .live-content *[aria-label*="Share"],
-          .live-content *[aria-label*="شارك"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-            position: absolute !important;
-            left: -99999px !important;
-            width: 0 !important;
-            height: 0 !important;
-            z-index: -99999 !important;
           }
         `}
       </style>
