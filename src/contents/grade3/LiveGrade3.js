@@ -1404,7 +1404,7 @@ function LiveGrade3() {
             }
           }
           
-         /* حماية شاملة ضد جميع عناصر الشير */
+          /* حماية شاملة ضد جميع عناصر الشير */
           .youtube-ultimate-blocker-physical-1,
           .youtube-ultimate-blocker-physical-2,
           .youtube-ultimate-blocker-physical-3,
