@@ -5,7 +5,12 @@ function AdminContentManagement() {
   const [activeTab, setActiveTab] = useState('videos');
   const [videos, setVideos] = useState([]);
   const [files, setFiles] = useState([]);
-  const [liveSettings, setLiveSettings] = useState({ isActive: false, streamUrl: '' });
+  const [liveSettings, setLiveSettings] = useState({ 
+    isActive: false, 
+    streamUrl: '', 
+    streamType: 'youtube',
+    streamOwner: 'omareldalil060@gmail.com'
+  });
   const [loading, setLoading] = useState(false);
   
   // نموذج إضافة فيديو/ملف جديد
@@ -14,7 +19,7 @@ function AdminContentManagement() {
     id: '', 
     thumbnail: '', 
     notes: '', 
-    isLive: false // خيار جديد للايف
+    isLive: false
   });
   const [editingItem, setEditingItem] = useState(null);
 
@@ -73,11 +78,21 @@ function AdminContentManagement() {
       const response = await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/public/grades/grade3/live.json?${Date.now()}`);
       if (response.ok) {
         const data = await response.json();
-        setLiveSettings(data || { isActive: false, streamUrl: '' });
+        setLiveSettings(data || { 
+          isActive: false, 
+          streamUrl: '', 
+          streamType: 'youtube',
+          streamOwner: 'omareldalil060@gmail.com'
+        });
       }
     } catch (error) {
       console.error('خطأ في جلب إعدادات البث:', error);
-      setLiveSettings({ isActive: false, streamUrl: '' });
+      setLiveSettings({ 
+        isActive: false, 
+        streamUrl: '', 
+        streamType: 'youtube',
+        streamOwner: 'omareldalil060@gmail.com'
+      });
     }
   };
 
@@ -150,22 +165,64 @@ function AdminContentManagement() {
     await saveToGitHub('public/grades/grade3/live.json', liveData, 'تحديث إعدادات البث المباشر');
   };
 
-  // استخراج ID من رابط Vimeo
-  const extractVimeoId = (url) => {
+  // استخراج ID من رابط متعدد المنصات
+  const extractStreamId = (url, platform) => {
     if (!url) return null;
     
-    // إذا كان الرابط يحتوي على vimeo.com
-    if (url.includes('vimeo.com')) {
-      const match = url.match(/vimeo\.com\/(\d+)/);
-      return match ? match[1] : null;
+    // YouTube
+    if (platform === 'youtube' || url.includes('youtube.com') || url.includes('youtu.be')) {
+      if (url.includes('youtube.com/live/')) {
+        const match = url.match(/youtube\.com\/live\/([a-zA-Z0-9_-]+)/);
+        return match ? match[1] : null;
+      } else if (url.includes('youtube.com/watch?v=')) {
+        const match = url.match(/watch\?v=([a-zA-Z0-9_-]+)/);
+        return match ? match[1] : null;
+      } else if (url.includes('youtu.be/')) {
+        const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+        return match ? match[1] : null;
+      } else if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) {
+        return url.trim();
+      }
     }
     
-    // إذا كان مجرد ID
-    if (/^\d+$/.test(url.trim())) {
-      return url.trim();
+    // Google Meet
+    if (platform === 'meet' || url.includes('meet.google.com')) {
+      return url; // إرجاع الرابط كاملاً للـ Meet
     }
     
-    return null;
+    // Facebook
+    if (platform === 'facebook' || url.includes('facebook.com')) {
+      return url; // إرجاع الرابط كاملاً للـ Facebook
+    }
+    
+    // Vimeo
+    if (platform === 'vimeo' || url.includes('vimeo.com')) {
+      if (url.includes('vimeo.com/')) {
+        const match = url.match(/vimeo\.com\/(\d+)/);
+        return match ? match[1] : null;
+      } else if (/^\d+$/.test(url.trim())) {
+        return url.trim();
+      }
+    }
+    
+    return url;
+  };
+
+  // تحديد نوع المنصة تلقائياً
+  const detectPlatformType = (url) => {
+    if (!url) return 'youtube';
+    
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      return 'youtube';
+    } else if (url.includes('meet.google.com')) {
+      return 'meet';
+    } else if (url.includes('facebook.com')) {
+      return 'facebook';
+    } else if (url.includes('vimeo.com')) {
+      return 'vimeo';
+    }
+    
+    return 'youtube'; // افتراضي
   };
 
   // إضافة عنصر جديد
@@ -181,35 +238,28 @@ function AdminContentManagement() {
       // للفيديوهات: التأكد من أن ID صحيح
       let processedId = newItem.id.trim();
       if (activeTab === 'videos') {
-        const vimeoId = extractVimeoId(processedId);
-        if (!vimeoId) {
-          alert('⚠️ يرجى إدخال رابط Vimeo صحيح أو ID صحيح');
+        const detectedPlatform = detectPlatformType(processedId);
+        const extractedId = extractStreamId(processedId, detectedPlatform);
+        if (!extractedId) {
+          alert('⚠️ يرجى إدخال رابط صحيح أو ID صحيح');
           return;
         }
-        processedId = vimeoId; // حفظ ID فقط بدون الرابط الكامل
+        processedId = extractedId;
       }
 
       // تحديد نوع الرابط المناسب للصور
       let thumbnailPath = newItem.thumbnail.trim();
 
-      // إذا كان المسار يبدأ بـ /grades/ فهو مسار محلي
       if (thumbnailPath.startsWith('/grades/')) {
-        // للصور: استخدم raw.githubusercontent.com للضمان
         thumbnailPath = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/public${thumbnailPath}`;
-      } 
-      // إذا كان المسار لا يحتوي على بروتوكول، اعتبره مسار محلي
-      else if (!thumbnailPath.startsWith('http')) {
-        // للصور: استخدم raw.githubusercontent.com للضمان
+      } else if (!thumbnailPath.startsWith('http')) {
         thumbnailPath = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/public/grades/grade3/${thumbnailPath}`;
-      }
-      // إذا كان GitHub blob link، حوله إلى raw link
-      else if (thumbnailPath.includes('github.com') && thumbnailPath.includes('blob')) {
+      } else if (thumbnailPath.includes('github.com') && thumbnailPath.includes('blob')) {
         thumbnailPath = thumbnailPath
           .replace('github.com', 'raw.githubusercontent.com')
           .replace('/blob', '')
           .replace('?raw=true', '');
       }
-      // إذا كان رابط كامل آخر، استخدمه كما هو
 
       const newItemData = {
         id: processedId,
@@ -248,38 +298,29 @@ function AdminContentManagement() {
     try {
       setLoading(true);
 
-      // للفيديوهات: التأكد من أن ID صحيح
       let processedId = editingItem.id.trim();
       if (activeTab === 'videos') {
-        const vimeoId = extractVimeoId(processedId);
-        if (!vimeoId) {
-          alert('⚠️ يرجى إدخال رابط Vimeo صحيح أو ID صحيح');
+        const detectedPlatform = detectPlatformType(processedId);
+        const extractedId = extractStreamId(processedId, detectedPlatform);
+        if (!extractedId) {
+          alert('⚠️ يرجى إدخال رابط صحيح أو ID صحيح');
           return;
         }
-        processedId = vimeoId; // حفظ ID فقط بدون الرابط الكامل
+        processedId = extractedId;
       }
 
-      // تحديد نوع الرابط المناسب للصور
       let thumbnailPath = editingItem.thumbnail.trim();
 
-      // إذا كان المسار يبدأ بـ /grades/ فهو مسار محلي
       if (thumbnailPath.startsWith('/grades/')) {
-        // للصور: استخدم raw.githubusercontent.com للضمان
         thumbnailPath = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/public${thumbnailPath}`;
-      } 
-      // إذا كان المسار لا يحتوي على بروتوكول، اعتبره مسار محلي
-      else if (!thumbnailPath.startsWith('http')) {
-        // للصور: استخدم raw.githubusercontent.com للضمان
+      } else if (!thumbnailPath.startsWith('http')) {
         thumbnailPath = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/public/grades/grade3/${thumbnailPath}`;
-      }
-      // إذا كان GitHub blob link، حوله إلى raw link
-      else if (thumbnailPath.includes('github.com') && thumbnailPath.includes('blob')) {
+      } else if (thumbnailPath.includes('github.com') && thumbnailPath.includes('blob')) {
         thumbnailPath = thumbnailPath
           .replace('github.com', 'raw.githubusercontent.com')
           .replace('/blob', '')
           .replace('?raw=true', '');
       }
-      // إذا كان رابط كامل آخر، استخدمه كما هو
 
       const updatedItem = {
         id: processedId,
@@ -340,7 +381,17 @@ function AdminContentManagement() {
   const handleUpdateLiveSettings = async () => {
     try {
       setLoading(true);
-      await saveLiveSettings(liveSettings);
+      
+      // تحديد نوع المنصة تلقائياً إذا لم يتم تحديدها
+      const detectedType = detectPlatformType(liveSettings.streamUrl);
+      const updatedSettings = {
+        ...liveSettings,
+        streamType: detectedType,
+        streamOwner: 'omareldalil060@gmail.com' // تأكيد صاحب البث
+      };
+      
+      await saveLiveSettings(updatedSettings);
+      setLiveSettings(updatedSettings);
       alert('✅ تم تحديث إعدادات البث المباشر بنجاح!');
     } catch (error) {
       alert(`❌ خطأ في تحديث إعدادات البث: ${error.message}`);
@@ -349,9 +400,57 @@ function AdminContentManagement() {
     }
   };
 
+  // دالة للحصول على معلومات المنصة
+  const getPlatformInfo = (type) => {
+    switch (type) {
+      case 'youtube':
+        return {
+          icon: '📺',
+          name: 'YouTube Live',
+          color: '#ff0000',
+          bgColor: 'rgba(255, 0, 0, 0.1)',
+          placeholder: 'https://youtube.com/live/VIDEO_ID أو VIDEO_ID'
+        };
+      case 'meet':
+        return {
+          icon: '👥',
+          name: 'Google Meet',
+          color: '#4285f4',
+          bgColor: 'rgba(66, 133, 244, 0.1)',
+          placeholder: 'https://meet.google.com/xyz-abc-def'
+        };
+      case 'facebook':
+        return {
+          icon: '📘',
+          name: 'Facebook Live',
+          color: '#1877f2',
+          bgColor: 'rgba(24, 119, 242, 0.1)',
+          placeholder: 'https://facebook.com/username/videos/123456789'
+        };
+      case 'vimeo':
+        return {
+          icon: '🎬',
+          name: 'Vimeo',
+          color: '#1ab7ea',
+          bgColor: 'rgba(26, 183, 234, 0.1)',
+          placeholder: 'https://vimeo.com/123456789 أو 123456789'
+        };
+      default:
+        return {
+          icon: '🔴',
+          name: 'البث المباشر',
+          color: '#e74c3c',
+          bgColor: 'rgba(231, 76, 60, 0.1)',
+          placeholder: 'رابط البث المباشر'
+        };
+    }
+  };
+
   const getCurrentData = () => {
     return activeTab === 'videos' ? videos : files;
   };
+
+  const currentPlatformInfo = getPlatformInfo(liveSettings.streamType);
 
   if (loading) {
     return (
@@ -392,7 +491,7 @@ function AdminContentManagement() {
         fontFamily: "'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif",
         paddingTop: '100px'
       }}>
-        {/* Header Section - بوكس العنوان الرئيسي */}
+        {/* Header Section */}
         <div style={{
           maxWidth: '900px',
           margin: '0 auto 50px auto',
@@ -410,7 +509,6 @@ function AdminContentManagement() {
             overflow: 'hidden',
             animation: 'slideInUp 0.6s ease-out'
           }}>
-            {/* عناصر زخرفية */}
             <div style={{
               position: 'absolute',
               top: '-50%',
@@ -438,7 +536,7 @@ function AdminContentManagement() {
                 color: 'white',
                 padding: '20px 30px',
                 borderRadius: '25px',
-                fontSize: '3rem',
+                fontSize: '3.5rem',
                 marginBottom: '25px',
                 display: 'inline-block',
                 boxShadow: '0 15px 35px rgba(195, 20, 50, 0.4)',
@@ -457,7 +555,7 @@ function AdminContentManagement() {
                 WebkitTextFillColor: 'transparent',
                 textShadow: 'none'
               }}>
-                إدارة المحتوى التعليمي
+                إدارة المحتوى التعليمي المتقدم
               </h1>
               <p style={{ 
                 color: '#6c757d',
@@ -466,13 +564,13 @@ function AdminContentManagement() {
                 margin: 0,
                 lineHeight: '1.6'
               }}>
-                تحكم شامل في الفيديوهات والملفات والبث المباشر
+                تحكم شامل متعدد المنصات في البث المباشر والمحتوى
               </p>
             </div>
           </div>
         </div>
 
-        {/* Navigation Tabs - بوكس التنقل */}
+        {/* Navigation Tabs */}
         <div style={{
           maxWidth: '900px',
           margin: '0 auto 50px auto',
@@ -516,20 +614,6 @@ function AdminContentManagement() {
                   alignItems: 'center',
                   gap: '10px'
                 }}
-                onMouseEnter={(e) => {
-                  if (activeTab !== 'videos') {
-                    e.target.style.background = 'rgba(195, 20, 50, 0.1)';
-                    e.target.style.transform = 'translateY(-3px)';
-                    e.target.style.borderColor = 'rgba(195, 20, 50, 0.4)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeTab !== 'videos') {
-                    e.target.style.background = 'rgba(195, 20, 50, 0.05)';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.borderColor = 'rgba(195, 20, 50, 0.2)';
-                  }
-                }}
               >
                 <div style={{ fontSize: '2rem' }}>📹</div>
                 <div>إدارة الفيديوهات</div>
@@ -565,20 +649,6 @@ function AdminContentManagement() {
                   alignItems: 'center',
                   gap: '10px'
                 }}
-                onMouseEnter={(e) => {
-                  if (activeTab !== 'files') {
-                    e.target.style.background = 'rgba(0, 184, 148, 0.1)';
-                    e.target.style.transform = 'translateY(-3px)';
-                    e.target.style.borderColor = 'rgba(0, 184, 148, 0.4)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeTab !== 'files') {
-                    e.target.style.background = 'rgba(0, 184, 148, 0.05)';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.borderColor = 'rgba(0, 184, 148, 0.2)';
-                  }
-                }}
               >
                 <div style={{ fontSize: '2rem' }}>📄</div>
                 <div>إدارة الملفات</div>
@@ -596,10 +666,10 @@ function AdminContentManagement() {
                 style={{
                   padding: '25px 20px',
                   background: activeTab === 'live' ? 
-                    'linear-gradient(135deg, #e74c3c, #c0392b)' : 
-                    'rgba(231, 76, 60, 0.05)',
-                  color: activeTab === 'live' ? 'white' : '#e74c3c',
-                  border: `3px solid ${activeTab === 'live' ? '#e74c3c' : 'rgba(231, 76, 60, 0.2)'}`,
+                    `linear-gradient(135deg, ${currentPlatformInfo.color}, ${currentPlatformInfo.color}CC)` : 
+                    currentPlatformInfo.bgColor,
+                  color: activeTab === 'live' ? 'white' : currentPlatformInfo.color,
+                  border: `3px solid ${activeTab === 'live' ? currentPlatformInfo.color : currentPlatformInfo.color}33`,
                   borderRadius: '20px',
                   fontSize: '1.2rem',
                   fontWeight: '700',
@@ -607,7 +677,7 @@ function AdminContentManagement() {
                   transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                   textShadow: activeTab === 'live' ? '0 1px 2px rgba(0, 0, 0, 0.2)' : 'none',
                   boxShadow: activeTab === 'live' ? 
-                    '0 10px 30px rgba(231, 76, 60, 0.3)' : 
+                    `0 10px 30px ${currentPlatformInfo.bgColor}` : 
                     '0 5px 15px rgba(0, 0, 0, 0.05)',
                   display: 'flex',
                   flexDirection: 'column',
@@ -615,22 +685,7 @@ function AdminContentManagement() {
                   gap: '10px',
                   position: 'relative'
                 }}
-                onMouseEnter={(e) => {
-                  if (activeTab !== 'live') {
-                    e.target.style.background = 'rgba(231, 76, 60, 0.1)';
-                    e.target.style.transform = 'translateY(-3px)';
-                    e.target.style.borderColor = 'rgba(231, 76, 60, 0.4)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeTab !== 'live') {
-                    e.target.style.background = 'rgba(231, 76, 60, 0.05)';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.borderColor = 'rgba(231, 76, 60, 0.2)';
-                  }
-                }}
               >
-                {/* نقطة البث المباشر */}
                 {liveSettings.isActive && (
                   <div style={{
                     position: 'absolute',
@@ -645,14 +700,14 @@ function AdminContentManagement() {
                     zIndex: 10
                   }}></div>
                 )}
-                <div style={{ fontSize: '2rem' }}>🔴</div>
-                <div>إدارة البث المباشر</div>
+                <div style={{ fontSize: '2rem' }}>{currentPlatformInfo.icon}</div>
+                <div>البث المباشر متعدد المنصات</div>
                 <small style={{ 
                   opacity: 0.8, 
                   fontSize: '0.9rem',
                   fontWeight: '500'
                 }}>
-                  {liveSettings.isActive ? 'نشط الآن' : 'غير نشط'}
+                  {liveSettings.isActive ? `نشط على ${currentPlatformInfo.name}` : 'غير نشط'}
                 </small>
               </button>
             </div>
@@ -695,14 +750,6 @@ function AdminContentManagement() {
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
                     boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.2)';
                   }}
                 >
                   ➕ إضافة {activeTab === 'videos' ? 'فيديو' : 'ملف'} جديد
@@ -759,7 +806,7 @@ function AdminContentManagement() {
                             type="text"
                             value={editingItem.id}
                             onChange={(e) => setEditingItem({...editingItem, id: e.target.value})}
-                            placeholder={activeTab === 'videos' ? 'https://vimeo.com/1096785379 أو 1096785379' : 'معرف الملف'}
+                            placeholder={activeTab === 'videos' ? 'رابط أو معرف متعدد المنصات' : 'معرف الملف'}
                             style={{
                               padding: '8px 12px',
                               borderRadius: '8px',
@@ -845,10 +892,15 @@ function AdminContentManagement() {
                             color: '#2c3e50',
                             wordBreak: 'break-all'
                           }}>
-                            {activeTab === 'videos' && extractVimeoId(item.id) ? (
+                            {activeTab === 'videos' ? (
                               <div>
-                                <div style={{ color: '#e74c3c', fontWeight: '600' }}>🎬 Vimeo ID:</div>
-                                <div>{extractVimeoId(item.id)}</div>
+                                <div style={{ color: '#e74c3c', fontWeight: '600', marginBottom: '5px' }}>
+                                  {detectPlatformType(item.id) === 'youtube' && '📺 YouTube'}
+                                  {detectPlatformType(item.id) === 'meet' && '👥 Google Meet'}
+                                  {detectPlatformType(item.id) === 'facebook' && '📘 Facebook'}
+                                  {detectPlatformType(item.id) === 'vimeo' && '🎬 Vimeo'}
+                                </div>
+                                <div style={{ fontSize: '12px' }}>{item.id}</div>
                               </div>
                             ) : (
                               item.id
@@ -866,13 +918,11 @@ function AdminContentManagement() {
                                 border: '2px solid rgba(0, 0, 0, 0.1)'
                               }}
                               onError={(e) => {
-                                // جرب إضافة ?raw=true إذا لم يكن موجود
                                 if (!e.target.src.includes('?raw=true') && e.target.src.includes('github.com')) {
                                   e.target.src = e.target.src + '?raw=true';
                                   return;
                                 }
                                 
-                                // جرب تحويل blob إلى raw.githubusercontent.com
                                 if (e.target.src.includes('github.com') && e.target.src.includes('blob')) {
                                   const rawUrl = e.target.src
                                     .replace('github.com', 'raw.githubusercontent.com')
@@ -882,12 +932,10 @@ function AdminContentManagement() {
                                   return;
                                 }
                                 
-                                // إذا فشل كل شيء، اخفي الصورة واظهر البديل
                                 e.target.style.display = 'none';
                                 e.target.nextSibling.style.display = 'flex';
                               }}
                               onLoad={(e) => {
-                                // تأكد إن الصورة ظاهرة والبديل مخفي
                                 e.target.style.display = 'block';
                                 if (e.target.nextSibling) {
                                   e.target.nextSibling.style.display = 'none';
@@ -1008,7 +1056,7 @@ function AdminContentManagement() {
             </div>
           )}
 
-          {/* Live Settings */}
+          {/* Live Settings - Enhanced Multi-Platform */}
           {activeTab === 'live' && (
             <div style={{
               background: 'rgba(255, 255, 255, 0.95)',
@@ -1021,24 +1069,14 @@ function AdminContentManagement() {
               position: 'relative',
               overflow: 'hidden'
             }}>
-              {/* عناصر زخرفية للبث المباشر */}
+              {/* عناصر زخرفية */}
               <div style={{
                 position: 'absolute',
                 top: '-30%',
                 right: '-15%',
                 width: '200px',
                 height: '200px',
-                background: 'linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.05))',
-                borderRadius: '50%',
-                zIndex: 0
-              }}></div>
-              <div style={{
-                position: 'absolute',
-                bottom: '-25%',
-                left: '-10%',
-                width: '180px',
-                height: '180px',
-                background: 'linear-gradient(135deg, rgba(231, 76, 60, 0.05), rgba(192, 57, 43, 0.1))',
+                background: `linear-gradient(135deg, ${currentPlatformInfo.color}20, ${currentPlatformInfo.color}10)`,
                 borderRadius: '50%',
                 zIndex: 0
               }}></div>
@@ -1046,19 +1084,18 @@ function AdminContentManagement() {
               <div style={{ position: 'relative', zIndex: 1 }}>
                 <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                   <div style={{
-                    background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+                    background: `linear-gradient(135deg, ${currentPlatformInfo.color}, ${currentPlatformInfo.color}CC)`,
                     color: 'white',
                     padding: '20px 25px',
                     borderRadius: '25px',
                     fontSize: '2.5rem',
                     marginBottom: '20px',
                     display: 'inline-block',
-                    boxShadow: '0 15px 35px rgba(231, 76, 60, 0.4)',
+                    boxShadow: `0 15px 35px ${currentPlatformInfo.bgColor}`,
                     textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
                     position: 'relative'
                   }}>
-                    🔴
-                    {/* نقطة البث النشط */}
+                    {currentPlatformInfo.icon}
                     {liveSettings.isActive && (
                       <div style={{
                         position: 'absolute',
@@ -1079,15 +1116,64 @@ function AdminContentManagement() {
                     fontWeight: '700',
                     marginBottom: '15px'
                   }}>
-                    إعدادات البث المباشر
+                    إدارة البث المباشر متعدد المنصات
                   </h2>
                   <p style={{
                     color: '#6c757d',
                     fontSize: '1.2rem',
                     fontWeight: '500'
                   }}>
-                    تحكم في إعدادات البث المباشر للطلاب
+                    دعم {currentPlatformInfo.name} والمنصات الأخرى
                   </p>
+                </div>
+
+                {/* Platform Selection */}
+                <div style={{ marginBottom: '30px', direction: 'rtl' }}>
+                  <label style={{
+                    display: 'block',
+                    marginBottom: '15px',
+                    fontWeight: '600',
+                    color: '#2c3e50',
+                    fontSize: '1.2rem'
+                  }}>
+                    🎯 اختر منصة البث:
+                  </label>
+                  
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '15px',
+                    marginBottom: '25px'
+                  }}>
+                    {['youtube', 'meet', 'vimeo', 'facebook'].map(platform => {
+                      const platformData = getPlatformInfo(platform);
+                      return (
+                        <button
+                          key={platform}
+                          onClick={() => setLiveSettings({...liveSettings, streamType: platform})}
+                          style={{
+                            padding: '20px',
+                            background: liveSettings.streamType === platform ? 
+                              `linear-gradient(135deg, ${platformData.color}, ${platformData.color}CC)` : 
+                              platformData.bgColor,
+                            color: liveSettings.streamType === platform ? 'white' : platformData.color,
+                            border: `2px solid ${liveSettings.streamType === platform ? platformData.color : platformData.color}33`,
+                            borderRadius: '15px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '10px',
+                            fontWeight: '600'
+                          }}
+                        >
+                          <div style={{ fontSize: '2rem' }}>{platformData.icon}</div>
+                          <div>{platformData.name}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div style={{ maxWidth: '600px', margin: '0 auto', direction: 'rtl' }}>
@@ -1102,10 +1188,10 @@ function AdminContentManagement() {
                       cursor: 'pointer',
                       padding: '20px',
                       background: liveSettings.isActive ? 
-                        'rgba(231, 76, 60, 0.1)' : 
+                        currentPlatformInfo.bgColor : 
                         'rgba(108, 117, 125, 0.1)',
                       borderRadius: '15px',
-                      border: `3px solid ${liveSettings.isActive ? 'rgba(231, 76, 60, 0.3)' : 'rgba(108, 117, 125, 0.3)'}`,
+                      border: `3px solid ${liveSettings.isActive ? currentPlatformInfo.color : 'rgba(108, 117, 125, 0.3)'}33`,
                       transition: 'all 0.3s ease',
                       boxShadow: '0 5px 15px rgba(0, 0, 0, 0.05)'
                     }}>
@@ -1117,12 +1203,12 @@ function AdminContentManagement() {
                           width: '25px',
                           height: '25px',
                           marginLeft: '10px',
-                          accentColor: '#e74c3c',
+                          accentColor: currentPlatformInfo.color,
                           cursor: 'pointer'
                         }}
                       />
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '1.8rem' }}>🔴</span>
+                        <span style={{ fontSize: '1.8rem' }}>{currentPlatformInfo.icon}</span>
                         <span>تفعيل البث المباشر</span>
                         {liveSettings.isActive && (
                           <div style={{
@@ -1134,7 +1220,7 @@ function AdminContentManagement() {
                             fontWeight: '700',
                             boxShadow: '0 4px 12px rgba(40, 167, 69, 0.3)'
                           }}>
-                            نشط الآن
+                            نشط على {currentPlatformInfo.name}
                           </div>
                         )}
                       </div>
@@ -1149,18 +1235,18 @@ function AdminContentManagement() {
                       color: '#2c3e50',
                       fontSize: '1.2rem'
                     }}>
-                      📺 رابط البث المباشر:
+                      {currentPlatformInfo.icon} رابط البث - {currentPlatformInfo.name}:
                     </label>
                     <input
                       type="url"
                       value={liveSettings.streamUrl}
                       onChange={(e) => setLiveSettings({...liveSettings, streamUrl: e.target.value})}
-                      placeholder="https://vimeo.com/1096785379 أو معرف الفيديو فقط"
+                      placeholder={currentPlatformInfo.placeholder}
                       style={{
                         width: '100%',
                         padding: '18px 22px',
                         borderRadius: '15px',
-                        border: '3px solid rgba(231, 76, 60, 0.2)',
+                        border: `3px solid ${currentPlatformInfo.color}33`,
                         background: 'rgba(255, 255, 255, 0.9)',
                         fontSize: '16px',
                         textAlign: 'left',
@@ -1171,34 +1257,89 @@ function AdminContentManagement() {
                         fontFamily: 'inherit'
                       }}
                       onFocus={(e) => {
-                        e.target.style.borderColor = '#e74c3c';
+                        e.target.style.borderColor = currentPlatformInfo.color;
                         e.target.style.background = 'rgba(255, 255, 255, 1)';
-                        e.target.style.boxShadow = '0 0 0 4px rgba(231, 76, 60, 0.1)';
+                        e.target.style.boxShadow = `0 0 0 4px ${currentPlatformInfo.bgColor}`;
                       }}
                       onBlur={(e) => {
-                        e.target.style.borderColor = 'rgba(231, 76, 60, 0.2)';
+                        e.target.style.borderColor = currentPlatformInfo.color + '33';
                         e.target.style.background = 'rgba(255, 255, 255, 0.9)';
                         e.target.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.05)';
                       }}
                     />
+                    
+                    {/* Platform-specific instructions */}
                     <div style={{
-                      background: 'rgba(231, 76, 60, 0.05)',
-                      border: '2px solid rgba(231, 76, 60, 0.1)',
+                      background: currentPlatformInfo.bgColor,
+                      border: `2px solid ${currentPlatformInfo.color}33`,
                       borderRadius: '12px',
                       padding: '15px',
                       marginTop: '12px'
                     }}>
                       <small style={{
-                        color: '#e74c3c',
+                        color: currentPlatformInfo.color,
                         fontSize: '14px',
                         display: 'block',
                         fontWeight: '500',
                         lineHeight: '1.5'
                       }}>
-                        💡 <strong>مثال:</strong> https://vimeo.com/1096785379<br/>
-                        🎬 <strong>أو اكتب معرف الفيديو فقط:</strong> 1096785379<br/>
-                        🔗 <strong>ملاحظة:</strong> سيتم استخدام Vimeo لتشغيل البث المباشر
+                        {liveSettings.streamType === 'youtube' && (
+                          <>
+                            💡 <strong>مثال:</strong> https://youtube.com/live/VIDEO_ID<br/>
+                            🎬 <strong>أو اكتب معرف الفيديو فقط:</strong> VIDEO_ID<br/>
+                            🔗 <strong>ملاحظة:</strong> يدعم البث المباشر وUnlisted/Private videos
+                          </>
+                        )}
+                        {liveSettings.streamType === 'meet' && (
+                          <>
+                            💡 <strong>مثال:</strong> https://meet.google.com/xyz-abc-def<br/>
+                            👥 <strong>ملاحظة:</strong> اجتماع تفاعلي مع الطلاب<br/>
+                            🔒 <strong>أمان:</strong> محدود لحساب {liveSettings.streamOwner}
+                          </>
+                        )}
+                        {liveSettings.streamType === 'vimeo' && (
+                          <>
+                            💡 <strong>مثال:</strong> https://vimeo.com/123456789<br/>
+                            🎬 <strong>أو اكتب معرف الفيديو فقط:</strong> 123456789<br/>
+                            🔗 <strong>ملاحظة:</strong> جودة احترافية عالية
+                          </>
+                        )}
+                        {liveSettings.streamType === 'facebook' && (
+                          <>
+                            💡 <strong>مثال:</strong> https://facebook.com/username/videos/123456789<br/>
+                            📘 <strong>ملاحظة:</strong> بث مباشر مع تفاعل الجمهور<br/>
+                            💬 <strong>تفاعل:</strong> تعليقات مباشرة
+                          </>
+                        )}
                       </small>
+                    </div>
+                  </div>
+
+                  {/* Owner Information */}
+                  <div style={{
+                    background: 'rgba(40, 167, 69, 0.1)',
+                    border: '2px solid rgba(40, 167, 69, 0.2)',
+                    borderRadius: '15px',
+                    padding: '20px',
+                    marginBottom: '30px',
+                    textAlign: 'center'
+                  }}>
+                    <h4 style={{
+                      color: '#28a745',
+                      fontSize: '1.2rem',
+                      fontWeight: '700',
+                      marginBottom: '10px'
+                    }}>👨‍🏫 صاحب البث</h4>
+                    <div style={{
+                      background: 'rgba(255, 255, 255, 0.7)',
+                      padding: '12px 20px',
+                      borderRadius: '10px',
+                      fontFamily: 'monospace',
+                      fontSize: '1rem',
+                      color: '#2c3e50',
+                      fontWeight: '600'
+                    }}>
+                      {liveSettings.streamOwner}
                     </div>
                   </div>
 
@@ -1210,7 +1351,7 @@ function AdminContentManagement() {
                       padding: '20px',
                       background: loading ? 
                         'linear-gradient(135deg, #6c757d, #5a6268)' : 
-                        'linear-gradient(135deg, #e74c3c, #c0392b)',
+                        `linear-gradient(135deg, ${currentPlatformInfo.color}, ${currentPlatformInfo.color}CC)`,
                       color: 'white',
                       border: 'none',
                       borderRadius: '18px',
@@ -1219,20 +1360,8 @@ function AdminContentManagement() {
                       cursor: loading ? 'not-allowed' : 'pointer',
                       transition: 'all 0.3s ease',
                       opacity: loading ? 0.7 : 1,
-                      boxShadow: '0 10px 30px rgba(231, 76, 60, 0.3)',
+                      boxShadow: `0 10px 30px ${currentPlatformInfo.bgColor}`,
                       textShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!loading) {
-                        e.target.style.transform = 'translateY(-3px)';
-                        e.target.style.boxShadow = '0 15px 35px rgba(231, 76, 60, 0.4)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!loading) {
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 10px 30px rgba(231, 76, 60, 0.3)';
-                      }
                     }}
                   >
                     {loading ? (
@@ -1250,7 +1379,7 @@ function AdminContentManagement() {
                         جاري الحفظ...
                       </>
                     ) : (
-                      '💾 حفظ إعدادات البث'
+                      `💾 حفظ إعدادات ${currentPlatformInfo.name}`
                     )}
                   </button>
                 </div>
@@ -1310,13 +1439,13 @@ function AdminContentManagement() {
                 color: '#2c3e50',
                 fontSize: '1.1rem'
               }}>
-                {activeTab === 'videos' ? '🎬 رابط أو معرف Vimeo:' : '🆔 معرف الملف:'}
+                {activeTab === 'videos' ? '🎬 رابط أو معرف متعدد المنصات:' : '🆔 معرف الملف:'}
               </label>
               <input
                 type="text"
                 value={newItem.id}
                 onChange={(e) => setNewItem({...newItem, id: e.target.value})}
-                placeholder={activeTab === 'videos' ? 'https://vimeo.com/1096785379 أو 1096785379' : '1KJeUHc0SkEqc9r5HM5FTGBvo7IGlAJ6k'}
+                placeholder={activeTab === 'videos' ? 'YouTube, Meet, Vimeo, Facebook - رابط أو معرف' : '1KJeUHc0SkEqc9r5HM5FTGBvo7IGlAJ6k'}
                 style={{
                   width: '100%',
                   padding: '16px 20px',
@@ -1339,7 +1468,7 @@ function AdminContentManagement() {
                   marginTop: '8px',
                   fontWeight: '500'
                 }}>
-                  💡 يمكنك نسخ الرابط كاملاً من Vimeo أو كتابة معرف الفيديو فقط
+                  💡 يدعم: YouTube Live, Google Meet, Vimeo, Facebook Live - رابط كامل أو معرف فقط
                 </small>
               )}
             </div>
@@ -1397,7 +1526,7 @@ function AdminContentManagement() {
                 type="text"
                 value={newItem.notes}
                 onChange={(e) => setNewItem({...newItem, notes: e.target.value})}
-                placeholder={activeTab === 'videos' ? 'شرح الصفات المركبة compound adjectives' : 'ملاحظات الملف'}
+                placeholder={activeTab === 'videos' ? 'شرح موضوع الدرس أو المحتوى' : 'وصف الملف'}
                 style={{
                   width: '100%',
                   padding: '16px 20px',
@@ -1451,7 +1580,7 @@ function AdminContentManagement() {
                   marginTop: '8px',
                   fontWeight: '500'
                 }}>
-                  💡 البث المباشر: يظهر علامات LIVE ونقطة البث النشط
+                  💡 البث المباشر: يظهر علامات LIVE ونقطة البث النشط للطلاب
                 </small>
               </div>
             )}
@@ -1621,6 +1750,20 @@ function AdminContentManagement() {
               font-size: 0.9rem !important;
               padding: 10px 15px !important;
             }
+            
+            .platform-selection {
+              grid-template-columns: 1fr 1fr !important;
+              gap: 10px !important;
+            }
+            
+            .platform-button {
+              padding: 15px 10px !important;
+              font-size: 0.9rem !important;
+            }
+            
+            .platform-button .icon {
+              font-size: 1.5rem !important;
+            }
           }
           
           @media (max-width: 480px) {
@@ -1733,6 +1876,177 @@ function AdminContentManagement() {
             .data-table-actions button {
               padding: 6px 8px !important;
               font-size: 10px !important;
+            }
+            
+            .platform-selection {
+              grid-template-columns: 1fr !important;
+              gap: 8px !important;
+            }
+            
+            .platform-button {
+              padding: 12px 8px !important;
+              font-size: 0.8rem !important;
+            }
+            
+            .platform-button .icon {
+              font-size: 1.3rem !important;
+            }
+          }
+          
+          /* تحسين تفاعل الأزرار */
+          button:hover:not(:disabled) {
+            transform: translateY(-2px) !important;
+          }
+          
+          button:active:not(:disabled) {
+            transform: translateY(0) !important;
+          }
+          
+          button:disabled {
+            cursor: not-allowed !important;
+            opacity: 0.6 !important;
+          }
+          
+          /* تحسين الإدخالات */
+          input:focus {
+            outline: none !important;
+          }
+          
+          input[type="text"]:focus,
+          input[type="url"]:focus {
+            transform: translateY(-1px) !important;
+          }
+          
+          /* تحسين العرض للصور */
+          img {
+            transition: all 0.3s ease !important;
+          }
+          
+          img:hover {
+            transform: scale(1.05) !important;
+          }
+          
+          /* تحسين الأنيميشن للمودال */
+          .modal-overlay {
+            animation: fadeIn 0.3s ease-out !important;
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          /* تحسين العرض للمنصات */
+          .platform-indicators {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+          }
+          
+          .platform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+          }
+          
+          .youtube-badge {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff0000;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+          }
+          
+          .meet-badge {
+            background: rgba(66, 133, 244, 0.1);
+            color: #4285f4;
+            border: 1px solid rgba(66, 133, 244, 0.2);
+          }
+          
+          .vimeo-badge {
+            background: rgba(26, 183, 234, 0.1);
+            color: #1ab7ea;
+            border: 1px solid rgba(26, 183, 234, 0.2);
+          }
+          
+          .facebook-badge {
+            background: rgba(24, 119, 242, 0.1);
+            color: #1877f2;
+            border: 1px solid rgba(24, 119, 242, 0.2);
+          }
+          
+          /* تحسين الطباعة */
+          @media print {
+            .modal-overlay,
+            .action-buttons,
+            button {
+              display: none !important;
+            }
+            
+            .content-container {
+              background: white !important;
+              box-shadow: none !important;
+            }
+            
+            .header-section,
+            .nav-tabs,
+            .data-table {
+              background: white !important;
+              color: black !important;
+            }
+          }
+          
+          /* تحسين إمكانية الوصول */
+          @media (prefers-reduced-motion: reduce) {
+            * {
+              animation-duration: 0.01ms !important;
+              animation-iteration-count: 1 !important;
+              transition-duration: 0.01ms !important;
+            }
+          }
+          
+          /* تحسين التباين */
+          @media (prefers-contrast: high) {
+            .header-section,
+            .nav-tabs,
+            .data-table,
+            .live-settings,
+            .modal-content {
+              border: 3px solid #000 !important;
+            }
+            
+            button {
+              border: 2px solid #000 !important;
+            }
+            
+            input {
+              border: 2px solid #000 !important;
+            }
+          }
+          
+          /* تحسين الألوان للنظام المظلم */
+          @media (prefers-color-scheme: dark) {
+            .header-section,
+            .nav-tabs,
+            .data-table,
+            .live-settings,
+            .modal-content {
+              background: rgba(33, 37, 41, 0.95) !important;
+              color: #ffffff !important;
+            }
+            
+            input {
+              background: rgba(52, 58, 64, 0.9) !important;
+              color: #ffffff !important;
+              border-color: rgba(108, 117, 125, 0.5) !important;
+            }
+            
+            .empty-state h3,
+            .empty-state p {
+              color: #ffffff !important;
             }
           }
         `}
