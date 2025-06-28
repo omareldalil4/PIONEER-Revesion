@@ -6,7 +6,6 @@ function LiveGrade3() {
   const [isLiveStreamActive, setIsLiveStreamActive] = useState(false);
   const [liveStreamUrl, setLiveStreamUrl] = useState('');
   const [loading, setLoading] = useState(true);
-  const [isCustomFullscreen, setIsCustomFullscreen] = useState(false);
 
   // دالة لتحويل رابط يوتيوب إلى رابط embed مع إخفاء معلومات القناة ومنع fullscreen
   const convertYouTubeURL = (url) => {
@@ -48,6 +47,9 @@ function LiveGrade3() {
         'iv_load_policy=3&' +     // إخفاء التعليقات التوضيحية
         'cc_load_policy=0&' +     // إخفاء الترجمة التلقائية
         'fs=0&' +                 // منع fullscreen من YouTube
+        'end_screen_info=0&' +    // إخفاء شاشة النهاية
+        'hl=ar&' +                // اللغة العربية
+        'cc_lang_pref=ar&' +      // تفضيل اللغة العربية للترجمة
         'disablekb=0&' +          // السماح بالتحكم عبر الكيبورد
         'playsinline=1&' +        // تشغيل داخل المتصفح في الموبايل
         'enablejsapi=1&' +        // تفعيل JavaScript API
@@ -59,30 +61,13 @@ function LiveGrade3() {
     return url;
   };
 
-  // دالة تكبير الشاشة المخصصة
-  const toggleCustomFullscreen = () => {
-    setIsCustomFullscreen(!isCustomFullscreen);
-  };
-
-  // دالة للخروج من تكبير الشاشة عند الضغط على Escape
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && isCustomFullscreen) {
-        setIsCustomFullscreen(false);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isCustomFullscreen]);
-
   // إضافة دالة لحقن CSS ديناميكياً ومراقبة DOM لمنع الشير مع تأثير blur متقدم
   useEffect(() => {
     // حقن CSS متقدم مع تأثير blur وزجاجي على أيقونات الشير ومنع fullscreen
     const advancedStyle = document.createElement('style');
     advancedStyle.id = 'youtube-share-blur-protection';
     advancedStyle.textContent = `
-      /* تأثير blur وزجاجي متقدم على جميع أيقونات الشير */
+      /* تأثير blur وتشويش متقدم على جميع أيقونات الشير - حماية شاملة لجميع الأجهزة */
       .ytp-share-button,
       .ytp-share-button-visible,
       .ytp-share-panel,
@@ -97,6 +82,7 @@ function LiveGrade3() {
       .ytp-popup.ytp-contextmenu,
       .ytp-menuitem[aria-label*="Share"],
       .ytp-menuitem[aria-label*="شارك"],
+      .ytp-menuitem[aria-label*="مشاركة"],
       .ytp-cards-button,
       .ytp-cards-teaser,
       .ytp-ce-element,
@@ -108,31 +94,77 @@ function LiveGrade3() {
       .ytp-chrome-top-buttons,
       .ytp-fullscreen-button,
       .ytp-size-button,
+      .ytp-miniplayer-button,
+      .ytp-remote-button,
+      .ytp-cast-button,
       button[data-tooltip-target-id*="share"],
       button[aria-label*="Share"],
       button[aria-label*="شارك"],
+      button[aria-label*="مشاركة"],
       button[title*="Share"],
       button[title*="شارك"],
+      button[title*="مشاركة"],
       button[aria-label*="Fullscreen"],
       button[aria-label*="ملء الشاشة"],
       button[title*="Fullscreen"],
       button[title*="ملء الشاشة"],
       .ytp-button[data-tooltip-target-id*="ytp-share"],
       .ytp-button[data-tooltip-target-id*="ytp-fullscreen"],
+      .ytp-button[aria-label*="Share"],
+      .ytp-button[aria-label*="شارك"],
+      .ytp-button[aria-label*="مشاركة"],
+      .ytp-button[aria-label*="Fullscreen"],
+      .ytp-button[aria-label*="ملء الشاشة"],
       [role="button"][aria-label*="Share"],
       [role="button"][aria-label*="شارك"],
+      [role="button"][aria-label*="مشاركة"],
       [role="button"][aria-label*="Fullscreen"],
       [role="button"][aria-label*="ملء الشاشة"],
       [role="dialog"][aria-label*="Share"],
       [role="dialog"][aria-label*="شارك"],
+      [role="dialog"][aria-label*="مشاركة"],
       div[class*="share" i]:not(.live-content):not(.empty-state),
       div[id*="share" i]:not(.live-content):not(.empty-state),
       *[class*="share" i]:not(.live-content):not(.empty-state),
       *[id*="share" i]:not(.live-content):not(.empty-state),
       *[data-tooltip*="share" i],
       *[aria-label*="share" i],
-      *[class*="fullscreen" i]:not(.custom-fullscreen):not(.live-content):not(.empty-state),
-      *[id*="fullscreen" i]:not(.custom-fullscreen):not(.live-content):not(.empty-state) {
+      *[aria-label*="مشاركة" i],
+      *[class*="fullscreen" i]:not(.live-content):not(.empty-state),
+      *[id*="fullscreen" i]:not(.live-content):not(.empty-state),
+      /* حماية خاصة للموبايل والآيفون */
+      .ytp-mobile-a11y-hidden-seek-button,
+      .ytp-mobile-overflow-button,
+      .ytp-mobile-share-button,
+      .ytp-mobile-fullscreen-button,
+      .ytp-mobile-a11y-share-button,
+      .ytp-touch-device-share-button,
+      .ytp-ios-share-button,
+      .ytp-android-share-button,
+      /* حماية إضافية لجميع الأجهزة */
+      [data-tooltip-target-id="ytp-share-button"],
+      [data-tooltip-target-id="ytp-fullscreen-button"],
+      [aria-keyshortcuts*="f"],
+      [aria-keyshortcuts*="F"],
+      /* حماية للآيفون خاصة */
+      .ytp-webkit-airplay-button,
+      .ytp-ios-overflow-button,
+      .ytp-touch-overflow-button,
+      /* حماية شاملة للتابلت */
+      .ytp-tablet-share-button,
+      .ytp-tablet-overflow-button,
+      /* حماية لأجهزة اللمس */
+      [data-touch="true"] .ytp-share-button,
+      [data-touch="true"] .ytp-overflow-button,
+      /* حماية CSS متقدمة */
+      button[class*="share"],
+      button[id*="share"],
+      svg[class*="share"],
+      svg[id*="share"],
+      path[d*="share"],
+      /* حماية للتطبيقات المدمجة */
+      .ytp-webview-share-button,
+      .ytp-embedded-share-button {
         /* تأثير blur وتشويش قوي */
         filter: blur(20px) saturate(0) contrast(0.1) brightness(0.3) !important;
         backdrop-filter: blur(25px) saturate(0.2) !important;
@@ -190,9 +222,10 @@ function LiveGrade3() {
         animation: shareBlurGlitch 2s infinite linear !important;
       }
       
-      /* تأثير خاص للوضع العادي */
+      /* تأثير خاص للوضع العادي - حجب المنطقة اليمنى بالكامل مع حماية شاملة */
       .ytp-chrome-controls .ytp-right-controls {
         position: relative !important;
+        overflow: hidden !important;
       }
       
       .ytp-chrome-controls .ytp-right-controls::after {
@@ -200,20 +233,75 @@ function LiveGrade3() {
         position: absolute !important;
         top: 0 !important;
         right: 0 !important;
-        width: 200px !important;
+        width: 100% !important;
         height: 100% !important;
-        background: linear-gradient(90deg, 
-          transparent 0%, 
-          rgba(0, 0, 0, 0.3) 15%,
-          rgba(0, 0, 0, 0.7) 30%,
-          rgba(0, 0, 0, 0.9) 50%,
-          rgba(0, 0, 0, 1) 70%,
-          rgba(0, 0, 0, 1) 100%
-        ) !important;
-        backdrop-filter: blur(15px) saturate(0.3) !important;
+        background: rgba(0, 0, 0, 1) !important;
         z-index: 999999 !important;
         pointer-events: auto !important;
         border-radius: 0 5px 5px 0 !important;
+      }
+      
+      /* حجب كامل للمنطقة اليمنى في جميع الأوضاع */
+      .ytp-chrome-controls .ytp-right-controls * {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: scale(0) !important;
+        position: absolute !important;
+        left: -99999px !important;
+        top: -99999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        z-index: -99999 !important;
+      }
+      
+      /* حماية خاصة للموبايل والآيفون - حجب شامل */
+      @media (max-width: 768px) {
+        .ytp-chrome-controls .ytp-right-controls::after {
+          width: 150% !important;
+          height: 150% !important;
+          right: -25% !important;
+          bottom: -25% !important;
+          top: auto !important;
+        }
+        
+        /* حجب إضافي للموبايل والآيفون */
+        .ytp-chrome-controls::after {
+          content: '' !important;
+          position: absolute !important;
+          bottom: 0 !important;
+          right: 0 !important;
+          width: 200px !important;
+          height: 80px !important;
+          background: rgba(0, 0, 0, 1) !important;
+          z-index: 999999 !important;
+          pointer-events: auto !important;
+        }
+        
+        /* حماية إضافية للآيفون */
+        .ytp-chrome-controls::before {
+          content: '' !important;
+          position: absolute !important;
+          top: 0 !important;
+          right: 0 !important;
+          width: 150px !important;
+          height: 70px !important;
+          background: rgba(0, 0, 0, 0.95) !important;
+          z-index: 999998 !important;
+          pointer-events: auto !important;
+        }
+      }
+      
+      /* حماية لأجهزة iPad والتابلت */
+      @media (min-width: 768px) and (max-width: 1024px) {
+        .ytp-chrome-controls .ytp-right-controls::after {
+          width: 120% !important;
+          height: 120% !important;
+          right: -10% !important;
+          bottom: -10% !important;
+        }
       }
       
       /* حماية إضافية للشريط العلوي */
@@ -232,7 +320,7 @@ function LiveGrade3() {
       .ytp-panel,
       .ytp-contextmenu,
       .ytp-overflow-menu,
-      [role="dialog"]:not(.live-content):not(.empty-state):not(.custom-fullscreen),
+      [role="dialog"]:not(.live-content):not(.empty-state),
       [role="menu"]:not(.live-content):not(.empty-state),
       [role="listbox"]:not(.live-content):not(.empty-state) {
         filter: blur(50px) saturate(0) contrast(0) brightness(0) !important;
@@ -305,57 +393,194 @@ function LiveGrade3() {
         opacity: 0 !important;
         visibility: hidden !important;
       }
-
-      /* استايل تكبير الشاشة المخصص */
-      .custom-fullscreen-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.95);
-        z-index: 999999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(10px);
+      
+      /* إخفاء أزرار التحكم الإضافية بالكامل */
+      .ytp-chrome-controls .ytp-right-controls {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        left: -99999px !important;
+        top: -99999px !important;
+        z-index: -99999 !important;
+        transform: scale(0) !important;
       }
-
-      .custom-fullscreen-content {
-        width: 90vw;
-        height: 90vh;
-        max-width: 1200px;
-        position: relative;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+      
+      .ytp-chrome-controls .ytp-right-controls * {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
       }
-
-      .custom-fullscreen-close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.9);
-        border: none;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        font-size: 1.5rem;
-        color: #333;
-        cursor: pointer;
-        z-index: 1000000;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      
+      /* منع ظهور القوائم المنبثقة */
+      .ytp-popup,
+      .ytp-contextmenu,
+      .ytp-overflow-menu {
+        display: none !important;
+        visibility: hidden !important;
       }
-
-      .custom-fullscreen-close:hover {
-        background: rgba(255, 255, 255, 1);
-        transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      
+      /* حماية قصوى ضد قوائم الشير والـ fullscreen */
+      .ytp-share-panel,
+      .ytp-share-panel-visible,
+      .ytp-share-panel-content,
+      .ytp-share-panel-container,
+      .ytp-popup.ytp-share-panel,
+      .ytp-panel.ytp-share-panel,
+      div[class*="share"]:not(.live-content):not(.empty-state),
+      div[id*="share"]:not(.live-content):not(.empty-state),
+      div[class*="fullscreen"]:not(.live-content):not(.empty-state),
+      div[id*="fullscreen"]:not(.live-content):not(.empty-state),
+      [role="dialog"]:not(.live-content):not(.empty-state),
+      [role="menu"]:not(.live-content):not(.empty-state),
+      [role="listbox"]:not(.live-content):not(.empty-state),
+      /* حماية إضافية شاملة */
+      .ytp-chrome-controls .ytp-right-controls,
+      .ytp-chrome-controls .ytp-right-controls *,
+      .ytp-mobile-a11y-hidden-seek-button,
+      .ytp-mobile-overflow-button,
+      .ytp-mobile-share-button,
+      .ytp-mobile-fullscreen-button {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        left: -99999px !important;
+        top: -99999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        z-index: -99999 !important;
+        transform: scale(0) translate(-99999px, -99999px) !important;
+        clip: rect(0 0 0 0) !important;
+        clip-path: polygon(0 0, 0 0, 0 0) !important;
+      }
+      
+      /* منع ظهور أي نافذة منبثقة من YouTube */
+      iframe[src*="youtube"] + *,
+      .ytp-popup,
+      .ytp-panel,
+      .ytp-contextmenu,
+      .ytp-overflow-menu {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+      
+      /* حجب منطقة الأزرار اليمنى */
+      .youtube-share-blocker-advanced {
+        background: linear-gradient(45deg, transparent 49%, rgba(255, 0, 0, 0.01) 50%, transparent 51%) !important;
+      }
+      
+      .youtube-share-blocker-advanced:hover {
+        background: rgba(255, 0, 0, 0.05) !important;
+      }
+      
+      .youtube-share-blocker-advanced:active {
+        background: rgba(255, 0, 0, 0.1) !important;
+      }
+      
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      
+      /* تحسين التباين للرؤية */
+      @media (prefers-contrast: high) {
+        .live-content {
+          border: 3px solid #fff !important;
+        }
+        
+        .empty-state {
+          border: 3px solid #fff !important;
+        }
+      }
+      
+      /* تحسين للطباعة */
+      @media print {
+        .live-content iframe {
+          display: none !important;
+        }
+        
+        .live-content::after {
+          content: "البث المباشر متاح على الموقع الإلكتروني" !important;
+          display: block !important;
+          text-align: center !important;
+          padding: 50px !important;
+          color: #000 !important;
+          background: #fff !important;
+        }
+      }
+      
+      /* منع النقر الأيمن والتحديد والسحب على الفيديو */
+      .live-content {
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+        -webkit-touch-callout: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+      
+      .live-content iframe {
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+        pointer-events: auto !important;
+      }
+      
+      /* منع النقر الأيمن */
+      .live-content iframe,
+      .live-content {
+        -webkit-context-menu: none !important;
+        context-menu: none !important;
+      }
+      
+      /* تحسين الأداء */
+      .live-content {
+        will-change: transform;
+        transform: translateZ(0);
+      }
+      
+      iframe {
+        will-change: auto;
+        backface-visibility: hidden;
+      }
+      
+      /* السماح فقط بأزرار التحكم الأساسية */
+      .ytp-play-button,
+      .ytp-pause-button,
+      .ytp-mute-button,
+      .ytp-volume-slider,
+      .ytp-time-display,
+      .ytp-progress-bar,
+      .ytp-scrubber-button,
+      .ytp-progress-bar-container,
+      .ytp-volume-area,
+      .ytp-left-controls {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        filter: none !important;
+        transform: none !important;
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        width: auto !important;
+        height: auto !important;
+        z-index: auto !important;
       }
     `;
     
@@ -368,7 +593,7 @@ function LiveGrade3() {
           if (node.nodeType === 1) {
             // تطبيق التأثيرات على العناصر الجديدة
             const applyBlurEffect = (element) => {
-              if (element && !element.closest('.live-content, .empty-state, .custom-fullscreen')) {
+              if (element && !element.closest('.live-content, .empty-state')) {
                 element.style.filter = 'blur(25px) saturate(0) contrast(0.1) brightness(0.2)';
                 element.style.backdropFilter = 'blur(30px) saturate(0.1)';
                 element.style.background = 'rgba(0, 0, 0, 0.95)';
@@ -390,7 +615,7 @@ function LiveGrade3() {
               }
             };
             
-            // البحث عن عناصر الشير والـ fullscreen الجديدة
+            // البحث عن عناصر الشير والـ fullscreen الجديدة مع حماية شاملة
             const blockedSelectors = [
               '.ytp-share-button',
               '.ytp-share-panel',
@@ -400,17 +625,34 @@ function LiveGrade3() {
               '.ytp-contextmenu',
               '.ytp-fullscreen-button',
               '.ytp-size-button',
+              '.ytp-miniplayer-button',
+              '.ytp-remote-button',
+              '.ytp-cast-button',
+              '.ytp-mobile-share-button',
+              '.ytp-mobile-fullscreen-button',
+              '.ytp-mobile-overflow-button',
               '[class*="share" i]',
               '[id*="share" i]',
               '[aria-label*="Share"]',
               '[aria-label*="شارك"]',
+              '[aria-label*="مشاركة"]',
               '[aria-label*="Fullscreen"]',
               '[aria-label*="ملء الشاشة"]',
               '[role="dialog"]',
               '[role="menu"]',
               '[role="listbox"]',
               '[class*="fullscreen" i]',
-              '[id*="fullscreen" i]'
+              '[id*="fullscreen" i]',
+              '[data-tooltip-target-id*="share"]',
+              '[data-tooltip-target-id*="fullscreen"]',
+              'button[title*="Share"]',
+              'button[title*="شارك"]',
+              'button[title*="مشاركة"]',
+              'button[title*="Fullscreen"]',
+              'button[title*="ملء الشاشة"]',
+              '.ytp-ios-share-button',
+              '.ytp-android-share-button',
+              '.ytp-webkit-airplay-button'
             ];
             
             blockedSelectors.forEach(selector => {
@@ -439,31 +681,49 @@ function LiveGrade3() {
       attributeFilter: ['class', 'style', 'aria-label', 'role', 'id']
     });
     
-    // تطبيق التأثيرات كل نصف ثانية
+    // تطبيق التأثيرات كل نصف ثانية مع حماية شاملة
     const blurInterval = setInterval(() => {
       const blockedElements = document.querySelectorAll(`
         .ytp-share-button,
         .ytp-share-panel,
         .ytp-overflow-button,
-        .ytp-popup:not(.live-content):not(.empty-state):not(.custom-fullscreen),
-        .ytp-panel:not(.live-content):not(.empty-state):not(.custom-fullscreen),
+        .ytp-popup:not(.live-content):not(.empty-state),
+        .ytp-panel:not(.live-content):not(.empty-state),
         .ytp-contextmenu,
         .ytp-fullscreen-button,
         .ytp-size-button,
-        [class*="share" i]:not(.live-content):not(.empty-state):not(.custom-fullscreen),
-        [id*="share" i]:not(.live-content):not(.empty-state):not(.custom-fullscreen),
+        .ytp-miniplayer-button,
+        .ytp-remote-button,
+        .ytp-cast-button,
+        .ytp-mobile-share-button,
+        .ytp-mobile-fullscreen-button,
+        .ytp-mobile-overflow-button,
+        [class*="share" i]:not(.live-content):not(.empty-state),
+        [id*="share" i]:not(.live-content):not(.empty-state),
         [aria-label*="Share"],
         [aria-label*="شارك"],
+        [aria-label*="مشاركة"],
         [aria-label*="Fullscreen"],
         [aria-label*="ملء الشاشة"],
-        [role="dialog"]:not(.live-content):not(.empty-state):not(.custom-fullscreen),
+        [role="dialog"]:not(.live-content):not(.empty-state),
         [role="menu"]:not(.live-content):not(.empty-state),
-        [class*="fullscreen" i]:not(.custom-fullscreen):not(.live-content):not(.empty-state),
-        [id*="fullscreen" i]:not(.custom-fullscreen):not(.live-content):not(.empty-state)
+        [class*="fullscreen" i]:not(.live-content):not(.empty-state),
+        [id*="fullscreen" i]:not(.live-content):not(.empty-state),
+        [data-tooltip-target-id*="share"],
+        [data-tooltip-target-id*="fullscreen"],
+        button[title*="Share"],
+        button[title*="شارك"],
+        button[title*="مشاركة"],
+        button[title*="Fullscreen"],
+        button[title*="ملء الشاشة"],
+        .ytp-chrome-controls .ytp-right-controls > *,
+        .ytp-ios-share-button,
+        .ytp-android-share-button,
+        .ytp-webkit-airplay-button
       `);
       
       blockedElements.forEach(el => {
-        if (el && !el.closest('.live-content, .empty-state, .custom-fullscreen')) {
+        if (el && !el.closest('.live-content, .empty-state')) {
           // تطبيق تأثير blur متقدم
           el.style.filter = 'blur(30px) saturate(0) contrast(0) brightness(0)';
           el.style.backdropFilter = 'blur(35px) saturate(0)';
@@ -678,45 +938,6 @@ function LiveGrade3() {
                 🔴 LIVE
               </div>
 
-              {/* زر تكبير الشاشة المخصص */}
-              <button
-                onClick={toggleCustomFullscreen}
-                style={{
-                  position: 'absolute',
-                  top: '20px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  borderRadius: '15px',
-                  padding: '8px 15px',
-                  fontSize: '0.9rem',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  zIndex: 15,
-                  color: '#333',
-                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
-                  transition: 'all 0.3s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 1)';
-                  e.target.style.transform = 'translateX(-50%) translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.3)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.9)';
-                  e.target.style.transform = 'translateX(-50%) translateY(0)';
-                  e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
-                }}
-              >
-                <span style={{ fontSize: '1.2rem' }}>⛶</span>
-                <span>تكبير الشاشة</span>
-              </button>
-
               {/* الفيديو مع طبقة إخفاء متقدمة */}
               <div style={{
                 position: 'relative',
@@ -751,14 +972,14 @@ function LiveGrade3() {
                   onSelectStart={(e) => e.preventDefault()}
                 />
                 
-                {/* طبقة إخفاء شاملة متقدمة لمنع أي تفاعل مع أزرار YouTube */}
+                {/* طبقة إخفاء شاملة متقدمة - حماية قصوى للشير */}
                 <div style={{
                   position: 'absolute',
                   bottom: '0px',
                   right: '0px',
-                  width: '250px',
-                  height: '60px',
-                  background: 'rgba(0, 0, 0, 0.9)',
+                  width: '300px',
+                  height: '70px',
+                  background: 'rgba(0, 0, 0, 1)',
                   zIndex: 999999,
                   pointerEvents: 'auto',
                   borderRadius: '0 0 20px 0',
@@ -792,25 +1013,18 @@ function LiveGrade3() {
                   e.stopPropagation();
                   return false;
                 }}
-                style={{
-                  cursor: 'not-allowed',
-                  userSelect: 'none',
-                  webkitUserSelect: 'none',
-                  mozUserSelect: 'none',
-                  msUserSelect: 'none'
-                }}
                 >
-                  🔒 محمي
+                  🔒 محمي من المشاركة
                 </div>
                 
-                {/* طبقة إخفاء علوية إضافية */}
+                {/* طبقة إخفاء علوية متقدمة */}
                 <div style={{
                   position: 'absolute',
                   top: '0px',
                   right: '0px',
-                  width: '180px',
-                  height: '60px',
-                  background: 'rgba(0, 0, 0, 0.8)',
+                  width: '200px',
+                  height: '70px',
+                  background: 'rgba(0, 0, 0, 0.95)',
                   zIndex: 999998,
                   pointerEvents: 'auto',
                   borderRadius: '0 20px 0 0'
@@ -821,21 +1035,15 @@ function LiveGrade3() {
                   e.stopImmediatePropagation();
                   return false;
                 }}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  e.stopImmediatePropagation();
-                  return false;
-                }}
                 ></div>
                 
-                {/* طبقة إخفاء وسطى يمنى */}
+                {/* طبقة إخفاء وسطى للموبايل والآيفون */}
                 <div style={{
                   position: 'absolute',
                   top: '50%',
                   right: '0px',
-                  width: '120px',
-                  height: '80px',
+                  width: '150px',
+                  height: '100px',
                   background: 'transparent',
                   zIndex: 999997,
                   pointerEvents: 'auto',
@@ -847,7 +1055,20 @@ function LiveGrade3() {
                   e.stopImmediatePropagation();
                   return false;
                 }}
-                onMouseDown={(e) => {
+                ></div>
+                
+                {/* طبقة حماية شاملة للآيفون والأندرويد */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0px',
+                  left: '0px',
+                  width: '100%',
+                  height: '60px',
+                  background: 'transparent',
+                  zIndex: 999996,
+                  pointerEvents: 'auto'
+                }}
+                onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   e.stopImmediatePropagation();
@@ -879,8 +1100,8 @@ function LiveGrade3() {
                     position: 'absolute',
                     bottom: '0',
                     right: '0',
-                    width: '300px',
-                    height: '100px',
+                    width: '350px',
+                    height: '120px',
                     background: 'transparent',
                     zIndex: 999999,
                     pointerEvents: 'auto',
@@ -954,7 +1175,7 @@ function LiveGrade3() {
                     margin: '0 0 10px 0',
                     textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
                   }}>
-                    📺 استخدم زر "تكبير الشاشة" للحصول على تجربة أفضل
+                    📺 استمتع بمشاهدة البث المباشر بأفضل جودة
                   </p>
                   <p style={{
                     color: 'rgba(255, 255, 255, 0.8)',
@@ -1062,85 +1283,6 @@ function LiveGrade3() {
         </div>
       </div>
 
-      {/* Custom Fullscreen Overlay */}
-      {isCustomFullscreen && (
-        <div className="custom-fullscreen-overlay">
-          <button
-            className="custom-fullscreen-close"
-            onClick={toggleCustomFullscreen}
-          >
-            ✕
-          </button>
-          <div className="custom-fullscreen-content">
-            <iframe
-              src={liveStreamUrl}
-              title="البث المباشر التعليمي - شاشة كاملة"
-              frameBorder="0"
-              allowFullScreen={false} // منع fullscreen من iframe
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              style={{
-                width: '100%',
-                height: '100%',
-                border: 'none',
-                outline: 'none',
-                borderRadius: '15px'
-              }}
-              sandbox="allow-scripts allow-same-origin allow-presentation"
-              onContextMenu={(e) => e.preventDefault()}
-              onDragStart={(e) => e.preventDefault()}
-              onSelectStart={(e) => e.preventDefault()}
-            />
-            
-            {/* طبقات حماية في الـ fullscreen */}
-            <div style={{
-              position: 'absolute',
-              bottom: '0px',
-              right: '0px',
-              width: '300px',
-              height: '80px',
-              background: 'rgba(0, 0, 0, 0.9)',
-              zIndex: 999999,
-              pointerEvents: 'auto',
-              borderRadius: '0 0 15px 0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'rgba(255, 255, 255, 0.3)',
-              fontSize: '14px',
-              fontWeight: '600'
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              e.stopImmediatePropagation();
-              return false;
-            }}
-            >
-              🔒 محمي - شاشة كاملة
-            </div>
-            
-            <div style={{
-              position: 'absolute',
-              top: '0px',
-              right: '0px',
-              width: '250px',
-              height: '80px',
-              background: 'rgba(0, 0, 0, 0.8)',
-              zIndex: 999998,
-              pointerEvents: 'auto',
-              borderRadius: '0 15px 0 0'
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              e.stopImmediatePropagation();
-              return false;
-            }}
-            ></div>
-          </div>
-        </div>
-      )}
-
       <style>
         {`
           @keyframes spin {
@@ -1226,19 +1368,6 @@ function LiveGrade3() {
             .control-buttons button {
               width: 100% !important;
             }
-
-            .custom-fullscreen-content {
-              width: 95vw !important;
-              height: 85vh !important;
-            }
-
-            .custom-fullscreen-close {
-              width: 40px !important;
-              height: 40px !important;
-              font-size: 1.2rem !important;
-              top: 15px !important;
-              right: 15px !important;
-            }
           }
           
           @media (max-width: 480px) {
@@ -1280,19 +1409,6 @@ function LiveGrade3() {
               height: 14px !important;
               top: 15px !important;
               right: 15px !important;
-            }
-
-            .custom-fullscreen-content {
-              width: 98vw !important;
-              height: 80vh !important;
-            }
-
-            .custom-fullscreen-close {
-              width: 35px !important;
-              height: 35px !important;
-              font-size: 1rem !important;
-              top: 10px !important;
-              right: 10px !important;
             }
           }
           
@@ -1367,11 +1483,16 @@ function LiveGrade3() {
           .video-annotations,
           .ytp-fullscreen-button,
           .ytp-size-button,
+          .ytp-miniplayer-button,
+          .ytp-remote-button,
+          .ytp-cast-button,
           button[data-tooltip-target-id*="share"],
           button[aria-label*="Share"],
           button[aria-label*="شارك"],
+          button[aria-label*="مشاركة"],
           button[title*="Share"],
           button[title*="شارك"],
+          button[title*="مشاركة"],
           button[aria-label*="Fullscreen"],
           button[aria-label*="ملء الشاشة"],
           button[title*="Fullscreen"],
@@ -1381,17 +1502,35 @@ function LiveGrade3() {
           .ytp-share-panel,
           .ytp-menuitem[aria-label*="Share"],
           .ytp-menuitem[aria-label*="شارك"],
+          .ytp-menuitem[aria-label*="مشاركة"],
           [role="button"][aria-label*="Share"],
           [role="button"][aria-label*="شارك"],
+          [role="button"][aria-label*="مشاركة"],
           [role="button"][aria-label*="Fullscreen"],
           [role="button"][aria-label*="ملء الشاشة"],
           *[class*="share" i],
           *[id*="share" i],
           *[data-tooltip*="share" i],
-          *[class*="fullscreen" i]:not(.custom-fullscreen):not(.live-content):not(.empty-state),
-          *[id*="fullscreen" i]:not(.custom-fullscreen):not(.live-content):not(.empty-state),
+          *[class*="fullscreen" i]:not(.live-content):not(.empty-state),
+          *[id*="fullscreen" i]:not(.live-content):not(.empty-state),
           .ytp-overflow-menu,
-          .ytp-settings-menu .ytp-menuitem:nth-child(n+3) {
+          .ytp-settings-menu .ytp-menuitem:nth-child(n+3),
+          /* حماية خاصة للموبايل والآيفون */
+          .ytp-mobile-a11y-hidden-seek-button,
+          .ytp-mobile-overflow-button,
+          .ytp-mobile-share-button,
+          .ytp-mobile-fullscreen-button,
+          .ytp-mobile-a11y-share-button,
+          .ytp-touch-device-share-button,
+          .ytp-ios-share-button,
+          .ytp-android-share-button,
+          .ytp-webkit-airplay-button,
+          .ytp-ios-overflow-button,
+          .ytp-touch-overflow-button,
+          .ytp-tablet-share-button,
+          .ytp-tablet-overflow-button,
+          .ytp-webview-share-button,
+          .ytp-embedded-share-button {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
@@ -1405,15 +1544,27 @@ function LiveGrade3() {
             transform: scale(0) !important;
           }
           
-          /* إخفاء أزرار التحكم الإضافية */
+          /* إخفاء أزرار التحكم الإضافية بالكامل */
           .ytp-chrome-controls .ytp-right-controls {
-            max-width: 120px !important;
-            overflow: hidden !important;
-          }
-          
-          .ytp-chrome-controls .ytp-right-controls .ytp-button:nth-last-child(-n+4) {
             display: none !important;
             visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            position: absolute !important;
+            left: -99999px !important;
+            top: -99999px !important;
+            z-index: -99999 !important;
+            transform: scale(0) !important;
+          }
+          
+          .ytp-chrome-controls .ytp-right-controls * {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
           }
           
           /* منع ظهور القوائم المنبثقة */
@@ -1431,11 +1582,11 @@ function LiveGrade3() {
           .ytp-share-panel-container,
           .ytp-popup.ytp-share-panel,
           .ytp-panel.ytp-share-panel,
-          div[class*="share"]:not(.live-content):not(.empty-state):not(.custom-fullscreen),
-          div[id*="share"]:not(.live-content):not(.empty-state):not(.custom-fullscreen),
-          div[class*="fullscreen"]:not(.custom-fullscreen):not(.live-content):not(.empty-state),
-          div[id*="fullscreen"]:not(.custom-fullscreen):not(.live-content):not(.empty-state),
-          [role="dialog"]:not(.live-content):not(.empty-state):not(.custom-fullscreen),
+          div[class*="share"]:not(.live-content):not(.empty-state),
+          div[id*="share"]:not(.live-content):not(.empty-state),
+          div[class*="fullscreen"]:not(.live-content):not(.empty-state),
+          div[id*="fullscreen"]:not(.live-content):not(.empty-state),
+          [role="dialog"]:not(.live-content):not(.empty-state),
           [role="menu"]:not(.live-content):not(.empty-state),
           [role="listbox"]:not(.live-content):not(.empty-state),
           /* حماية إضافية شاملة */
@@ -1503,10 +1654,6 @@ function LiveGrade3() {
             .empty-state {
               border: 3px solid #fff !important;
             }
-
-            .custom-fullscreen-content {
-              border: 3px solid #fff !important;
-            }
           }
           
           /* تحسين للطباعة */
@@ -1523,10 +1670,6 @@ function LiveGrade3() {
               color: #000 !important;
               background: #fff !important;
             }
-
-            .custom-fullscreen-overlay {
-              display: none !important;
-            }
           }
           
           /* منع النقر الأيمن والتحديد والسحب على الفيديو */
@@ -1539,8 +1682,7 @@ function LiveGrade3() {
             -webkit-tap-highlight-color: transparent !important;
           }
           
-          .live-content iframe,
-          .custom-fullscreen-content iframe {
+          .live-content iframe {
             -webkit-user-select: none !important;
             -moz-user-select: none !important;
             -ms-user-select: none !important;
@@ -1550,9 +1692,7 @@ function LiveGrade3() {
           
           /* منع النقر الأيمن */
           .live-content iframe,
-          .live-content,
-          .custom-fullscreen-content iframe,
-          .custom-fullscreen-content {
+          .live-content {
             -webkit-context-menu: none !important;
             context-menu: none !important;
           }
@@ -1567,137 +1707,7 @@ function LiveGrade3() {
             will-change: auto;
             backface-visibility: hidden;
           }
-
-          /* استايل تكبير الشاشة المخصص */
-          .custom-fullscreen-overlay {
-            animation: fadeIn 0.3s ease-out;
-          }
-
-          .custom-fullscreen-content {
-            animation: slideInScale 0.4s ease-out;
-          }
-
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-            }
-            to {
-              opacity: 1;
-            }
-          }
-
-          @keyframes slideInScale {
-            from {
-              opacity: 0;
-              transform: scale(0.8) translateY(50px);
-            }
-            to {
-              opacity: 1;
-              transform: scale(1) translateY(0);
-            }
-          }
-
-          /* تحسين زر تكبير الشاشة */
-          .live-content button[onclick*="toggleCustomFullscreen"] {
-            animation: pulseGlow 2s infinite;
-          }
-
-          @keyframes pulseGlow {
-            0%, 100% {
-              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            }
-            50% {
-              box-shadow: 0 6px 25px rgba(255, 255, 255, 0.3);
-            }
-          }
-
-          /* حماية إضافية للشاشة الكاملة */
-          .custom-fullscreen-overlay .ytp-share-button,
-          .custom-fullscreen-overlay .ytp-overflow-button,
-          .custom-fullscreen-overlay .ytp-fullscreen-button,
-          .custom-fullscreen-overlay .ytp-size-button,
-          .custom-fullscreen-overlay [class*="share" i],
-          .custom-fullscreen-overlay [id*="share" i],
-          .custom-fullscreen-overlay [class*="fullscreen" i]:not(.custom-fullscreen),
-          .custom-fullscreen-overlay [id*="fullscreen" i]:not(.custom-fullscreen) {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-            position: absolute !important;
-            left: -99999px !important;
-            top: -99999px !important;
-            width: 0 !important;
-            height: 0 !important;
-            overflow: hidden !important;
-            z-index: -99999 !important;
-            transform: scale(0) !important;
-          }
-
-          /* منع scroll في الخلفية عند تكبير الشاشة */
-          body.custom-fullscreen-active {
-            overflow: hidden !important;
-            position: fixed !important;
-            width: 100% !important;
-            height: 100% !important;
-          }
-
-          /* تحسين الاستجابة للوحة اللمس */
-          .custom-fullscreen-close {
-            touch-action: manipulation !important;
-          }
-
-          .live-content button {
-            touch-action: manipulation !important;
-          }
-
-          /* تحسين للشاشات اللمسية */
-          @media (hover: none) and (pointer: coarse) {
-            .custom-fullscreen-close {
-              width: 60px !important;
-              height: 60px !important;
-              font-size: 1.8rem !important;
-            }
-
-            .live-content button {
-              padding: 12px 20px !important;
-              font-size: 1rem !important;
-            }
-          }
-
-          /* تحسين للوضع الليلي */
-          @media (prefers-color-scheme: dark) {
-            .custom-fullscreen-close {
-              background: rgba(40, 40, 40, 0.95) !important;
-              color: #ffffff !important;
-              border: 2px solid rgba(255, 255, 255, 0.3) !important;
-            }
-
-            .custom-fullscreen-close:hover {
-              background: rgba(60, 60, 60, 1) !important;
-              border-color: rgba(255, 255, 255, 0.5) !important;
-            }
-          }
-
-          /* حماية من تسريب الذاكرة */
-          .custom-fullscreen-overlay iframe {
-            pointer-events: auto !important;
-            isolation: isolate !important;
-          }
-
-          /* تحسين الأمان */
-          iframe[src*="youtube.com"] {
-            sandbox: allow-scripts allow-same-origin allow-presentation !important;
-          }
-
-          /* منع التلاعب بالـ DOM */
-          .ytp-chrome-controls *[onclick],
-          .ytp-chrome-controls *[onmousedown],
-          .ytp-chrome-controls *[ontouchstart] {
-            pointer-events: none !important;
-            display: none !important;
-          }
-
+          
           /* تحسين النص للقراءة */
           .live-content p,
           .empty-state p,
@@ -1706,40 +1716,29 @@ function LiveGrade3() {
             line-height: 1.6 !important;
             letter-spacing: 0.5px !important;
           }
-
-          /* تحسين التنقل بالكيبورد */
-          .custom-fullscreen-close:focus {
-            outline: 3px solid rgba(255, 255, 255, 0.8) !important;
-            outline-offset: 3px !important;
-          }
-
-          .live-content button:focus {
-            outline: 3px solid rgba(255, 255, 255, 0.6) !important;
-            outline-offset: 2px !important;
-          }
-
+          
           /* منع التشويش البصري */
           .ytp-chrome-controls {
             filter: none !important;
             backdrop-filter: none !important;
           }
-
+          
           .ytp-chrome-controls .ytp-left-controls {
             filter: none !important;
           }
-
+          
           .ytp-chrome-controls .ytp-time-display {
             filter: none !important;
           }
-
+          
           .ytp-chrome-controls .ytp-progress-bar-container {
             filter: none !important;
           }
-
+          
           .ytp-chrome-controls .ytp-volume-area {
             filter: none !important;
           }
-
+          
           /* السماح فقط بأزرار التحكم الأساسية */
           .ytp-play-button,
           .ytp-pause-button,
@@ -1763,6 +1762,163 @@ function LiveGrade3() {
             width: auto !important;
             height: auto !important;
             z-index: auto !important;
+          }
+          
+          /* حماية خاصة للآيفون وSafari */
+          @media screen and (-webkit-min-device-pixel-ratio: 2) {
+            .ytp-chrome-controls .ytp-right-controls,
+            .ytp-share-button,
+            .ytp-overflow-button,
+            .ytp-fullscreen-button,
+            .ytp-ios-share-button,
+            .ytp-webkit-airplay-button {
+              display: none !important;
+              visibility: hidden !important;
+              opacity: 0 !important;
+              pointer-events: none !important;
+              transform: scale(0) !important;
+              position: absolute !important;
+              left: -99999px !important;
+              top: -99999px !important;
+              width: 0 !important;
+              height: 0 !important;
+              overflow: hidden !important;
+              z-index: -99999 !important;
+            }
+          }
+          
+          /* حماية خاصة للأندرويد */
+          @media screen and (orientation: portrait) {
+            .ytp-android-share-button,
+            .ytp-mobile-share-button,
+            .ytp-touch-device-share-button,
+            .ytp-chrome-controls .ytp-right-controls {
+              display: none !important;
+              visibility: hidden !important;
+              opacity: 0 !important;
+              pointer-events: none !important;
+              transform: scale(0) !important;
+              position: absolute !important;
+              left: -99999px !important;
+              top: -99999px !important;
+              width: 0 !important;
+              height: 0 !important;
+              overflow: hidden !important;
+              z-index: -99999 !important;
+            }
+          }
+          
+          /* حماية للتابلت في جميع الاتجاهات */
+          @media screen and (min-width: 768px) and (max-width: 1024px) {
+            .ytp-tablet-share-button,
+            .ytp-tablet-overflow-button,
+            .ytp-chrome-controls .ytp-right-controls {
+              display: none !important;
+              visibility: hidden !important;
+              opacity: 0 !important;
+              pointer-events: none !important;
+              transform: scale(0) !important;
+              position: absolute !important;
+              left: -99999px !important;
+              top: -99999px !important;
+              width: 0 !important;
+              height: 0 !important;
+              overflow: hidden !important;
+              z-index: -99999 !important;
+            }
+          }
+          
+          /* حماية إضافية للWebView والتطبيقات المدمجة */
+          .ytp-webview-share-button,
+          .ytp-embedded-share-button,
+          iframe[src*="youtube"] .ytp-share-button,
+          iframe[src*="youtube"] .ytp-overflow-button {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transform: scale(0) !important;
+            position: absolute !important;
+            left: -99999px !important;
+            top: -99999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            z-index: -99999 !important;
+          }
+          
+          /* حماية شاملة لجميع SVG icons للشير */
+          svg[class*="share"],
+          svg[id*="share"],
+          path[d*="share" i],
+          use[href*="share" i],
+          symbol[id*="share" i] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            fill: transparent !important;
+            stroke: transparent !important;
+          }
+          
+          /* حماية CSS متقدمة للعناصر الديناميكية */
+          [data-title*="Share"],
+          [data-title*="شارك"],
+          [data-title*="مشاركة"],
+          [data-tooltip*="Share"],
+          [data-tooltip*="شارك"],
+          [data-tooltip*="مشاركة"],
+          [aria-describedby*="share"],
+          [aria-describedby*="Share"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transform: scale(0) !important;
+            position: absolute !important;
+            left: -99999px !important;
+            top: -99999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            z-index: -99999 !important;
+          }
+          
+          /* حماية نهائية شاملة */
+          *[class*="share" i]:not(.live-content):not(.empty-state),
+          *[id*="share" i]:not(.live-content):not(.empty-state),
+          *[data-*="share" i]:not(.live-content):not(.empty-state),
+          *[aria-*="share" i]:not(.live-content):not(.empty-state),
+          *[title*="share" i]:not(.live-content):not(.empty-state) {
+            filter: blur(50px) saturate(0) contrast(0) brightness(0) !important;
+            backdrop-filter: blur(60px) saturate(0) !important;
+            background: rgba(0, 0, 0, 1) !important;
+            transform: scale(0) rotate(360deg) translate(-99999px, -99999px) !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            position: absolute !important;
+            left: -999999px !important;
+            top: -999999px !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            z-index: -999999 !important;
+            clip: rect(0 0 0 0) !important;
+            clip-path: polygon(0 0, 0 0, 0 0) !important;
+            animation: shareDestroy 0.1s infinite !important;
+          }
+          
+          @keyframes shareDestroy {
+            0% { 
+              opacity: 0; 
+              transform: scale(0) rotate(0deg) translate(-999999px, -999999px); 
+              filter: blur(100px) saturate(0) contrast(0) brightness(0);
+            }
+            100% { 
+              opacity: 0; 
+              transform: scale(0) rotate(360deg) translate(-999999px, -999999px); 
+              filter: blur(100px) saturate(0) contrast(0) brightness(0);
+            }
           }
         `}
       </style>
